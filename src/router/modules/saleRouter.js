@@ -41,13 +41,13 @@ const saleRouter = {
         children: [
           {
             path: '/sale/menu2/menu2-1',
-            component: () => import('@/views/sale/menu2/menu2-1'),
+            component: () => import('@/views/sale/menu2/menu2-1/list'),
             name: 'saleMenu2-1',
             meta: { title: '销售报价单',permissions: 'saleMenu2-1'  }
           },
           {
             path: '/sale/menu2/menu2-2',
-            component: () => import('@/views/sale/menu2/menu2-2'),
+            component: () => import('@/views/sale/menu2/menu2-2/list'),
             name: 'saleMenu2-2',
             meta: { title: '销售订单',permissions: 'saleMenu2-2' }
           },
@@ -89,6 +89,27 @@ const saleRouter = {
             component: () => import('@/views/sale/menu3/menu3-1'),
             name: 'saleMenu3-1',
             meta: { title: '销售发票到处',permissions: 'saleMenu3-1'  }
+          }
+        ]
+      },
+      {
+        path: '/sale/menu4',
+        component: () => import('@/views/sale/menu4/index'),
+        name: 'saleMenu3',
+        meta: { title: '报表',permissions: '这里是权限' },
+        redirect: '/sale/menu4/menu4-1',
+        children: [
+          {
+            path: '/sale/menu4/menu4-1',
+            component: () => import('@/views/sale/menu4/menu4-1'),
+            name: 'saleMenu4-1',
+            meta: { title: '销售日报表' }
+          }
+          ,{
+            path: '/sale/menu4/menu4-1',
+            component: () => import('@/views/sale/menu4/menu4-2'),
+            name: 'saleMenu4-1',
+            meta: { title: '销售分析表' }
           }
         ]
       }
