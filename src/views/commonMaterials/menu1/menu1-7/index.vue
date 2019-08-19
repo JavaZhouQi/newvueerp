@@ -160,6 +160,10 @@ export default {
           {
             name:"名称",
             value:"wareHouseName"
+          },
+          {
+            name:"英文名",
+            value:"EngName"
           }
         ],
         tableName:"comwarehouse", // 表名

@@ -100,7 +100,12 @@
           
         </el-header>
         <el-main class="app-body" style="padding: 0px;background-color:#f4f4f5">
-          <breadcrumb></breadcrumb>
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+          </el-breadcrumb>
           <router-view />
         </el-main>
       </el-container>
@@ -165,4 +170,8 @@ export default {
 </script>
 
 <style>
+.el-breadcrumb{
+  background-color: white;
+  padding: 10px;
+}
 </style>

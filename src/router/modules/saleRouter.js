@@ -106,9 +106,9 @@ const saleRouter = {
             meta: { title: '销售日报表' }
           }
           ,{
-            path: '/sale/menu4/menu4-1',
+            path: '/sale/menu4/menu4-2',
             component: () => import('@/views/sale/menu4/menu4-2'),
-            name: 'saleMenu4-1',
+            name: 'saleMenu4-2',
             meta: { title: '销售分析表' }
           }
         ]
