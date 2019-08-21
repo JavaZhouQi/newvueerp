@@ -38,13 +38,13 @@
           <div style="width:45%;float:left;">
             <el-form label-position="left" label-width="80px" size="mini">
               <el-form-item label="客户编号">
-                <el-input v-model="entity.fullName"></el-input>
+                <el-input v-model="entity.id"></el-input>
               </el-form-item>
               <el-form-item label="客户全称">
                 <el-input v-model="entity.fullName"></el-input>
               </el-form-item>
               <el-form-item label="客户简称">
-                <el-input v-model="entity.fullNamee"></el-input>
+                <el-input v-model="entity.shortName"></el-input>
               </el-form-item>
               <el-form-item label="英文全称">
                 <el-input v-model="entity.fullNamee"></el-input>
@@ -57,16 +57,16 @@
           <div style="width:45%;float:right;margin-left:10px;">
             <el-form label-position="left" label-width="100px" size="mini">
               <el-form-item label="账款归属">
-                <el-input v-model="entity.fullName"></el-input>
+                <el-input v-model="entity.fundsAttribution"></el-input>
               </el-form-item>
               <el-form-item label="类别">
-                <el-input v-model="entity.fullName"></el-input>
+                <el-input v-model="entity.classID"></el-input>
               </el-form-item>
               <el-form-item label="地区">
-                <el-input v-model="entity.fullNamee"></el-input>
+                <el-input v-model="entity.areaID"></el-input>
               </el-form-item>
               <el-form-item label="币别">
-                <el-input v-model="entity.fullNamee"></el-input>
+                <el-input v-model="entity.currencyID"></el-input>
               </el-form-item>
             </el-form>
           </div>
@@ -76,43 +76,43 @@
             <el-tab-pane label="基本资料">
               <el-form label-position="left" label-width="100px" :inline="true" size="mini">
                 <el-form-item label="负责人">
-                  <el-input v-model="entity.fullName"></el-input>
+                  <el-input v-model="entity.chiefName"></el-input>
                 </el-form-item>
                 <el-form-item label="业务人员">
-                  <el-input v-model="entity.fullName"></el-input>
+                  <el-input v-model="entity.personID"></el-input>
                 </el-form-item>
                 <el-form-item label="联系人">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.linkMan"></el-input>
                 </el-form-item>
                 <el-form-item label="税务登记号">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.taxNo"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话一">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.telephone1"></el-input>
                 </el-form-item>
                 <el-form-item label="资本额">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.capitalization"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话二">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.telephone2"></el-input>
                 </el-form-item>
                 <el-form-item label="行业别">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.industrialClass"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话三">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.telephone3"></el-input>
                 </el-form-item>
                 <el-form-item label="电子邮件">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.email"></el-input>
                 </el-form-item>
                 <el-form-item label="移动电话">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.mobileTel"></el-input>
                 </el-form-item>
                 <el-form-item label="网址">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.webAddress"></el-input>
                 </el-form-item>
                 <el-form-item label="银行账号">
-                  <el-input v-model="entity.fullNamee"></el-input>
+                  <el-input v-model="entity.faxNo"></el-input>
                 </el-form-item>
                 <el-form-item label="开户银行">
                   <el-input v-model="entity.fullNamee"></el-input>
@@ -146,13 +146,13 @@
                   <el-input v-model="entity.fullNamee"></el-input>
                 </el-form-item>
                 <el-form-item label="最近拜访日">
-                  <el-date-picker v-model="entity.fullName" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-date-picker v-model="entity.lastVisitDate" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="客户建立日期">
                   <el-date-picker v-model="entity.fullName" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="预约拜访日">
-                  <el-date-picker v-model="entity.fullName" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-date-picker v-model="entity.bookVisitDate" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="终止交易日">
                   <el-date-picker v-model="entity.fullName" type="date" placeholder="选择日期"></el-date-picker>
