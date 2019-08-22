@@ -13,7 +13,7 @@ import VXETable from 'vxe-table'
 import 'vxe-table/lib/index.css'
 
 Vue.use(VXETable)
-
+// 加个注释
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
