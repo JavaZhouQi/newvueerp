@@ -9,4 +9,7 @@ export default {
 </script>
 
 <style>
+.el-dialog__body {
+    padding: 20px 20px;
+    }
 </style>
