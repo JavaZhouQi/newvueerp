@@ -6,10 +6,10 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="发票类型编号" value="id"></el-option>
-            <el-option label="发票类型名称" value="name"></el-option>
+            <el-option label="人员编号" value="id"></el-option>
+            <el-option label="人员名称" value="name"></el-option>
             <el-option label="英文名称" value="engName"></el-option>
-            <el-option label="备注" value="memo"></el-option>
+            <el-option label="性别" value="memo"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
@@ -19,10 +19,10 @@
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="id" label="发票类型编号" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="name" label="发票类型名称" width="180"></el-table-column>
+      <el-table-column prop="id" label="人员编号" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="name" label="人员名称" width="180"></el-table-column>
       <el-table-column prop="engName" label="英文名称" width="280"></el-table-column>
-      <el-table-column prop="memo" label="备注" width="280"></el-table-column>
+      <el-table-column prop="memo" label="性别" width="280"></el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.row)">修改</el-button>
@@ -32,22 +32,39 @@
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
-    <el-dialog title="编辑发票类型" :visible.sync="addDialog" width="30%" :before-close="handleClose">
+    <el-dialog title="编辑人员" :visible.sync="addDialog" width="50%" :before-close="handleClose">
       <span>
-        <el-form :model="entity" label-position="left" label-width="130px" status-icon :rules="rules">
-          <el-form-item label="发票类型编号" prop="id">
-            <el-input v-model="entity.id" :disabled="updatebool"></el-input>
-          </el-form-item>
-          <el-form-item label="发票类型名称" prop="name">
-            <el-input v-model="entity.name"></el-input>
-          </el-form-item>
-          <el-form-item label="英文名称">
-            <el-input v-model="entity.engName"></el-input>
-          </el-form-item>
-          <el-form-item label="备注">
-            <el-input v-model="entity.memo"></el-input>
-          </el-form-item>
-        </el-form>
+        <div style="padding:0px 20px;">
+          <el-form label-position="left" label-width="100px" :inline="true" size="mini">
+            <el-form-item label="人员编号">
+              <el-input v-model="entity.name"></el-input>
+            </el-form-item>
+            <el-form-item label="所属部门">
+              <el-input v-model="entity.name"></el-input>
+            </el-form-item>
+            <el-form-item label="人员姓名">
+              <el-input v-model="entity.name"></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+                <el-select v-model="entity.name" placeholder="请选择" style="width:185px;">
+                  <el-option label="男" value="1"></el-option>
+                  <el-option label="女" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="英文姓名">
+              <el-input v-model="entity.name"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证号">
+              <el-input v-model="entity.name"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-tabs type="card" @tab-click="handleClick">
+            <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
+            <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+            <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+          </el-tabs>
+        </div>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialog = false">取 消</el-button>
@@ -214,6 +231,9 @@ export default {
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+.el-form-item {
+  margin-bottom: 5px;
 }
 </style>
 
