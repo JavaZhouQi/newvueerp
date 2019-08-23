@@ -243,6 +243,11 @@
                 :data.sync="entity.comcustaddressList"
                 :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
               >
+                <vxe-table-column title="删除">
+                  <template v-slot="{ row }" style="padding:10px;">
+                    <i class="el-icon-remove" @click="comcustaddressRemove(row)"></i>
+                  </template>
+                </vxe-table-column>
                 <vxe-table-column field="id" title="地址编号" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
                 <vxe-table-column field="address" title="地址"  width="160" :edit-render="{name: 'input'}"></vxe-table-column>
                 <vxe-table-column field="zipCode" title="邮政编码" width="160" :edit-render="{name: 'input'}"></vxe-table-column>
@@ -428,6 +433,10 @@ export default {
       }).then(result => {
         this.comcustclassList = result.data.data;
       });
+    },
+    // 删除当前地址
+    comcustaddressRemove(row){
+      this.entity.comcustaddressList.splice(this.entity.comcustaddressList.indexOf(row),1)
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
