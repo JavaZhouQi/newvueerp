@@ -15,7 +15,7 @@ import 'vxe-table/lib/index.css'
 Vue.use(VXETable)
 Vue.use(ElementUI)
 Vue.config.productionTip = false
-
+/*注释测试*/
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
