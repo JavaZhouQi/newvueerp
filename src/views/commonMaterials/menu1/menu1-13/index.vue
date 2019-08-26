@@ -41,7 +41,7 @@
             </el-form-item>
             <el-form-item label="所属部门">
               <el-select v-model="entity.departID" placeholder="请选择" style="width:185px;">
-                <el-option v-for="entity in comdepartmentList" :label="entity.departName" :value="entity.departID"></el-option>
+                <el-option v-for="entity in comdepartmentList" :label="entity.departName" :value="entity.departID" :key="entity.departID"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="人员姓名">
@@ -134,7 +134,7 @@
               <el-form label-position="left" label-width="100px" :inline="true" size="mini">
                 <el-form-item label="最高学历">
                   <el-select v-model="entity.humschoolId" placeholder="请选择" style="width:185px;">
-                    <el-option v-for="entity in humschoolingList" :label="entity.schoolingName" :value="entity.schoolingID"></el-option>
+                    <el-option v-for="entity in humschoolingList" :label="entity.schoolingName" :value="entity.schoolingID" :key="entity.schoolingID"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="到期日期">
