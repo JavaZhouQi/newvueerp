@@ -34,54 +34,55 @@
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
     <el-dialog title="销售报价单" :visible.sync="addDialog" width="50%" :before-close="handleClose">
-        <el-button class="shenghe" @click="shenghe">审核</el-button>
-        <img src="@/assets/he.png" class="img" v-if="sale_quotation.audit">
+      <el-button class="baocun" type="success" @click="save" size="small">保存</el-button>
+        <el-button type="primary"class="shenghe" @click="shenghe" size="small " :disabled="savebtn">审核</el-button>
+        <img src="@/assets/he.png" width="80px" class="img" v-if="sale_quotation.hasCheck==1">
       <el-form :model="sale_quotation" size="mini" :label-position="'left'"   ref="sale_quotation" label-width="100px" class="demo-ruleForm">
         <el-row>
             <el-col :span="12">
-               <el-form-item label="正式客户"  prop="name"> <el-input v-model="sale_quotation.consumer.name"></el-input> </el-form-item>
+               <el-form-item label="正式客户"  prop="name"> <el-input v-model="sale_quotation.consumer.name" :disabled="isWriter"></el-input> </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="单据日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间"> </el-date-picker> </el-form-item>
+                <el-form-item label="单据日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间" :disabled="isWriter">  </el-date-picker> </el-form-item>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
                <el-form-item label="送货地址"  prop="name"> 
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name"> </el-input></el-col>
+                   <el-col :span="11"> <el-input v-model="sale_quotation.name" :disabled="isWriter"> </el-input></el-col>
                    <el-col class="line" :span="2">&nbsp;&nbsp;</el-col>
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name"> </el-input></el-col>
+                   <el-col :span="11"> <el-input v-model="sale_quotation.name" :disabled="isWriter"> </el-input></el-col>
                 </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="单据号码"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                <el-form-item label="单据号码"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
-               <el-form-item label="有效日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间"></el-date-picker> </el-form-item>
+               <el-form-item label="有效日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间" :disabled="isWriter"></el-date-picker> </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="币别"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                <el-form-item label="币别"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
                <el-form-item label="单价是否含税"   prop="name"> 
                    <el-select v-model="sale_quotation.tax">
-                    <el-option label="未税" value="0" ></el-option>
-                    <el-option label="含税" value="1"></el-option>
+                    <el-option label="未税" value="0" :disabled="isWriter"></el-option>
+                    <el-option label="含税" value="1" :disabled="isWriter"></el-option>
                    </el-select>
                </el-form-item>
             </el-col>
             <el-col :span="12">
-                <el-form-item label="汇率"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                <el-form-item label="汇率"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
             </el-col>
         </el-row>
         <div class="details">
             <el-tabs  type="card">
                 <el-tab-pane label="内容" >
-                    <el-table :data="sale_quotation.details" height="150" size="mini" max-height="250" border style="width: 97%">
+                    <el-table :data="sale_quotation.details" :rules="rules" height="150" size="mini" max-height="250" border style="width: 97%">
                             <el-table-column fixed prop="date"  width="20">
                             </el-table-column>
                             <el-table-column  prop="date" label="栏号" width="100">
@@ -151,21 +152,21 @@
                     <el-row>
                         <el-col :span="12">
                         <el-form-item label="业务人员"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
+                            <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input>
                         </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
                         <el-form-item label="所属部门"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
+                            <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input>
                         </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -186,7 +187,7 @@
                                     功能<i class="el-icon-arrow-down el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >批次变更单价</el-dropdown-item>
+                                    <el-dropdown-item :disabled="isWriter">批次变更单价</el-dropdown-item>
                                     <el-dropdown-item >发送Email</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
@@ -233,8 +234,10 @@ export default {
       currentSize: 10,  // 每页条数
       pagenumber: 0,     // 总条数
       updatebool:false,
+      savebtn:true,         //是否保存
+      isWriter:false,
       rules: {
-        departID: [
+        sale_quotation: [
            { required: true, message: '编号不能为空', trigger: 'blur' },
         ],
         departName: [
@@ -245,7 +248,7 @@ export default {
             consumer:{
                 name:""
             },
-            audit:false,
+            hasCheck:0,
             tax:"0",
             details:[
                 {
@@ -313,35 +316,8 @@ export default {
     },
     // 保存
     save() {
-      if(!this.updatebool){
-        // 新增
-        request({
-          url: "/comdepartment/add",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
-        });
-      }else{
-        // 修改
-        request({
-          url: "/comdepartment/update",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
-        });
-      }
-      
+        this.isWriter=true;
+        this.savebtn=false;
     },
     //保存后新增
     saveAddition(){
@@ -364,14 +340,17 @@ export default {
       });
     }
     ,shenghe(){
-        if(this.sale_quotation.audit==false){
-            this.sale_quotation.audit=true;
+        if(this.sale_quotation.hasCheck==0){
+            this.sale_quotation.hasCheck=1;
             
         }else{
-            this.sale_quotation.audit=false;
+
+            this.sale_quotation.hasCheck=0;
             
         }
     }
+    
+    
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
@@ -442,8 +421,13 @@ export default {
     }
     .shenghe{
         position: absolute;
-        top:41px;
+        top:37px;
         right: 50px;
+    }
+    .baocun{
+        position: absolute;
+        top:37px;
+        right: 125px;
     }
     .img{
          position: absolute;

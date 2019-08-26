@@ -9,9 +9,13 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/styles/erpcss.scss'
 
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/index.css'
+
+Vue.use(VXETable)
 Vue.use(ElementUI)
 Vue.config.productionTip = false
-
+/*注释测试*/
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

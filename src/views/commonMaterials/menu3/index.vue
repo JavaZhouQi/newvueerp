@@ -1,6 +1,6 @@
 <template>
-   <div style="padding:30px;">
-    <el-alert :closable="false" title="menu 2">
+   <div style="padding:0px;">
+    <el-alert :closable="false">
       <router-view />
     </el-alert>
   </div>
