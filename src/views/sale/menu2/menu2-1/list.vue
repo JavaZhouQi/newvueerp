@@ -15,7 +15,7 @@
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button type="primary" @click="add">新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
@@ -34,177 +34,47 @@
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
     <el-dialog title="销售报价单" :visible.sync="addDialog" width="50%" :before-close="handleClose">
-      <el-button class="baocun" type="success" @click="save" size="small">保存</el-button>
-        <el-button type="primary"class="shenghe" @click="shenghe" size="small " :disabled="savebtn">审核</el-button>
-        <img src="@/assets/he.png" width="80px" class="img" v-if="sale_quotation.hasCheck==1">
-      <el-form :model="sale_quotation" size="mini" :label-position="'left'"   ref="sale_quotation" label-width="100px" class="demo-ruleForm">
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="正式客户"  prop="name"> <el-input v-model="sale_quotation.consumer.name" :disabled="isWriter"></el-input> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="单据日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间" :disabled="isWriter">  </el-date-picker> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="送货地址"  prop="name"> 
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name" :disabled="isWriter"> </el-input></el-col>
-                   <el-col class="line" :span="2">&nbsp;&nbsp;</el-col>
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name" :disabled="isWriter"> </el-input></el-col>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="单据号码"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="有效日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间" :disabled="isWriter"></el-date-picker> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="币别"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="单价是否含税"   prop="name"> 
-                   <el-select v-model="sale_quotation.tax">
-                    <el-option label="未税" value="0" :disabled="isWriter"></el-option>
-                    <el-option label="含税" value="1" :disabled="isWriter"></el-option>
-                   </el-select>
-               </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="汇率"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <div class="details">
-            <el-tabs  type="card">
-                <el-tab-pane label="内容" >
-                    <el-table :data="sale_quotation.details" :rules="rules" height="150" size="mini" max-height="250" border style="width: 97%">
-                            <el-table-column fixed prop="date"  width="20">
-                            </el-table-column>
-                            <el-table-column  prop="date" label="栏号" width="100">
-                            </el-table-column>
-                            <el-table-column prop="name" label="物料编号" width="150">
-                            </el-table-column>
-                            <el-table-column prop="province" label="物料名称" width="150">
-                            </el-table-column>
-                            <el-table-column prop="city" label="规格型号" width="100">
-                            </el-table-column>
-                            <el-table-column prop="address" label="单位名称" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="数量" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="折扣前单价" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="折数(%)" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="单价" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="金额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="税率(%)" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="税额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="含税金额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="赠品" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="分录备注" width="200">
-                            </el-table-column>
-                    </el-table>
-                </el-tab-pane>
-                <el-tab-pane label="备注" >
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="表头条文"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="自定义栏一"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="表尾条文"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="自定义栏二"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="24">
-                        <el-form-item label="备注"   prop="name"> 
-                          <el-input type="textarea" :rows="4"  > </el-input>
-                        </el-form-item>
-                        </el-col>
-                        
-                    </el-row>
-                </el-tab-pane>
-            </el-tabs>
-        </div>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="业务人员"   prop="name"> 
-                            <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="所属部门"   prop="name"> 
-                            <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name" :disabled="isWriter"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    查询<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >历史交易查询</el-dropdown-item>
-                                    <el-dropdown-item >利润预估查询</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    功能<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item :disabled="isWriter">批次变更单价</el-dropdown-item>
-                                    <el-dropdown-item >发送Email</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="18">
-                            &nbsp;
-                        </el-col>
-                    </el-row>
-
-        
-        
-</el-form>
-      <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
-      </span> -->
+      <router-view></router-view>
+    </el-dialog>
+    <el-dialog title="历史交易查询" :visible.sync="dialogTableVisible">
+      <el-row >
+        <el-form size="mini" label-width="40px">
+          <el-col :span="12">
+              <el-form-item label="客户"><el-input size="mini"></el-input></el-form-item>
+          </el-col>
+          <el-col :span="6">
+             &nbsp;
+          </el-col>
+          <el-col :span="6">
+              <el-button type="primary"  size="mini" plain>资料输出</el-button>
+              <el-button type="success" size="mini" plain>取回</el-button>
+          </el-col>
+        </el-form>
+      </el-row>
+       <vxe-table size="mini"  border resizable highlight-hover-row class="vxe-table-element" height="100"  >
+        <vxe-table-column title="删除">
+          <template v-slot="{ row }" style="padding:10px;">
+            <i class="el-icon-remove"
+            ></i>
+          </template>
+        </vxe-table-column>
+        <vxe-table-column field="id" title="单别" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="address" title="日期"  width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="zipCode" title="单号" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkMan" title="币别" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkManProf" title="汇率" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="telephone" title="物料编号" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="faxNo" title="物料名称" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="walkAddr" title="规格型号" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="memo" title="单位" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="zipCode" title="数量" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkMan" title="折扣前单价" width="130" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkManProf" title="折数(%)" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="telephone" title="单价" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="faxNo" title="单价是否含税" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="walkAddr" title="金额" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
+      </vxe-table>
     </el-dialog>
   </div>
 </template>
@@ -230,6 +100,7 @@ export default {
       select: "",   // 查询条件
       selectValue: "",
       addDialog: false, // 新增模态框
+      dialogTableVisible:false,//历史交易查询
       currentPage: 1,   // 当前页
       currentSize: 10,  // 每页条数
       pagenumber: 0,     // 总条数
@@ -237,20 +108,20 @@ export default {
       savebtn:true,         //是否保存
       isWriter:false,
       rules: {
-        sale_quotation: [
+        smlordbillmain: [
            { required: true, message: '编号不能为空', trigger: 'blur' },
         ],
         departName: [
            { required: true, message: '名称不能为空', trigger: 'blur' },
         ]
       }
-      ,sale_quotation:{
-            consumer:{
+      ,smlordbillmain:{
+            comcustomer:{
                 name:""
             },
             hasCheck:0,
             tax:"0",
-            details:[
+            subList:[
                 {
                     name:"hahha"
                 }
@@ -265,6 +136,27 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    add(){
+        this.addDialog=true;
+        this.$router.push({path:"/sale/menu2/menu2-1/index"});
+    },
+    lishi(){
+      this.dialogTableVisible=true;
+    },
+    query_num(flag,date){
+      var smlordbillmain_ =this.smlordbillmain;
+      request({
+        url:"",
+        method:"post",
+        params:{
+          flag:flag,
+          date:date
+        }
+      }).then(response=>{
+          smlordbillmain_.billNo=response.data;
+          alert(smlordbillmain_.billNo);
+      })
+    },
     formatter(row, column) {
       return row.address;
     },
@@ -340,12 +232,12 @@ export default {
       });
     }
     ,shenghe(){
-        if(this.sale_quotation.hasCheck==0){
-            this.sale_quotation.hasCheck=1;
+        if(this.smlordbillmain.hasCheck==0){
+            this.smlordbillmain.hasCheck=1;
             
         }else{
 
-            this.sale_quotation.hasCheck=0;
+            this.smlordbillmain.hasCheck=0;
             
         }
     }
@@ -354,7 +246,7 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.findPage();
+    // this.findPage();
   }
 };
 </script>
@@ -365,6 +257,9 @@ export default {
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+.el-input__inner {
+  width: 98%;
 }
  .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
         margin-top: 5px;
@@ -402,7 +297,7 @@ export default {
         background-color: #A5C5F4;
     }
     form{
-        border: 1px solid #A5C5F4;
+        // border: 1px solid #A5C5F4;
         background-color: #D7E7FF;
         height: 100%;
         // width: 43%;

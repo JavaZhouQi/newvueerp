@@ -44,6 +44,14 @@ const saleRouter = {
             component: () => import('@/views/sale/menu2/menu2-1/list'),
             name: 'saleMenu2-1',
             meta: { title: '销售报价单',permissions: 'saleMenu2-1'  }
+            ,children:[
+              {
+                path: '/sale/menu2/menu2-1/index',
+                component: () => import('@/views/sale/menu2/menu2-1/index'),
+                name: 'saleMenu2-1-1',
+                meta: { title: '销售报价弹出层',permissions: 'saleMenu2-1'  }
+              }
+            ]
           },
           {
             path: '/sale/menu2/menu2-2',
