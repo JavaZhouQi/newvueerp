@@ -11,5 +11,5 @@ export default {
 <style>
 .el-dialog__body {
     padding: 20px 20px;
-    }
+}
 </style>
