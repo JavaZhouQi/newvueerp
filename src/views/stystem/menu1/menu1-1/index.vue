@@ -17,11 +17,16 @@
         <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
       </div>
     </div>
-    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="id" label="用户编号" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="role" label="用户角色" width="180"></el-table-column>
+    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;" border>
+      <el-table-column prop="id" label="用户编号" sortable width="330" column-key="date"></el-table-column>
       <el-table-column prop="username" label="用户名称" width="280"></el-table-column>
-      <el-table-column prop="memo" label="用户密码" width="280"></el-table-column>
+      <el-table-column label="用户角色" width="330">
+        <template slot-scope="scope">
+          <span v-for="entity in scope.row.rolesList">
+            {{entity.description}}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.row)">修改</el-button>
@@ -33,25 +38,21 @@
 
     <el-dialog title="操作用户" :visible.sync="addDialog" width="30%" :before-close="handleClose">
       <span>
-        <el-form :model="entity" label-position="left" label-width="80px" status-icon :rules="rules">
-          <el-form-item label="用户编号" prop="id">
-            <el-input v-model="entity.id" :disabled="updatebool"></el-input>
-          </el-form-item>
+        <el-form
+          :model="entity"
+          label-position="left"
+          label-width="80px"
+          status-icon
+          :rules="rules"
+        >
           <el-form-item label="用户名称" prop="username">
             <el-input v-model="entity.username"></el-input>
           </el-form-item>
           <el-form-item label="用户密码" prop="password">
-            <el-input v-model="entity.password"></el-input>
+            <el-input v-model="entity.password" type="password"></el-input>
           </el-form-item>
           <el-form-item label="用户角色" prop="role">
-           <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+           
           </el-form-item>
         </el-form>
       </span>
@@ -69,7 +70,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -79,47 +80,27 @@ export default {
   data() {
     //这里存放数据
     return {
-      entity: {},   // 新增and修改的对象
-      tableData: [],  // 显示数据
-      findData: {},  // 查询数据
-      select: "",   // 查询条件
+      entity: {}, // 新增and修改的对象
+      tableData: [], // 显示数据
+      findData: {}, // 查询数据
+      select: "", // 查询条件
       selectValue: "",
       addDialog: false, // 新增模态框
-      currentPage: 1,   // 当前页
-      currentSize: 10,  // 每页条数
-      pagenumber: 0,     // 总条数
-      updatebool:false,
+      currentPage: 1, // 当前页
+      currentSize: 10, // 每页条数
+      pagenumber: 0, // 总条数
+      updatebool: false,
       rules: {
-        id: [
-           { required: true, message: '编号不能为空', trigger: 'blur' },
-        ],
+        id: [{ required: true, message: "编号不能为空", trigger: "blur" }],
         username: [
-           { required: true, message: '名称不能为空', trigger: 'blur' },
-        ],password: [
-           { required: true, message: '密码不能为空', trigger: 'blur' },
-        ]
-        ,role: [
-           { required: true, message: '角色不能为空', trigger: 'blur' },
-        ]
+          { required: true, message: "名称不能为空", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" }
+        ],
+        role: [{ required: true, message: "角色不能为空", trigger: "blur" }]
       },
-         options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-         value: ''
-    
+      value: ""
     };
   },
   //监听属性 类似于data概念
@@ -136,8 +117,8 @@ export default {
     },
     // 分页组件触发的事件
     jumpPage(data) {
-      this.currentPage = data.currentPage;  //当前页
-      this.currentSize = data.currentSize;  //每页显示条数
+      this.currentPage = data.currentPage; //当前页
+      this.currentSize = data.currentSize; //每页显示条数
       this.findPage();
     },
     //关闭模态框
@@ -150,14 +131,14 @@ export default {
     },
     //分页带条件查询
     findPage() {
-      if(this.select != -1){
-        this.findData[this.select] = this.selectValue
-      }else{
-        this.findData = {}
+      if (this.select != -1) {
+        this.findData[this.select] = this.selectValue;
+      } else {
+        this.findData = {};
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/sysUsers/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
@@ -171,7 +152,7 @@ export default {
     // 单个查询
     findOne() {
       request({
-        url: "/comdepartment/findOne",
+        url: "/sysUsers/findOne",
         method: "post"
       }).then(result => {
         console.log(result);
@@ -179,54 +160,53 @@ export default {
     },
     // 保存
     save() {
-      if(!this.updatebool){
+      if (!this.updatebool) {
         // 新增
         request({
-          url: "/system/add",
+          url: "/sysUsers/add",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.entity = {};
         });
-      }else{
+      } else {
         // 修改
         request({
-          url: "/system/update",
+          url: "/sysUsers/update",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.updatebool = false;
+          this.entity = {};
         });
       }
-      
     },
     //保存后新增
-    saveAddition(){
-      var number = this.entity.id
+    saveAddition() {
+      var number = this.entity.id;
     },
     // 修改
-    update(entity){
-      this.updatebool = true
-      this.addDialog = true
-      this.entity = entity
+    update(entity) {
+      this.updatebool = true;
+      this.addDialog = true;
+      this.entity = entity;
     },
     // 删除
-    del(id){
+    del(id) {
       request({
-        url: "/sysytem/del?id="+id,
+        url: "/sysUsers/del?id=" + id,
         method: "get"
       }).then(result => {
-        Message.success(result.data.data)
-        this.findPage()
+        Message.success(result.data.data);
+        this.findPage();
       });
     }
   },
