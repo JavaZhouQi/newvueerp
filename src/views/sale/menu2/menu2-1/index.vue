@@ -7,6 +7,7 @@
     <el-form
       :model="smlordbillmain"
       size="mini"
+      :rules="rules"
       :label-position="'left'"
       ref="smlordbillmain"
       label-width="100px"
@@ -14,26 +15,21 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="正式客户" prop="name">
+          <el-form-item label="正式客户" prop="fullName">
             <el-input v-model="smlordbillmain.comcustomer.fullName" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="单据日期" prop="name">
-            <el-date-picker
-              v-model="smlordbillmain.billDate"
-              type="datetime"
-              placeholder="选择日期时间"
-              :disabled="isWriter"
-            ></el-date-picker>
+          <el-form-item label="单据日期" prop="billDate">
+            <el-date-picker v-model="smlordbillmain.billDate" value-format="yyyy-MM-dd" @change="changeDate" :disabled="isWriter"  align="right" type="date" placeholder="选择日期"> </el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="送货地址" prop="name">
+          <el-form-item label="送货地址" prop="custAddres">
             <el-col :span="11">
-              <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+              <el-input v-model="smlordbillmain.custAddres" :disabled="isWriter"></el-input>
             </el-col>
             <el-col class="line" :span="2">&nbsp;&nbsp;</el-col>
             <el-col :span="11">
@@ -42,14 +38,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="单据号码" prop="name">
-            <el-input v-model="smlordbillmain.billNo" :disabled="isWriter"></el-input>
+          <el-form-item label="单据号码" prop="billNo">
+            <el-input v-model="smlordbillmain.billNo" :disabled="true"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="有效日期" prop="name">
+          <el-form-item label="有效日期" prop="validDate">
             <el-date-picker
               v-model="smlordbillmain.validDate"
               type="datetime"
@@ -59,14 +55,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="币别" prop="name">
+          <el-form-item label="币别" prop="currID">
             <el-input v-model="smlordbillmain.currID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="单价是否含税" prop="name">
+          <el-form-item label="单价是否含税" prop="priceOfTax">
             <el-select v-model="smlordbillmain.priceOfTax">
               <el-option label="未税" value="0" :disabled="isWriter"></el-option>
               <el-option label="含税" value="1" :disabled="isWriter"></el-option>
@@ -74,7 +70,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="汇率" prop="name">
+          <el-form-item label="汇率" prop="exchrRate">
             <el-input v-model="smlordbillmain.exchrRate" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
@@ -82,26 +78,14 @@
       <div class="details">
         <el-tabs type="card">
           <el-tab-pane label="内容">
-            <vxe-table
-              :data="smlordbillmain.subList"
-              border
-              resizable
-              highlight-hover-row
-              class="vxe-table-element"
-              height="160"
-            >
+            <vxe-table height="160" resizable highlight-hover-row class="vxe-table-element" :data.sync="smlordbillmain.subList" :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}" >
               <vxe-table-column title>
                 <template v-slot="{ row }" style="padding:10px;">
                   <i class="el-icon-remove"></i>
                 </template>
               </vxe-table-column>
               <vxe-table-column field="rowNO" title="栏号" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
-              <vxe-table-column
-                field="prodID"
-                title="物料编号"
-                width="140"
-                :edit-render="{name: 'input'}"
-              ></vxe-table-column>
+              <vxe-table-column field="prodID" title="物料编号" width="140" :edit-render="{name: 'input'}" ></vxe-table-column>
               <vxe-table-column
                 field="prod.name"
                 title="物料名称"
@@ -264,40 +248,63 @@
         <el-col :span="18">&nbsp;</el-col>
       </el-row>
     </el-form>
-    <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
-    </span>-->
   </div>
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import request from "@/api/request";
+import PageHelper from "@/components/PageHelper";
+import { Message } from 'element-ui';
 export default {
-  mode: "history", //去掉路径中的#
   //import引入的组件需要注入到对象中才能使用
   components: {},
   data() {
     //这里存放数据
     return {
-      dialogTableVisible: false, //历史交易查询
       isWriter: false,
       savebtn: true, //是否保存
       smlordbillmain: {
-        comcustomer: {
-          name: ""
-        },
-        hasCheck: 0,
-        tax: "0",
-        subList: [
-          {
-            name: "hahha"
-          }
-        ]
+            flag:"1" ,
+            billNo:"",
+            comcustomer:{
+                name:""
+            },
+            billDate:new Date(),
+            hasCheck:0,
+            tax:"0",
+            subList:[
+                {
+                    
+                }
+               
+            ]
       }
+      ,rules: {
+          name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          region: [
+            { required: true, message: '请选择活动区域', trigger: 'change' }
+          ],
+          date1: [
+            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          ],
+          date2: [
+            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+          ],
+          type: [
+            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+          ],
+          resource: [
+            { required: true, message: '请选择活动资源', trigger: 'change' }
+          ],
+          desc: [
+            { required: true, message: '请填写活动形式', trigger: 'blur' }
+          ]
+        }
     };
   },
   //监听属性 类似于data概念
@@ -310,6 +317,7 @@ export default {
     save() {
       this.isWriter = true;
       this.savebtn = false;
+      console.log(this.smlordbillmain);
     },
     //保存后新增
     saveAddition() {
@@ -322,9 +330,33 @@ export default {
         this.smlordbillmain.hasCheck = 0;
       }
     }
+    ,lishi(){
+      // console.log(this.$router);
+      this.$emit("update:dialogTableVisible",true);
+      // this.dialogTableVisible=true;
+      // this.$router.push({page:"/sale/menu2/menu2-1/lishi"});
+      
+    },
+    
+    query_num(){
+      // var smlordbillmain_ =this.smlordbillmain;
+      request({
+        url:"/smlordbillmain/querynum",
+        method:"post",
+        data:this.smlordbillmain
+      }).then(result=>{
+          this.smlordbillmain.billNo=result.data.data;
+          // alert(this.smlordbillmain.billNo);
+      })
+    },
+    changeDate(){
+       this.query_num();
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
+  created() {
+      this.query_num();
+  },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前

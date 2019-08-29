@@ -34,15 +34,16 @@
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
     <el-dialog title="销售报价单" :visible.sync="addDialog" width="50%" :before-close="handleClose">
-      <router-view></router-view>
+      <router-view :dialogTableVisible.sync="dialogTableVisible" ></router-view>
     </el-dialog>
-    <el-dialog title="历史交易查询" :visible.sync="dialogTableVisible">
+    <el-dialog title="历史交易查询" :visible.sync="dialogTableVisible" >
+      <!-- <router-view  :to='{path:"/sale/menu2/menu2-1/lishi"}'></router-view> -->
       <el-row >
         <el-form size="mini" label-width="40px">
-          <el-col :span="12">
+          <el-col :span="8">
               <el-form-item label="客户"><el-input size="mini"></el-input></el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="10">
              &nbsp;
           </el-col>
           <el-col :span="6">
@@ -51,7 +52,7 @@
           </el-col>
         </el-form>
       </el-row>
-       <vxe-table size="mini"  border resizable highlight-hover-row class="vxe-table-element" height="100"  >
+       <vxe-table size="mini" style="margin-top: 10px;"  :data="listData"  border resizable highlight-hover-row class="vxe-table-element" height="180"  >
         <vxe-table-column title="删除">
           <template v-slot="{ row }" style="padding:10px;">
             <i class="el-icon-remove"
@@ -99,8 +100,8 @@ export default {
       findData: {},  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
-      addDialog: false, // 新增模态框
-      dialogTableVisible:false,//历史交易查询
+      dialogTableVisible: false, //历史交易查询
+      addDialog: false, // 新增模态
       currentPage: 1,   // 当前页
       currentSize: 10,  // 每页条数
       pagenumber: 0,     // 总条数
@@ -116,6 +117,7 @@ export default {
         ]
       }
       ,smlordbillmain:{
+            flag:"1" ,
             comcustomer:{
                 name:""
             },
@@ -128,35 +130,25 @@ export default {
                
             ]
         }
+        ,listData:[]
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    dialogTableVisible:function(){
+      // this.$router.push({path:"/sale/menu2/menu2-1/lishi"});
+    }
+  },
   //方法集合
   methods: {
     add(){
         this.addDialog=true;
         this.$router.push({path:"/sale/menu2/menu2-1/index"});
     },
-    lishi(){
-      this.dialogTableVisible=true;
-    },
-    query_num(flag,date){
-      var smlordbillmain_ =this.smlordbillmain;
-      request({
-        url:"",
-        method:"post",
-        params:{
-          flag:flag,
-          date:date
-        }
-      }).then(response=>{
-          smlordbillmain_.billNo=response.data;
-          alert(smlordbillmain_.billNo);
-      })
-    },
+    
     formatter(row, column) {
       return row.address;
     },
@@ -176,6 +168,12 @@ export default {
           done();
         })
         .catch(_ => {});
+    },
+    //关闭模态框
+    handleClose2(done) {
+     
+          done();
+        
     },
     //分页带条件查询
     findPage() {

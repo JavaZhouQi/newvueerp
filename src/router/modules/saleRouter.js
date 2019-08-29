@@ -51,6 +51,12 @@ const saleRouter = {
                 name: 'saleMenu2-1-1',
                 meta: { title: '销售报价弹出层',permissions: 'saleMenu2-1'  }
               }
+              ,{
+                path: '/sale/menu2/menu2-1/lishi',
+                component: () => import('@/views/sale/menu2/menu2-1/lishi'),
+                name: 'saleMenu2-1-2',
+                meta: { title: '历史交易弹出层',permissions: 'saleMenu2-1'  }
+              }
             ]
           },
           {
