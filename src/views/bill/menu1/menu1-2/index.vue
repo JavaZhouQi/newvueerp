@@ -11,9 +11,39 @@
             </el-col>
         </el-row>
         <el-row>
+           
             <el-col :span="12">
-                <el-form-item label="付款日期"  prop="name"> <el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"> </el-date-picker></el-form-item>
+              <el-form-item label="计算方式一"  prop="name">
+                  <el-col :span="12">
+                      <el-input v-model="sale_quotation.name"></el-input>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-input v-model="sale_quotation.name"></el-input>
+                  </el-col>
+              </el-form-item>
             </el-col>
+             <el-col :span="12">
+                <el-form-item label="单据号码"  prop="name"><el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            
+            <el-col :span="12">
+              <el-form-item label="计算方式二"  prop="name">
+                  <el-col :span="12">
+                      <el-input v-model="sale_quotation.name"></el-input>
+                  </el-col>
+                  <el-col :span="12">
+                      <el-input v-model="sale_quotation.name"></el-input>
+                  </el-col>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="币别"  prop="name"><el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            
             <el-col :span="12">
               <el-form-item label="计算方式三"  prop="name">
                   <el-col :span="12">
@@ -24,77 +54,30 @@
                   </el-col>
               </el-form-item>
             </el-col>
-        </el-row>
-        <el-row>
             <el-col :span="12">
-                <el-form-item label="付款日期"  prop="name"> <el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"> </el-date-picker></el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="计算方式三"  prop="name">
-                  <el-col :span="12">
-                      <el-input v-model="sale_quotation.name"></el-input>
-                  </el-col>
-                  <el-col :span="12">
-                      <el-input v-model="sale_quotation.name"></el-input>
-                  </el-col>
-              </el-form-item>
+                <el-form-item label="汇率"  prop="name"><el-input v-model="sale_quotation.name"></el-input> </el-form-item>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
-                <el-form-item label="付款日期"  prop="name"> <el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"> </el-date-picker></el-form-item>
+                <el-form-item label="折扣率(%)"  prop="name"><el-input v-model="sale_quotation.name"></el-input> </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="计算方式三"  prop="name">
-                  <el-col :span="12">
-                      <el-input v-model="sale_quotation.name"></el-input>
-                  </el-col>
-                  <el-col :span="12">
-                      <el-input v-model="sale_quotation.name"></el-input>
-                  </el-col>
-              </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-                <el-form-item label="单价是否含税"   prop="name"  > 
+                <el-form-item label="应付冲款类型"   prop="name"  > 
                    <el-select v-model="sale_quotation.tax" class="xiala">
-                    <el-option label="未税" value="0" ></el-option>
-                    <el-option label="含税" value="1"></el-option>
+                    <el-option label="预付冲应付" value="0" ></el-option>
+                    <el-option label="预付款" value="1"></el-option>
                    </el-select>
                </el-form-item>
             </el-col>
-            <el-col :span="12">
-                <el-form-item label="发票号码"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
+            
         </el-row>
         <el-row>
             <el-col :span="12">
-               <el-form-item label="采购核对状态"   prop="name" class="xiala"> 
-                   <el-select v-model="sale_quotation.tax" class="xiala">
-                    <el-option label="已核对" value="0" ></el-option>
-                    <el-option label="未核对" value="1"></el-option>
-                   </el-select>
-               </el-form-item>
+                <el-form-item label="终止账月"  prop="name"><el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"></el-date-picker></el-form-item>
             </el-col>
-            <el-col :span="12">
-                <el-form-item label="发票类型"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
+              <el-col :span="12">
                 <el-form-item label="凭证编号"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="币别"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-                <el-form-item label="差价凭证编号"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="汇率"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
             </el-col>
         </el-row>
         <div class="details">
@@ -119,127 +102,86 @@
                         <el-table-column prop="zip" label="分录备注" width="200"></el-table-column>
                     </el-table>
                 </el-tab-pane>
-                <el-tab-pane :key="2"  label="预付" class="tab" >
-                    
+                <el-tab-pane :key="2"  label="取用预付" class="tab" >
+                    <el-table :data="sale_quotation.details" height="150" size="mini" max-height="250" border style="width: 100%">
+                        <el-table-column fixed  prop="date"  width="30">
+                            <el-checkbox v-model="checked" class="checked"></el-checkbox>
+                        </el-table-column>
+                        <el-table-column fixed  prop="date" label="栏号" width="50"></el-table-column>
+                        <el-table-column prop="name" label="预付金额" width="250"></el-table-column>
+                        <el-table-column prop="province" label="来源单号" width="250"></el-table-column>
+                        <el-table-column prop="city" label="摘要" width="450"></el-table-column>
+                    </el-table>
                 </el-tab-pane>
-                 <el-tab-pane :key="3"  label="账款"  class="tab1">
-                    <el-row>
-                       <el-col :span="12">
-                           <el-form-item label="账款归属"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                       </el-col>
-                        <el-form-item label="计算方式一"  prop="name">
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                        </el-form-item>
-                    </el-row>
-                    <el-row >
-                        <el-form-item label="付款条件"  prop="name">
-                            <el-col :span="5">
-                                <el-select v-model="sale_quotation.tax">
-                                    <el-option label="货到" value="0" ></el-option>
-                                    <el-option label="次月" value="1"></el-option>
-                                    <el-option label="月结" value="2"></el-option>
-                                    <el-option label="其他" value="3"></el-option>
-                                </el-select>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                        </el-form-item>
-                        <el-form-item label="计算方式二"  prop="name" >
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                        </el-form-item>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="12">
-                           <el-form-item label="付款日期"  prop="name"> <el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"> </el-date-picker></el-form-item>
-                       </el-col>
-                        <el-form-item label="计算方式三"  prop="name">
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                            <el-col :span="5">
-                                <el-input v-model="sale_quotation.name"></el-input>
-                            </el-col>
-                        </el-form-item>
-                    </el-row>
-                    <el-row>
-                       <el-col :span="12">
-                           <el-form-item label="账款月份"  prop="name"> <el-date-picker class="xiala"  type="datetime" placeholder="选择日期时间"> </el-date-picker></el-form-item>
-                       </el-col>
-                    </el-row>
-                </el-tab-pane>
-                <el-tab-pane :key="4"  label="备注" class="tab" >
-                    222
+                <el-tab-pane :key="3"  label="预付" class="tab" >
+                    <el-table :data="sale_quotation.details" height="150" size="mini" max-height="250" border style="width: 100%">
+                        <el-table-column fixed  prop="date"  width="30">
+                            <el-checkbox v-model="checked" class="checked"></el-checkbox>
+                        </el-table-column>
+                        <el-table-column fixed  prop="date" label="栏号" width="50"></el-table-column>
+                        <el-table-column prop="name" label="预付金额" width="250"></el-table-column>
+                        <el-table-column prop="province" label="来源单号" width="250"></el-table-column>
+                        <el-table-column prop="city" label="摘要" width="450"></el-table-column>
+                    </el-table>
                 </el-tab-pane>
                 <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="采购人员"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="所属部门"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="所属项目"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                            &nbsp;
-                        </el-col>
-                        <el-col :span="4">
-                            <el-dropdown size="mini" split-button type="primary">查询
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>单据状况查询</el-dropdown-item>
-                                    <el-dropdown-item>历史交易查询</el-dropdown-item>
-                                    <el-dropdown-item>成本差额查询</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="4">
-                           <el-dropdown size="mini" split-button type="primary">转单
-                               <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>采购订单转入</el-dropdown-item>
-                                    <el-dropdown-item>转采购入库</el-dropdown-item>
-                                </el-dropdown-menu>
-                           </el-dropdown>
-                        </el-col>
-                        <el-col :span="4">
-                            <el-dropdown size="mini" split-button type="primary">查询
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>单据状况查询</el-dropdown-item>
-                                    <el-dropdown-item>历史交易查询</el-dropdown-item>
-                                    <el-dropdown-item>成本差额查询</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                      </el-col>
-                    </el-row>
-            </el-tabs>
-        </div>
-        
+                    <el-col :span="12">
+                    <el-form-item label="采购人员"   prop="name"> 
+                        <el-input v-model="sale_quotation.name"></el-input>
+                    </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                    <el-form-item label="所属部门"   prop="name"> 
+                        <el-input v-model="sale_quotation.name"></el-input>
+                    </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="所属项目"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        &nbsp;
+                    </el-col>
+                    <el-col :span="4">
+                        <el-dropdown size="mini" split-button type="primary">查询
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>单据状况查询</el-dropdown-item>
+                                <el-dropdown-item>历史交易查询</el-dropdown-item>
+                                <el-dropdown-item>成本差额查询</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-dropdown size="mini" split-button type="primary">转单
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>采购订单转入</el-dropdown-item>
+                                <el-dropdown-item>转采购入库</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-dropdown size="mini" split-button type="primary">查询
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>单据状况查询</el-dropdown-item>
+                                <el-dropdown-item>历史交易查询</el-dropdown-item>
+                                <el-dropdown-item>成本差额查询</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-col>
+                </el-row>
+        </el-tabs>
+    </div>
 </el-form>
 </div>
 </template>
@@ -295,9 +237,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
 <style  scoped>
-     *{
-        background-color: #D7E7FF;
-    }
     .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
         margin-top: 5px;
         margin-bottom: 0px;
