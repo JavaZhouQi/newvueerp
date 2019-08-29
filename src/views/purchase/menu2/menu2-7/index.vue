@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 发票页面  -->
 <template>
   <div class>
     <div style="height:60px;">
@@ -6,8 +6,8 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="供应商名称" value="memo"></el-option>
-            <el-option label="单据类型" value="departID"></el-option>
+            <el-option label="供应商名称" value="0"></el-option>
+            <el-option label="单据类型" value=" "></el-option>
             <el-option label="单据日期" value="departName"></el-option>
             <el-option label="是否审核" value="memo"></el-option>
           </el-select>
@@ -359,7 +359,7 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/comdepartment/?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
