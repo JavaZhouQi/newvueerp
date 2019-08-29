@@ -40,7 +40,7 @@
               <el-input v-model="entity.personID" :disabled="updatebool"></el-input>
             </el-form-item>
             <el-form-item label="所属部门">
-              <el-select v-model="entity.departID" placeholder="请选择" style="width:185px;">
+              <el-select v-model="entity.departID" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
                 <el-option v-for="entity in comdepartmentList" :label="entity.departName" :value="entity.departID" :key="entity.departID"></el-option>
               </el-select>
             </el-form-item>
@@ -48,7 +48,7 @@
               <el-input v-model="entity.personName"></el-input>
             </el-form-item>
             <el-form-item label="性别">
-              <el-select v-model="entity.sexDistinction" placeholder="请选择" style="width:185px;">
+              <el-select v-model="entity.sexDistinction" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
                 <el-option  label="男" value="1"></el-option>
                 <el-option  label="女" value="2"></el-option>
               </el-select>
@@ -68,14 +68,14 @@
                   <el-date-picker
                     v-model="entity.birthday"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="政治面貌">
                   <el-input v-model="entity.politicCountenance"></el-input>
                 </el-form-item>
                 <el-form-item label="婚姻状况">
-                  <el-select v-model="entity.maritalStatus" placeholder="请选择" style="width:185px;">
+                  <el-select v-model="entity.maritalStatus" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
                     <el-option label="未婚" value="1"></el-option>
                     <el-option label="已婚" value="2"></el-option>
                   </el-select>
@@ -84,11 +84,11 @@
                   <el-date-picker
                     v-model="entity.onJobDate"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="血型">
-                  <el-select v-model="entity.bloodType" placeholder="请选择" style="width:185px;">
+                  <el-select v-model="entity.bloodType" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
                     <el-option label="A" value="A"></el-option>
                     <el-option label="B" value="B"></el-option>
                     <el-option label="AB" value="AB"></el-option>
@@ -101,7 +101,7 @@
                   <el-date-picker
                     v-model="entity.leaveJobDate"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="籍贯">
@@ -133,7 +133,7 @@
             <el-tab-pane label="其他资料">
               <el-form label-position="left" label-width="100px" :inline="true" size="mini">
                 <el-form-item label="最高学历">
-                  <el-select v-model="entity.humschoolId" placeholder="请选择" style="width:185px;">
+                  <el-select v-model="entity.humschoolId" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
                     <el-option v-for="entity in humschoolingList" :label="entity.schoolingName" :value="entity.schoolingID" :key="entity.schoolingID"></el-option>
                   </el-select>
                 </el-form-item>
@@ -141,7 +141,7 @@
                   <el-date-picker
                     v-model="entity.maturityDate"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="学位">
@@ -151,7 +151,7 @@
                   <el-date-picker
                     v-model="entity.dateofentry"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="毕业学校">
@@ -167,7 +167,7 @@
                   <el-date-picker
                     v-model="entity.startingdateofcontract"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="外语水平">
@@ -177,14 +177,14 @@
                   <el-date-picker
                     v-model="entity.terminationDateofContract"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="体检日期">
                   <el-date-picker
                     v-model="entity.dateofphysicalexamination"
                     type="date"
-                    placeholder="选择日期" style="width:185px;">
+                    placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd">
                   </el-date-picker>
                 </el-form-item>
               </el-form>

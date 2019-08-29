@@ -70,7 +70,7 @@ const stockRouter = {
             path: '/stock/menu3/menu3-2',
             component: () => import('@/views/stock/menu3/menu3-2'),
             name: 'stockMenu3-2',
-            meta: { title: '打印盘点单',permissions: 'stockMenu3-1'  }
+            meta: { title: '打印盘点单',permissions: 'stockMenu3-2'  }
           },
           {
             path: '/stock/menu3/menu3-3',

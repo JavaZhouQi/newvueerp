@@ -95,21 +95,21 @@ const saleRouter = {
       {
         path: '/sale/menu4',
         component: () => import('@/views/sale/menu4/index'),
-        name: 'saleMenu3',
-        meta: { title: '报表',permissions: '这里是权限' },
+        name: 'saleMenu4',
+        meta: { title: '报表',permissions: 'saleMenu4' },
         redirect: '/sale/menu4/menu4-1',
         children: [
           {
             path: '/sale/menu4/menu4-1',
             component: () => import('@/views/sale/menu4/menu4-1'),
             name: 'saleMenu4-1',
-            meta: { title: '销售日报表' }
+            meta: { title: '销售日报表',permissions: 'saleMenu4-1'  }
           }
           ,{
             path: '/sale/menu4/menu4-2',
             component: () => import('@/views/sale/menu4/menu4-2'),
             name: 'saleMenu4-2',
-            meta: { title: '销售分析表' }
+            meta: { title: '销售分析表',permissions: 'saleMenu4-2'  }
           }
         ]
       }
