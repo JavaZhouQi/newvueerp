@@ -52,14 +52,7 @@
             <el-input v-model="entity.password" type="password"></el-input>
           </el-form-item>
           <el-form-item label="用户角色" prop="role">
-            <el-select v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+           
           </el-form-item>
         </el-form>
       </span>
@@ -107,28 +100,6 @@ export default {
         ],
         role: [{ required: true, message: "角色不能为空", trigger: "blur" }]
       },
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
       value: ""
     };
   },
