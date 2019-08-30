@@ -15,9 +15,10 @@
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
         <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button type="primaty" @click="adds">批量新增</el-button>
       </div>
     </div>
-    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
+    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;" border>
       <el-table-column prop="id" label="权限编号" sortable width="180" column-key="date"></el-table-column>
       <el-table-column prop="description" label="权限名称" width="180"></el-table-column>
       <el-table-column prop="permission" label="英文名称" width="280"></el-table-column>
@@ -33,10 +34,13 @@
 
     <el-dialog title="编辑权限" :visible.sync="addDialog" width="30%" :before-close="handleClose">
       <span>
-        <el-form :model="entity" label-position="left" label-width="80px" status-icon :rules="rules">
-          <el-form-item label="权限编号" prop="id">
-            <el-input v-model="entity.departID" :disabled="updatebool"></el-input>
-          </el-form-item>
+        <el-form
+          :model="entity"
+          label-position="left"
+          label-width="80px"
+          status-icon
+          :rules="rules"
+        >
           <el-form-item label="权限名称" prop="description">
             <el-input v-model="entity.description"></el-input>
           </el-form-item>
@@ -62,7 +66,8 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
+import { constants } from 'fs';
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -72,24 +77,23 @@ export default {
   data() {
     //这里存放数据
     return {
-      entity: {},   // 新增and修改的对象
-      tableData: [],  // 显示数据
-      findData: {},  // 查询数据
-      select: "",   // 查询条件
+      entity: {}, // 新增and修改的对象
+      tableData: [], // 显示数据
+      findData: {}, // 查询数据
+      select: "", // 查询条件
       selectValue: "",
       addDialog: false, // 新增模态框
-      currentPage: 1,   // 当前页
-      currentSize: 10,  // 每页条数
-      pagenumber: 0,     // 总条数
-      updatebool:false,
+      currentPage: 1, // 当前页
+      currentSize: 10, // 每页条数
+      pagenumber: 0, // 总条数
+      updatebool: false,
       rules: {
-        id: [
-           { required: true, message: '编号不能为空', trigger: 'blur' },
-        ],
+        id: [{ required: true, message: "编号不能为空", trigger: "blur" }],
         permission: [
-           { required: true, message: '名称不能为空', trigger: 'blur' },
+          { required: true, message: "名称不能为空", trigger: "blur" }
         ]
-      }
+      },
+      entityList:[]
     };
   },
   //监听属性 类似于data概念
@@ -106,8 +110,8 @@ export default {
     },
     // 分页组件触发的事件
     jumpPage(data) {
-      this.currentPage = data.currentPage;  //当前页
-      this.currentSize = data.currentSize;  //每页显示条数
+      this.currentPage = data.currentPage; //当前页
+      this.currentSize = data.currentSize; //每页显示条数
       this.findPage();
     },
     //关闭模态框
@@ -120,14 +124,14 @@ export default {
     },
     //分页带条件查询
     findPage() {
-      if(this.select != -1){
-        this.findData[this.select] = this.selectValue
-      }else{
-        this.findData = {}
+      if (this.select != -1) {
+        this.findData[this.select] = this.selectValue;
+      } else {
+        this.findData = {};
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/sysPermissions/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
@@ -141,7 +145,7 @@ export default {
     // 单个查询
     findOne() {
       request({
-        url: "/permission/findOne",
+        url: "/sysPermissions/findOne",
         method: "post"
       }).then(result => {
         console.log(result);
@@ -149,60 +153,90 @@ export default {
     },
     // 保存
     save() {
-      if(!this.updatebool){
+      if (!this.updatebool) {
         // 新增
         request({
-          url: "/permission/add",
+          url: "/sysPermissions/add",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.entity = {};
         });
-      }else{
+      } else {
         // 修改
         request({
-          url: "/permission/update",
+          url: "/sysPermissions/update",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.updatebool = false;
+          this.entity = {};
         });
       }
-      
     },
     //保存后新增
-    saveAddition(){
-      var number = this.entity.departID
+    saveAddition() {
+      var number = this.entity.departID;
     },
     // 修改
-    update(entity){
-      this.updatebool = true
-      this.addDialog = true
-      this.entity = entity
+    update(entity) {
+      this.updatebool = true;
+      this.addDialog = true;
+      this.entity = entity;
     },
     // 删除
-    del(id){
+    del(id) {
       request({
-        url: "/permission/del?id="+id,
+        url: "/sysPermissions/del?id=" + id,
         method: "get"
       }).then(result => {
-        Message.success(result.data.data)
-        this.findPage()
+        Message.success(result.data.data);
+        this.findPage();
       });
+    },
+    // 批量新增
+    adds(){
+       // 新增
+        request({
+          url: "/sysPermissions/adds",
+          method: "post",
+          data: this.entityList
+        }).then(result => {
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.entity = {};
+        });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.findPage();
+    //  获取路由
+    this.$router.options.routes.forEach(element => {
+      if (element.meta) {
+        this.entityList.push({path:element.path,description:element.meta.title,permission:element.meta.permissions})
+        element.children.forEach(children =>{
+          if (children.meta) {
+            this.entityList.push({path:children.path,description:children.meta.title,permission:children.meta.permissions})
+            children.children.forEach(childrens =>{
+              if (childrens.meta) {
+                this.entityList.push({path:childrens.path,description:childrens.meta.title,permission:childrens.meta.permissions})
+              }
+            });
+          }
+        });
+      }
+    });
   }
 };
 </script>

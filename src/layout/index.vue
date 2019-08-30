@@ -5,7 +5,7 @@
         class="app-side app-side-left"
         :class="isCollapse ? 'app-side-collapsed' : 'app-side-expanded'"
       >
-        <div class="app-side-logo">
+        <div class="app-side-logo" style="height:50px;">
           <img src="@/assets/logo.png" :width="isCollapse ? '60' : '60'" height="60" />
         </div>
         <div>
@@ -13,7 +13,6 @@
           <el-menu
             default-active="1-4-1"
             class="el-menu-vertical-demo"
-            @open="handleOpen"
             :collapse="isCollapse"
             :router="router"
             :unique-opened="router"
@@ -63,7 +62,6 @@
             default-active="1"
             class="el-menu-demo tab-page"
             mode="horizontal"
-            @select="handleSelect"
             active-text-color="#409EFF"
           >
             <el-menu-item index="1">处理中心</el-menu-item>
@@ -97,14 +95,15 @@
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          
         </el-header>
         <el-main class="app-body" style="padding: 0px;background-color:#f4f4f5">
           <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+            <el-breadcrumb-item
+              v-for="entity,index in levelList"
+              :key="index"
+              :to="entity.path"
+            >{{entity.meta.title}}</el-breadcrumb-item>
           </el-breadcrumb>
           <router-view />
         </el-main>
@@ -114,21 +113,28 @@
 </template>
 
 <script>
-import breadcrumb from "@/components/breadcrumb.vue";
 export default {
   name: "Container",
-  components: {
-    breadcrumb
-  },
+  components: {},
   data() {
     return {
       username: "",
       isCollapse: false,
       router: true,
-      menuList: []
+      menuList: [],
+      levelList: []
     };
   },
+  watch: {
+    $route(to, from) {
+      this.getBreadcrumb();
+    }
+  },
   methods: {
+    getBreadcrumb() {
+      let matched = this.$route.matched.filter(item => item.name);
+      this.levelList = matched;
+    },
     toggleSideBar() {
       this.isCollapse = !this.isCollapse;
     },
@@ -140,15 +146,6 @@ export default {
           this.$router.push("/login");
         })
         .catch(() => {});
-    },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
     }
   },
   mounted: function() {
@@ -170,7 +167,7 @@ export default {
 </script>
 
 <style>
-.el-breadcrumb{
+.el-breadcrumb {
   background-color: white;
   padding: 10px;
 }
