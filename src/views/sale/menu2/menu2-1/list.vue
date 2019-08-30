@@ -6,10 +6,10 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="客户名称" value="memo"></el-option>
-            <el-option label="订单单据" value="departID"></el-option>
-            <el-option label="单据日期" value="departName"></el-option>
-            <el-option label="是否审核" value="memo"></el-option>
+            <el-option label="客户名称" value="customerID"></el-option>
+            <el-option label="订单单据" value="billNo"></el-option>
+            <el-option label="单据日期" value="billDate"></el-option>
+            <el-option label="是否审核" value="auditStatus"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
@@ -19,11 +19,11 @@
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="departID"  width="50"  type="index"></el-table-column>
-      <el-table-column prop="departID" label="订单单据" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column   width="50"  type="index"></el-table-column>
+      <el-table-column prop="billNo" label="订单单据" sortable width="180" column-key="date"></el-table-column>
       <el-table-column prop="departName" label="客户名称" width="180"></el-table-column>
-      <el-table-column prop="engName" label="订单日期" width="280"></el-table-column>
-      <el-table-column prop="memo" label="审核状态" width="280"></el-table-column>
+      <el-table-column prop="billDate" label="订单日期" width="280"></el-table-column>
+      <el-table-column prop="auditStatus" label="审核状态" width="280"></el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
@@ -77,6 +77,7 @@
         <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
       </vxe-table>
     </el-dialog>
+    
   </div>
 </template>
 
@@ -123,6 +124,7 @@ export default {
             },
             hasCheck:0,
             tax:"0",
+            auditStatus:0,
             subList:[
                 {
                     name:"hahha"
@@ -138,8 +140,8 @@ export default {
   },
   //监控data中的数据变化
   watch: {
-    dialogTableVisible:function(){
-      // this.$router.push({path:"/sale/menu2/menu2-1/lishi"});
+    addDialog:function(){
+      this.findPage();
     }
   },
   //方法集合
@@ -184,13 +186,14 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/smlordbillmain/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
         method: "post",
         data: this.findData
       }).then(result => {
+        console.log(result.data);
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
       });
@@ -244,7 +247,7 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // this.findPage();
+    this.findPage();
   }
 };
 </script>

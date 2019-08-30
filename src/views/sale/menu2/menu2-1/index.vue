@@ -11,12 +11,12 @@
       :label-position="'left'"
       ref="smlordbillmain"
       label-width="100px"
-      class="demo-ruleForm"
+      class="demo-smlordbillmain"
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="正式客户" prop="fullName">
-            <el-input v-model="smlordbillmain.comcustomer.fullName" :disabled="isWriter"></el-input>
+          <el-form-item label="正式客户" prop="name">
+            <el-input v-model="smlordbillmain.comcustomer.fullName" @dblclick.native="storageDetail"  :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -48,8 +48,9 @@
           <el-form-item label="有效日期" prop="validDate">
             <el-date-picker
               v-model="smlordbillmain.validDate"
-              type="datetime"
-              placeholder="选择日期时间"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
               :disabled="isWriter"
             ></el-date-picker>
           </el-form-item>
@@ -248,6 +249,24 @@
         <el-col :span="18">&nbsp;</el-col>
       </el-row>
     </el-form>
+
+    <el-dialog title="单选--客户主文件设定" :visible.sync="dialogcustomer" style="z-index='2004'">
+      <el-row>
+      <el-col :span="10">
+          <el-select v-model="formData.select" slot="prepend" placeholder="请选择">
+            <el-option label="查询全部" value="-1"></el-option>
+            <el-option label="客户编号" value="customerID"></el-option>
+            <el-option label="客户名称" value="fullName"></el-option>
+          </el-select>
+      </el-col>
+      <el-col :span="10"><el-input placeholder="请输入内容" v-model="formData.selectValue" class="input-with-select"></el-input></el-col>
+      <el-col :span="4"><el-button slot="append" icon="el-icon-search" @click="findPage">取回</el-button></el-col>
+    </el-row>
+    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
+      <el-table-column prop="departID"  width="50" label="客户编号"  type="index"></el-table-column>
+      <el-table-column prop="departID" label="客户名称" sortable width="180" column-key="date"></el-table-column>
+    </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -265,43 +284,37 @@ export default {
     return {
       isWriter: false,
       savebtn: true, //是否保存
+      tableData:[],
+      formData:{},
+      dialogcustomer:false,
       smlordbillmain: {
             flag:"1" ,
             billNo:"",
+            customerID:"1",
             comcustomer:{
-                name:""
+                fullName:""
             },
+            currID:"RMB",
             billDate:new Date(),
             hasCheck:0,
             tax:"0",
             subList:[
                 {
-                    
+                  rowNO:"1",
+                  prodID:"",
+                  Comproduct:{
+                    ProdName:""
+                  },
+                  quantity:"",
+
+
                 }
                
             ]
       }
       ,rules: {
-          fullName: [
-            { required: true, message: '请选择客户', trigger: 'blur' }
-          ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
-          ],
-          date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
-          ],
-          desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
+          name: [
+            { required: true, message: '双击选择客户', trigger: 'blur' }
           ]
         }
     };
@@ -312,11 +325,49 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    //双击弹出客户
+    storageDetail(){
+      this.dialogcustomer=true;
+    },
+     //查询所有的客户
+    findPage(){
+      request({
+        url:
+          "/comcustomer/findPage?current=" +
+          this.currentPage +
+          "&size=" +
+          this.currentSize,
+        method: "post",
+        data: this.findData
+      }).then(result => {
+        this.tableData = result.data.data.rows; //查询的数据
+        this.pagenumber = result.data.data.total; // 总条数
+      });
+    },
+    //取回客户对象
+    findPage(){
+
+    },
+
     // 保存
     save() {
-      this.isWriter = true;
-      this.savebtn = false;
-      console.log(this.smlordbillmain);
+      // console.log(this.smlordbillmain);
+
+      request({
+        url:"/smlordbillmain/add",
+        method:"post",
+        data:this.smlordbillmain
+      }).then(result=>{
+        console.log(result.data.data);
+        if(result.data.data){
+          Message.success("保存成功");
+          this.isWriter = true;
+          this.savebtn = false;
+        }else{
+          Message.success("保存失败");
+        }
+        // Message.success(result.data.data)
+      })
     },
     //保存后新增
     saveAddition() {
@@ -384,7 +435,7 @@ export default {
 .el-form-item--mini.el-form-item,
 .el-form-item--small.el-form-item {
   margin-top: 5px;
-  margin-bottom: 0px;
+  margin-bottom: 8px;
   margin-right: 20px;
   margin-left: 10px;
 }
