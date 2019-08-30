@@ -6,14 +6,17 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-             <el-option label="角色ID" value="id"></el-option>
+            <el-option label="角色ID" value="id"></el-option>
             <el-option label="角色名称" value="role"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button
+          type="primary"
+          @click="addDialog = true;updatebool = false;entity = {};value = []"
+        >新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;" border>
@@ -22,9 +25,7 @@
       <el-table-column prop="description" label="角色描述" width="310"></el-table-column>
       <el-table-column label="角色权限" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.permissionsList">
-            {{entity.description}}
-          </span>
+          <span v-for="entity in scope.row.permissionsList">{{entity.description}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="400">
@@ -36,24 +37,32 @@
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
-    <el-dialog title="编辑角色" :visible.sync="addDialog" width="30%" :before-close="handleClose">
+    <el-dialog title="编辑角色" :visible.sync="addDialog" width="45%" :before-close="handleClose">
       <span>
-        <el-form :model="entity" label-position="left" label-width="80px" status-icon :rules="rules">
+        <el-form
+          :model="entity"
+          label-position="left"
+          label-width="80px"
+          status-icon
+          :rules="rules"
+        >
           <el-form-item label="角色名称" prop="role">
             <el-input v-model="entity.role"></el-input>
           </el-form-item>
           <el-form-item label="角色描述">
             <el-input v-model="entity.description"></el-input>
           </el-form-item>
-               <el-form-item label="角色权限" prop="permission">
-           <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+          <el-form-item label="角色权限">
+            <el-transfer
+              v-model="value"
+              filterable
+              :filter-method="filterMethod"
+              :props="{
+                key: 'id',
+                label: 'description'
+              }"
+              :data="permissionList"
+            ></el-transfer>
           </el-form-item>
         </el-form>
       </span>
@@ -71,7 +80,8 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
+import { constants } from 'fs';
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -81,42 +91,22 @@ export default {
   data() {
     //这里存放数据
     return {
-      entity: {},   // 新增and修改的对象
-      tableData: [],  // 显示数据
-      findData: {},  // 查询数据
-      select: "",   // 查询条件
+      entity: {}, // 新增and修改的对象
+      tableData: [], // 显示数据
+      findData: {}, // 查询数据
+      select: "", // 查询条件
       selectValue: "",
       addDialog: false, // 新增模态框
-      currentPage: 1,   // 当前页
-      currentSize: 10,  // 每页条数
-      pagenumber: 0,     // 总条数
-      updatebool:false,
+      currentPage: 1, // 当前页
+      currentSize: 10, // 每页条数
+      pagenumber: 0, // 总条数
+      updatebool: false,
       rules: {
-        id: [
-           { required: true, message: '编号不能为空', trigger: 'blur' },
-        ],
-        role: [
-           { required: true, message: '名称不能为空', trigger: 'blur' }, 
-        ]
+        id: [{ required: true, message: "编号不能为空", trigger: "blur" }],
+        role: [{ required: true, message: "名称不能为空", trigger: "blur" }]
       },
-         options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-         value: ''
-    
+      value: [],
+      permissionList: []
     };
   },
   //监听属性 类似于data概念
@@ -125,6 +115,9 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    filterMethod(query, item){
+      return item.description.indexOf(query)> -1;
+    },
     formatter(row, column) {
       return row.address;
     },
@@ -133,8 +126,8 @@ export default {
     },
     // 分页组件触发的事件
     jumpPage(data) {
-      this.currentPage = data.currentPage;  //当前页
-      this.currentSize = data.currentSize;  //每页显示条数
+      this.currentPage = data.currentPage; //当前页
+      this.currentSize = data.currentSize; //每页显示条数
       this.findPage();
     },
     //关闭模态框
@@ -147,10 +140,10 @@ export default {
     },
     //分页带条件查询
     findPage() {
-      if(this.select != -1){
-        this.findData[this.select] = this.selectValue
-      }else{
-        this.findData = {}
+      if (this.select != -1) {
+        this.findData[this.select] = this.selectValue;
+      } else {
+        this.findData = {};
       }
       request({
         url:
@@ -168,68 +161,114 @@ export default {
     // 单个查询
     findOne() {
       request({
-        url: "/sysRoles/findOne",
-        method: "post"
+        url: "/sysPermissions/findAll",
+        method: "get"
       }).then(result => {
-        console.log(result);
+        console.log(result.data.data);
       });
     },
     // 保存
     save() {
-      if(!this.updatebool){
+      if (!this.updatebool) {
         // 新增
         request({
           url: "/sysRoles/add",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.entity = {};
         });
-      }else{
+      } else {
         // 修改
         request({
           url: "/sysRoles/update",
           method: "post",
           data: this.entity
         }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
+          Message.success(result.data.data);
+          //关闭模态框
+          this.addDialog = false;
+          this.findPage();
+          this.updatebool = false;
+          this.entity = {};
         });
       }
-      
     },
     //保存后新增
-    saveAddition(){
-      var number = this.entity.departID
+    saveAddition() {
+      var number = this.entity.departID;
     },
     // 修改
-    update(entity){
-      this.updatebool = true
-      this.addDialog = true
-      this.entity = entity
+    update(entity) {
+      this.updatebool = true;
+      this.addDialog = true;
+      this.entity = entity;
+      this.value = [];
+      this.entity.permissionsList.forEach(item => {
+        this.value.push(item.id);
+      });
     },
     // 删除
-    del(id){
+    del(id) {
       request({
-        url: "/sysRoles/del?id="+id,
+        url: "/sysRoles/del?id=" + id,
         method: "get"
       }).then(result => {
-        Message.success(result.data.data)
-        this.findPage()
+        Message.success(result.data.data);
+        this.findPage();
+      });
+    },
+    // 查询所有权限
+    findPermissionsList() {
+      request({
+        url: "/sysPermissions/findAll",
+        method: "get"
+      }).then(result => {
+        this.permissionList = result.data.data;
       });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
+    this.findPermissionsList();
     this.findPage();
+  //   //  获取路由
+  //   this.$router.options.routes.forEach(element => {
+  //     if (element.meta) {
+  //       // 第一层
+  //       let children1 = {
+  //         id: element.meta.permissions,
+  //         label: element.meta.title,
+  //         children: []
+  //       };
+  //       element.children.forEach(children => {
+  //         if (children.meta) {
+  //           // 第二层
+  //           let children2 = {
+  //             id: children.meta.permissions,
+  //             label: children.meta.title,
+  //             children: []
+  //           };
+  //           children.children.forEach(childrens => {
+  //             if (childrens.meta) {
+  //               // 第三层
+  //               children2.children.push({
+  //                 id: childrens.meta.permissions,
+  //                 label: childrens.meta.title
+  //               });
+  //             }
+  //           });
+  //           children1.children.push(children2);
+  //         }
+  //       });
+  //       this.permissionList.push(children1);
+  //     }
+  //     console.log(this.permissionList);
+  //   });
   }
 };
 </script>
