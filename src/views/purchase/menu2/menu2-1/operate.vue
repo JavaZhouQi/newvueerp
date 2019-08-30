@@ -1,19 +1,19 @@
 <template>
 <div class='div'>
-  <div id="fht" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
+  <div id="fht"  v-if="he" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>请购类型：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.billStyleName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>单据日期：</span></el-col>
-    <el-col :span="8"><el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;"></el-date-picker></el-col>
+    <el-col :span="8"><el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;" v-model="entity.billDate" @change="bNo"></el-date-picker></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>单况：</span></el-col>
     <el-col :span="8">
-      <el-select v-model="value" placeholder="请选择" size="mini"  style="width: 100%;">
+      <el-select placeholder="未结案" size="mini"  style="width: 100%;" v-model="entity.billStatus">
               <el-option
-                v-for="item in options"
+                v-for="item in billStatus"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -21,123 +21,153 @@
       </el-select>
     </el-col>
     <el-col :span="3" :offset="1"><span>单据号码：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.billNO"></el-input></el-col>
   </el-row>
 
   <el-tabs type="border-card" style="width: 95%;margin-top: 20px;box-shadow: 0 0px 0px rgba(0,0,0,0);">
     <el-tab-pane label="内容">
       <div style="height:210px; width: 105%;">
         <template>
-          <el-table
-            :data="tableData"
+          <vxe-table
+            :data.sync="entity.yxrequisitionsdetails"
             :height="tableHeight"
             border
+            show-footer
+            show-overflow
+            ref="xTable"
+            :footer-method="footerMethod"
+            :footer-cell-class-name="footerCellClassName"
             height="230"
-            :summary-method="getSummaries"
-            show-summary
-            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable">
-        <el-table-column label="">
-            <el-table-column
-              prop="id"
-              label="（栏号）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="物料编号"
+            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable"
+            :edit-config="{trigger: 'click', mode: 'cell'}"
+            @edit-actived="editActivedEvent"
+            @edit-closed="editClosedEvent">
+        <vxe-table-column title="">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（栏号）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodID"
+              title="物料编号"
               width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount1"
-              label="（物料名称）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount2"
-              label="（规格型号）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（单位名称）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="数量"
-              width="50">
-            </el-table-column>
-        </el-table-column>
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodName"
+              title="（物料名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodSize"
+              title="（规格型号）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="sUnit"
+              title="（单位名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="sQuantity"
+              title="数量"
+              width="65">
+            </vxe-table-column>
+        </vxe-table-column>
 
-        <el-table-column label="标准进价信息">
-            <el-table-column
-              prop="amount3"
-              label="（币别）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（标准进价）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（标准进价金额）"
+        <vxe-table-column title="标准进价信息">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="curr"
+              title="（币别）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="stdPrice"
+              title="（标准进价）"
+              width="115">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="amount"
+              title="（标准进价金额）"
+              width="135">
+            </vxe-table-column>
+        </vxe-table-column>
+
+        <vxe-table-column title="最后一次采购信息">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="lastestCurr"
+              title="（币别）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="lastestPrice"
+              title="（单价）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="lastestAmount"
+              title="（进价金额）"
+              width="115">
+            </vxe-table-column>
+        </vxe-table-column>
+
+        <vxe-table-column title="">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="preInDate"
+              title="需求日期"
               width="120">
-            </el-table-column>
-        </el-table-column>
-
-        <el-table-column label="最后一次采购信息">
-            <el-table-column
-              prop="amount3"
-              label="（币别）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（单价）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（进价金额）"
-              width="100">
-            </el-table-column>
-        </el-table-column>
-
-        <el-table-column label="">
-            <el-table-column
-              prop="amount3"
-              label="需求日期"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（建议采购日期）"
-              width="120">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（未采购量）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="分录备注"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（来源单别）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（来源单号）"
-              width="100">
-            </el-table-column>
-        </el-table-column>
-          </el-table>
+              <template v-slot:edit="{ row }">
+                <input type="date" v-model="row.amount3" class="custom-input" style="width:95px;">
+              </template>
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="suggestPurDate"
+              title="（建议采购日期）"
+              width="140">
+              <template v-slot:edit="{ row }">
+                <input type="date" v-model="row.amount3" class="custom-input" style="width:105px;">
+              </template>
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="qtyRemain"
+              title="（未采购量）"
+              width="115">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="itemRemark"
+              title="分录备注"
+              width="115">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="fromNO"
+              title="（来源单别）"
+              width="115">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="tranType"
+              title="（来源单号）"
+              width="115">
+            </vxe-table-column>
+        </vxe-table-column>
+          </vxe-table>
         </template>
       </div>
     </el-tab-pane>
@@ -145,7 +175,7 @@
       <div style="height:150px;">
         <el-row :gutter="20" class="bj">
           <el-col :span="4"><span>请购类型：</span></el-col>
-          <el-col :span="7"><el-input size="mini"></el-input></el-col>
+          <el-col :span="7"><el-input size="mini" v-model="entity.salesName"></el-input></el-col>
           <el-col :span="4" :offset="2"><span>单据日期：</span></el-col>
           <el-col :span="7"><el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;"></el-date-picker></el-col>
         </el-row>
@@ -162,7 +192,7 @@
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4}"
               placeholder="请输入内容"
-              v-model="textarea2">
+              v-model="entity.remark">
             </el-input>
           </el-col>
         </el-row>
@@ -172,16 +202,16 @@
 
   <el-row :gutter="20" class="bj" style="margin-top: 30px;">
     <el-col :span="3"><span>请购人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.salesName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>制单人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.maker"></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>请购部门：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.departName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>复核人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.permitter"></el-input></el-col>
   </el-row>
 
   <el-dropdown trigger="click" style="margin-top: 20px;">
@@ -203,7 +233,9 @@
       <el-dropdown-item>单况状态切换</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
-        
+
+  <el-link :underline="false" style="margin-left:445px;" type="primary" @click="shenghe">审核</el-link>
+  <el-button style="margin-left:30px;" size="mini" @click="addRD">保存</el-button>
 </div>
 </template>
 
@@ -219,37 +251,10 @@ components: {},
 data() {
 //这里存放数据
 return {
-    tableData: [{
-          id: '1',
-          name: '王小虎',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10
-        }, {
-          id: '2',
-          name: '王小虎',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        }, {
-          id: '3',
-          name: '王小虎',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        }, {
-          id: '4',
-          name: '王小虎',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17
-        }, {
-          id: '5',
-          name: '王小虎',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15
-        }]
+    he:false,
+    
+    billStatus:[{"value":"1","label":"未结案"},{"value":"2","label":"已结案"},{"value":"3","label":"无效"}],
+    entity:{yxrequisitionsdetails :[{}]}
 };
 },
 //监听属性 类似于data概念
@@ -258,35 +263,74 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-      getSummaries(param) {
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计:';
-            return;
+      footerMethod ({ columns, data }) {
+        return [
+          columns.map((column, columnIndex) => {
+            if (columnIndex === 0) {
+              return '合计：'
+            }
+            if (['age'].includes(column.property)) {
+              return XEUtils.sum(data, column.property)
+            }
+            return null
+          })
+        ]
+      },
+      insertEvent () {
+        let record = {
+          name: 'New name'
+        }
+        this.$refs.xTable.insert(record).then(({ row }) => this.$refs.xTable.setActiveCell(row, 'age'))
+      },
+      getInsertEvent () {
+        let insertRecords = this.$refs.xTable.getInsertRecords()
+        this.$XModal.alert(insertRecords.length)
+      },
+      editActivedEvent ({ row, column }, event) {
+        console.log(`打开 ${column.title} 列编辑`)
+      },
+      editClosedEvent ({ row, column }, event) {
+        console.log(`关闭 ${column.title} 列编辑`)
+      },
+      shenghe(){
+        if(this.he==false){
+            this.he=true;
+        }else{
+            this.he=false;
+        }
+      },
+      bNo(){
+        function checkTime(i){ if(i<10){ i='0'+i } return i }
+        var time=this.entity.billDate;
+        var date;
+        date= new Date(time);
+        var dateTime = date.getFullYear()+'-'+checkTime(date.getMonth()+1)+'-'+checkTime(date.getDate());
+        console.log(dateTime);
+        request({
+          url: "/yxrequisitions/selectLikeBillNO",
+          method: "get",
+          params:{
+            billDate:time
           }
-          const values = data.map(item => Number(item[column.property]));
-          if (!values.every(value => isNaN(value))) {
-            sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-            sums[index] += ' 元';
-          } else {
-            sums[index] = '';
-          }
+        }).then(result => {
+          console.log(result);
+          this.entity.billNO=result.data.data;
         });
-        return sums;
+      },
+      addRD(){
+        console.log(this.entity);
+        request({
+          url:"/yxrequisitions/insertRDs",
+          method:"post",
+          data:this.entity
+        }).then(result=>{
+          console.log(result);
+        });
       }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+  this.tableData = window.MOCK_DATA_LIST.slice(0, 6)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -329,6 +373,12 @@ el-table .el-table thead {
 }
 el-table{
   height: 10px;
+}
+.vxe-table.fixed--left .vxe-body--column, .vxe-table.fixed--right .vxe-body--column, .vxe-table.vxe-editable .vxe-body--column {
+    height: 35px;
+}
+.vxe-table .vxe-default-input{
+    height: 30px;
 }
 .elTable th{
   padding: 3px 0!important;
