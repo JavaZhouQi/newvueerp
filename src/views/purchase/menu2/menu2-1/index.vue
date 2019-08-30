@@ -13,17 +13,18 @@
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
       </div>
-      <div style="float: right;margin: 15px 300px 0px 0px;">
+      <div style="float: right;margin: 15px 10px 0px 0px;">
         <el-button type="primary" @click="add">新增</el-button>
       </div>
     </div>
 
-    <el-table ref="filterTable" :data="tableData" style="margin-top:10px;">
-      <el-table-column prop="departID" label="单据号码" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="departName" label="采购请购类型" width="180"></el-table-column>
-      <el-table-column prop="engName" label="单据日期" width="280"></el-table-column>
-      <el-table-column prop="memo" label="单况" width="280"></el-table-column>
-      <el-table-column label="操作" width="280">
+    <el-table ref="filterTable" :data="tableData" style="margin-top:10px;width:1070px;">
+      <el-table-column prop="billNO" label="单据号码" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="billStyleName" label="采购请购类型" width="180"></el-table-column>
+      <el-table-column prop="billDate" label="单据日期" width="180"></el-table-column>
+      <el-table-column prop="salesName" label="请购人员" width="180"></el-table-column>
+      <el-table-column prop="billStatus" label="单况" width="150"></el-table-column>
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.row)">修改</el-button>
           <el-button size="mini" type="danger" @click="del(scope.row.departID)">删除</el-button>
@@ -54,13 +55,13 @@ export default {
     //这里存放数据
     return {
       entity: {},   // 新增and修改的对象
-      tableData: [],  // 显示数据
+      tableData: [/*{"billNO":"2019101201","billStyleName":"加急采购","billDate":"2019-10-12","salesName":"周直销","billStatus":"已审核"},{"billNO":"2019101202","billStyleName":"加急采购","billDate":"2019-10-12","salesName":"周直销","billStatus":"已审核"},{"billNO":"2019101203","billStyleName":"加急采购","billDate":"2019-10-12","salesName":"周直销","billStatus":"已审核"}*/],  // 显示数据
       findData: {},  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
       addDialog: false, // 新增模态框
       currentPage: 1,   // 当前页
-      currentSize: 10,  // 每页条数
+      currentSize: 2,  // 每页条数
       pagenumber: 0,     // 总条数
       updatebool:false,
       rules: {
@@ -123,13 +124,14 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/yxrequisitions/query?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
         method: "post",
         data: this.findData
       }).then(result => {
+        console.log(JSON.stringify(result)+"....................")
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
       });
@@ -142,42 +144,6 @@ export default {
       }).then(result => {
         console.log(result);
       });
-    },
-    // 保存
-    save() {
-      if(!this.updatebool){
-        // 新增
-        request({
-          url: "/comdepartment/add",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
-        });
-      }else{
-        // 修改
-        request({
-          url: "/comdepartment/update",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
-        });
-      }
-      
-    },
-    //保存后新增
-    saveAddition(){
-      var number = this.entity.departID
     },
     // 修改
     update(entity){
