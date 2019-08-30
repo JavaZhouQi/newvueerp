@@ -16,10 +16,17 @@
         <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
       </div>
     </div>
-    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
+    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;" border>
       <el-table-column prop="id" label="角色编号" sortable width="210" column-key="date"></el-table-column>
       <el-table-column prop="role" label="角色名称" width="210"></el-table-column>
       <el-table-column prop="description" label="角色描述" width="310"></el-table-column>
+      <el-table-column label="角色权限" width="330">
+        <template slot-scope="scope">
+          <span v-for="entity in scope.row.permissionsList">
+            {{entity.description}}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="400">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.row)">修改</el-button>
@@ -32,9 +39,6 @@
     <el-dialog title="编辑角色" :visible.sync="addDialog" width="30%" :before-close="handleClose">
       <span>
         <el-form :model="entity" label-position="left" label-width="80px" status-icon :rules="rules">
-          <el-form-item label="角色编号" prop="id">
-            <el-input v-model="entity.id" :disabled="updatebool"></el-input>
-          </el-form-item>
           <el-form-item label="角色名称" prop="role">
             <el-input v-model="entity.role"></el-input>
           </el-form-item>
@@ -150,7 +154,7 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/sysRoles/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
@@ -164,7 +168,7 @@ export default {
     // 单个查询
     findOne() {
       request({
-        url: "/role/findOne",
+        url: "/sysRoles/findOne",
         method: "post"
       }).then(result => {
         console.log(result);
@@ -175,7 +179,7 @@ export default {
       if(!this.updatebool){
         // 新增
         request({
-          url: "/role/add",
+          url: "/sysRoles/add",
           method: "post",
           data: this.entity
         }).then(result => {
@@ -188,7 +192,7 @@ export default {
       }else{
         // 修改
         request({
-          url: "/comdepartment/update",
+          url: "/sysRoles/update",
           method: "post",
           data: this.entity
         }).then(result => {
@@ -215,7 +219,7 @@ export default {
     // 删除
     del(id){
       request({
-        url: "/role/del?id="+id,
+        url: "/sysRoles/del?id="+id,
         method: "get"
       }).then(result => {
         Message.success(result.data.data)
