@@ -15,7 +15,7 @@
       <div style="float: right;margin: 15px 300px 0px 0px;">
         <el-button
           type="primary"
-          @click="addDialog = true;updatebool = false;entity = {};value = []"
+          @click="addDialog = true;updatebool = false;entity = {};value = [];cleanTree()"
         >新增</el-button>
       </div>
     </div>
@@ -25,7 +25,7 @@
       <el-table-column prop="description" label="角色描述" width="310"></el-table-column>
       <el-table-column label="角色权限" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.permissionsList.slice(0, 2)">{{entity.description}}</span>
+          <span v-for="entity in scope.row.permissionsList.slice(0, 2)"> {{entity.description}} </span>
           <samp v-if="scope.row.permissionsList.length > 3">...</samp>
         </template>
       </el-table-column>
@@ -38,7 +38,7 @@
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
-    <el-dialog title="编辑角色" :visible.sync="addDialog" width="45%" :before-close="handleClose">
+    <el-dialog title="编辑角色" :visible.sync="addDialog" width="30%" :before-close="handleClose">
       <span>
         <el-form
           :model="entity"
@@ -69,7 +69,6 @@
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="getCheckedKeys">获取</el-button>
         <el-button @click="addDialog = false">取 消</el-button>
         <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -119,8 +118,11 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    getCheckedKeys() {
-      console.log(this.$refs.tree.getCheckedKeys());
+    // 清除tree value
+    cleanTree(){
+      this.$nextTick(function() {
+        this.$refs.tree.setCheckedKeys(this.value)
+      })
     },
     filterMethod(query, item) {
       return item.description.indexOf(query) > -1;
@@ -176,6 +178,7 @@ export default {
     },
     // 保存
     save() {
+      // 获取权限id
       this.entity.permissionsIdList = this.$refs.tree.getCheckedKeys();
       if (!this.updatebool) {
         // 新增
@@ -219,6 +222,7 @@ export default {
       this.entity.permissionsList.forEach(item => {
         this.value.push(item.id);
       });
+      this.cleanTree();
     },
     // 删除
     del(id) {

@@ -11,6 +11,9 @@ import '@/styles/erpcss.scss'
 
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/index.css'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
 
 Vue.use(VXETable)
 Vue.use(ElementUI)

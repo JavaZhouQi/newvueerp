@@ -126,7 +126,7 @@
           <div class="ce1">
             <img class="leftImg" src="@/static/images/gyzl/ck.png" />
             <p class="pp">
-              <router-link to="/commonMaterials/menu1/menu1-1">&nbsp;&nbsp;&nbsp;仓库管理</router-link>
+              <router-link to="/commonMaterials/menu2/menu2-1">&nbsp;&nbsp;&nbsp;仓库管理</router-link>
             </p>
             <img class="leftImg" src="@/static/images/gyzl/zwj.png" />
             <p class="pp">
@@ -169,7 +169,7 @@
             <img class="leftImg" src="@/static/images/gyzl/bm.png" />
             <p class="pp">
               <router-link
-                to="/commonMaterials/menu1/menu1-2"
+                to="/commonMaterials/menu1/menu1-1"
               >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部门</router-link>
             </p>
             <img class="leftImg" src="@/static/images/gyzl/xl.png" />
@@ -488,7 +488,7 @@ export default {
     logout: function() {
       this.$confirm("确认退出?", "提示", {})
         .then(() => {
-          sessionStorage.removeItem("user");
+          sessionStorage.removeItem("token");
           sessionStorage.removeItem("permissions");
           this.$router.push("/login");
         })
@@ -550,7 +550,10 @@ export default {
     //  获取路由
     this.$router.options.routes.forEach(element => {
       if (element.meta) {
-        this.menuList.push(element);
+        let permissions = sessionStorage.getItem("permissions");
+        if(permissions.indexOf(element.meta.permissions) > -1){
+          this.menuList.push(element);
+        }
       }
     });
   }

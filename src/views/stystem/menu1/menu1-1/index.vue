@@ -22,7 +22,7 @@
       <el-table-column prop="username" label="用户名称" width="280"></el-table-column>
       <el-table-column label="用户角色" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.rolesList">{{entity.description}}</span>
+          <span v-for="entity in scope.row.rolesList"> {{entity.description}} </span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="280">
