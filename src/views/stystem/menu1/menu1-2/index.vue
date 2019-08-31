@@ -106,7 +106,8 @@ export default {
         role: [{ required: true, message: "名称不能为空", trigger: "blur" }]
       },
       value: [],
-      permissionList: []
+      permissionList: [],
+      permissionListTwo:[]
     };
   },
   //监听属性 类似于data概念
@@ -229,46 +230,57 @@ export default {
         method: "get"
       }).then(result => {
         this.permissionList = result.data.data;
+        //  获取路由
+        this.$router.options.routes.forEach(element => {
+          if (element.meta) {
+            // 第一层
+            let children1 = {
+              id: this.addPermissionId(element),
+              label: element.meta.title,
+              children: []
+            };
+            element.children.forEach(children => {
+              if (children.meta) {
+                // 第二层
+                let children2 = {
+                  id: this.addPermissionId(element),
+                  label: children.meta.title,
+                  children: []
+                };
+                children.children.forEach(childrens => {
+                  if (childrens.meta) {
+                    // 第三层
+                    children2.children.push({
+                      id: this.addPermissionId(element),
+                      label: childrens.meta.title
+                    });
+                  }
+                });
+                children1.children.push(children2);
+              }
+            });
+            this.permissionListTwo.push(children1);
+          }
+          console.log(this.permissionListTwo);
+        });
       });
+    },
+    addPermissionId(entity){
+      let id = "";
+      this.permissionList.forEach(item => {
+        if(entity.meta.permissions === item.permission){
+          id = item.id;
+          return id;
+        }
+      });
+      return id;
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.findPermissionsList();
     this.findPage();
-  //   //  获取路由
-  //   this.$router.options.routes.forEach(element => {
-  //     if (element.meta) {
-  //       // 第一层
-  //       let children1 = {
-  //         id: element.meta.permissions,
-  //         label: element.meta.title,
-  //         children: []
-  //       };
-  //       element.children.forEach(children => {
-  //         if (children.meta) {
-  //           // 第二层
-  //           let children2 = {
-  //             id: children.meta.permissions,
-  //             label: children.meta.title,
-  //             children: []
-  //           };
-  //           children.children.forEach(childrens => {
-  //             if (childrens.meta) {
-  //               // 第三层
-  //               children2.children.push({
-  //                 id: childrens.meta.permissions,
-  //                 label: childrens.meta.title
-  //               });
-  //             }
-  //           });
-  //           children1.children.push(children2);
-  //         }
-  //       });
-  //       this.permissionList.push(children1);
-  //     }
-  //     console.log(this.permissionList);
-  //   });
+    
   }
 };
 </script>
