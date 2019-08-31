@@ -25,7 +25,8 @@
       <el-table-column prop="description" label="角色描述" width="310"></el-table-column>
       <el-table-column label="角色权限" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.permissionsList">{{entity.description}}</span>
+          <span v-for="entity in scope.row.permissionsList.slice(0, 2)">{{entity.description}}</span>
+          <samp v-if="scope.row.permissionsList.length > 3">...</samp>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="400">
@@ -53,20 +54,22 @@
             <el-input v-model="entity.description"></el-input>
           </el-form-item>
           <el-form-item label="角色权限">
-            <el-transfer
-              v-model="value"
-              filterable
-              :filter-method="filterMethod"
+            <el-tree
+              :data="permissionListTwo"
+              show-checkbox
+              node-key="id"
+              ref="tree"
+              :default-checked-keys="value"
               :props="{
-                key: 'id',
-                label: 'description'
+                children: 'children',
+                label: 'label'
               }"
-              :data="permissionList"
-            ></el-transfer>
+            ></el-tree>
           </el-form-item>
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
+        <el-button @click="getCheckedKeys">获取</el-button>
         <el-button @click="addDialog = false">取 消</el-button>
         <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -81,7 +84,7 @@
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
 import { Message } from "element-ui";
-import { constants } from 'fs';
+import { constants } from "fs";
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -107,7 +110,7 @@ export default {
       },
       value: [],
       permissionList: [],
-      permissionListTwo:[]
+      permissionListTwo: []
     };
   },
   //监听属性 类似于data概念
@@ -116,8 +119,11 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    filterMethod(query, item){
-      return item.description.indexOf(query)> -1;
+    getCheckedKeys() {
+      console.log(this.$refs.tree.getCheckedKeys());
+    },
+    filterMethod(query, item) {
+      return item.description.indexOf(query) > -1;
     },
     formatter(row, column) {
       return row.address;
@@ -170,6 +176,7 @@ export default {
     },
     // 保存
     save() {
+      this.entity.permissionsIdList = this.$refs.tree.getCheckedKeys();
       if (!this.updatebool) {
         // 新增
         request({
@@ -243,7 +250,7 @@ export default {
               if (children.meta) {
                 // 第二层
                 let children2 = {
-                  id: this.addPermissionId(element),
+                  id: this.addPermissionId(children),
                   label: children.meta.title,
                   children: []
                 };
@@ -251,7 +258,7 @@ export default {
                   if (childrens.meta) {
                     // 第三层
                     children2.children.push({
-                      id: this.addPermissionId(element),
+                      id: this.addPermissionId(childrens),
                       label: childrens.meta.title
                     });
                   }
@@ -261,14 +268,13 @@ export default {
             });
             this.permissionListTwo.push(children1);
           }
-          console.log(this.permissionListTwo);
         });
       });
     },
-    addPermissionId(entity){
+    addPermissionId(entity) {
       let id = "";
       this.permissionList.forEach(item => {
-        if(entity.meta.permissions === item.permission){
+        if (entity.meta.permissions === item.permission) {
           id = item.id;
           return id;
         }
@@ -280,7 +286,6 @@ export default {
   created() {
     this.findPermissionsList();
     this.findPage();
-    
   }
 };
 </script>
