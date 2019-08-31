@@ -3,7 +3,7 @@
   <div class>
     <el-button class="baocun" type="success" @click="save" size="small">保存</el-button>
     <el-button type="primary" class="shenghe" @click="shenghe" size="small " :disabled="savebtn">审核</el-button>
-    <img src="@/assets/he.png" width="80px" class="img" v-if="smlordbillmain.hasCheck==1" />
+    <img src="@/assets/he.png" width="80px" class="img" v-if="smlordbillmain.auditStatus==1" />
     <el-form
       :model="smlordbillmain"
       size="mini"
@@ -16,7 +16,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="正式客户" prop="name">
-            <el-input v-model="smlordbillmain.comcustomer.fullName" @dblclick.native="storageDetail"  :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.customerID" @dblclick.native="storageDetail"  :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -65,8 +65,8 @@
         <el-col :span="12">
           <el-form-item label="单价是否含税" prop="priceOfTax">
             <el-select v-model="smlordbillmain.priceOfTax">
-              <el-option label="未税" value="0" :disabled="isWriter"></el-option>
-              <el-option label="含税" value="1" :disabled="isWriter"></el-option>
+              <el-option label="未税" :value="0" :disabled="isWriter"></el-option>
+              <el-option label="含税" :value="1" :disabled="isWriter"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -85,7 +85,7 @@
                   <i class="el-icon-remove"></i>
                 </template>
               </vxe-table-column>
-              <vxe-table-column field="rowNO" title="栏号" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+              <vxe-table-column type="index" field="rowNO" title="栏号" width="100" ></vxe-table-column>
               <vxe-table-column field="prodID" title="物料编号" width="140" :edit-render="{name: 'input'}" ></vxe-table-column>
               <vxe-table-column
                 field="prod.name"
@@ -200,12 +200,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="业务人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="制单人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -217,7 +217,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="复核人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.permitterID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -287,20 +287,49 @@ export default {
       tableData:[],
       formData:{},
       dialogcustomer:false,
-      smlordbillmain: {
+      test: {
             flag:"1" ,
             billNo:"",
-            customerID:"1",
+            customerID:"",
             comcustomer:{
+                id:"",
                 fullName:""
             },
             currID:"RMB",
             billDate:new Date(),
             hasCheck:0,
+            auditStatus:0,
             tax:"0",
             subList:[
                 {
-                  rowNO:"1",
+                  rowNO:"",
+                  prodID:"",
+                  Comproduct:{
+                    ProdName:""
+                  },
+                  quantity:"",
+
+
+                }
+               
+            ]
+      },
+      smlordbillmain: {
+            flag:"1" ,
+            billNo:"",
+            customerID:"001",
+            comcustomer:{
+                id:"",
+                fullName:""
+            },
+            currID:"RMB",
+            billDate:new Date(),
+            auditStatus:0,
+            hasCheck:0,
+            tax:"0",
+            subList:[
+                {
+                  rowNO:"",
                   prodID:"",
                   Comproduct:{
                     ProdName:""
@@ -322,9 +351,42 @@ export default {
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    $route(to,from){
+      this.isWriter=false;
+      this.savebtn=true;
+    //   alert("我进来了");
+    // console.log(to.path);
+    this.smlordbillmain=this.test;
+    if(to.query.billNO!=undefined){
+      this.smlordbillmain.billNo=to.query.billNO;
+      this.smlordbillmain.flag=1;
+        this.query_one()
+        
+    }else{
+      this.isWriter=false;
+    }
+  }
+  },
   //方法集合
   methods: {
+    //根据单号和flag查询对象
+    query_one(){
+      console.log(this.smlordbillmain);
+      request({
+        url:"/smlordbillmain/queryOne",
+        method: "post",
+        data:this.smlordbillmain
+      }).then(result => {
+      //  console.log(result.data.data);
+      this.smlordbillmain=result.data.data;
+      // console.log(this.smlordbillmain.priceOfTax);
+      if(this.smlordbillmain.auditStatus==1){
+        this.isWriter=true;
+        this.savebtn = false;
+      }
+      });
+    },
     //双击弹出客户
     storageDetail(){
       this.dialogcustomer=true;
@@ -344,41 +406,96 @@ export default {
         this.pagenumber = result.data.data.total; // 总条数
       });
     },
-    //取回客户对象
-    findPage(){
-
-    },
 
     // 保存
     save() {
-      // console.log(this.smlordbillmain);
 
-      request({
-        url:"/smlordbillmain/add",
-        method:"post",
-        data:this.smlordbillmain
-      }).then(result=>{
-        console.log(result.data.data);
-        if(result.data.data){
-          Message.success("保存成功");
-          this.isWriter = true;
-          this.savebtn = false;
-        }else{
-          Message.success("保存失败");
-        }
-        // Message.success(result.data.data)
-      })
+      // console.log(this.smlordbillmain);
+      // return;
+      //新增方法
+      if(this.$route.query.type==1){
+           request({
+              url:"/smlordbillmain/add",
+              method:"post",
+              data:this.smlordbillmain
+            }).then(result=>{
+              console.log(result.data.data);
+              if(result.data.data){
+                Message.success("保存成功");
+                this.isWriter = true;
+                this.savebtn = false;
+              }else{
+                Message.success("保存失败");
+              }
+              // Message.success(result.data.data)
+            })
+      }else{
+        //修改方法
+         request({
+              url:"/smlordbillmain/update",
+              method:"post",
+              data:this.smlordbillmain
+            }).then(result=>{
+              // console.log(result.data.data);
+              if(result.data.data){
+                Message.success("保存成功");
+                this.isWriter = true;
+                this.savebtn = false;
+              }else{
+                Message.success("保存失败");
+              }
+              // Message.success(result.data.data)
+            })
+      }
+     
     },
     //保存后新增
     saveAddition() {
       var number = this.entity.departID;
     },
     shenghe() {
-      if (this.smlordbillmain.hasCheck == 0) {
-        this.smlordbillmain.hasCheck = 1;
+      if (this.smlordbillmain.auditStatus == 0) {
+        //审核
+        request({
+        url: "/smlordbillmain/audit",
+        method: "post",
+        params:{
+          billNo:this.smlordbillmain.billNo,
+          flag:1,
+          auditStatus:1,
+        }
+      }).then(result => {
+        if(result.data.data){
+          Message.success("审核成功");
+          this.smlordbillmain.auditStatus = 1;
+        }else{
+          Message.success("审核失败");
+          this.smlordbillmain.auditStatus = 0;
+        }
+      });
       } else {
-        this.smlordbillmain.hasCheck = 0;
+        //取消审核
+          request({
+        url: "/smlordbillmain/audit",
+        method: "post",
+        params:{
+          billNo:this.smlordbillmain.billNo,
+          flag:1,
+          auditStatus:0,
+        }
+      }).then(result => {
+        if(result.data.data){
+          Message.success("取消审核成功");
+          this.smlordbillmain.auditStatus =0;
+          this.isWriter = false;
+          this.savebtn = true;
+        }else{
+          Message.success("取消审核失败");
+          this.smlordbillmain.auditStatus = 1;
+        }
+      });
       }
+      
     }
     ,lishi(){
       // console.log(this.$router);
@@ -405,7 +522,16 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-      this.query_num();
+    this.smlordbillmain=this.test;
+      this.isWriter=false;
+      this.savebtn=true;
+      if(this.$route.query.billNO!=undefined){
+        this.smlordbillmain.billNo=this.$route.query.billNO;
+        this.smlordbillmain.flag=1;
+          this.query_one()
+      }else{
+          this.query_num();
+      }
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
