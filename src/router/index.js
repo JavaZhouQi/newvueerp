@@ -18,10 +18,10 @@ import stystemRouter from '@/router/modules/stystemRouter'
 Vue.use(Router)
 
 // 防止路由报错
-const originalPush = Router.prototype.push;
-Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
-}
+// const originalPush = Router.prototype.push;
+// Router.prototype.push = function push(location) {
+//   return originalPush.call(this, location).catch(err => err)
+// }
 
 export const constantRoutes = [
   {
