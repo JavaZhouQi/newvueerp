@@ -1,7 +1,7 @@
 <!--  -->
 <template>
     <div class="goOut">
-     <div style="height:60px;">
+      <div style="height:60px;">
       <div style="margin-top: 15px;width:380px;float: left;">
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
@@ -15,8 +15,7 @@
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-          
-                <el-button type="primary" @click="dialogVisible = true" >新增</el-button>
+        <el-button type="primary" @click="dialogVisible = true;updatebool = false;entity = {}">新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
@@ -399,7 +398,7 @@
         method: "post",
         data: this.findData
       }).then(result => {
-       
+       this.tableData=result;
       });
     },
     // 单个查询

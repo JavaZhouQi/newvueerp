@@ -38,7 +38,7 @@
     
 
     <el-dialog
-  title="采购退货"
+  title="采购分摊"
   :visible.sync="dialogVisible"
   width="70%"
   :before-close="handleClose">
