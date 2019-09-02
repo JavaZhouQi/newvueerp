@@ -2,7 +2,7 @@
 import router from './router'
 import { Message } from 'element-ui'
 
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
     //如果是登录路由直接跳转
     if (to.path == "/login") {
         next();
@@ -16,4 +16,4 @@ router.beforeEach((to, from, next) => {
         return;
     }
     next();
-})
+})*/
