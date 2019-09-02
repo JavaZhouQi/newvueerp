@@ -14,7 +14,7 @@
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {rolesList:[]};selectRolesList = [];addrolesIdList = []">新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;" border>
@@ -22,9 +22,7 @@
       <el-table-column prop="username" label="用户名称" width="280"></el-table-column>
       <el-table-column label="用户角色" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.rolesList">
-            {{entity.description}}
-          </span>
+          <span v-for="entity in scope.row.rolesList"> {{entity.description}} </span>
         </template>
       </el-table-column>
       <el-table-column 8label="操作" width="280">
@@ -51,8 +49,17 @@
           <el-form-item label="用户密码" prop="password">
             <el-input v-model="entity.password" type="password"></el-input>
           </el-form-item>
-          <el-form-item label="用户角色" prop="role">
-           
+          <el-form-item label="用户角色">
+            <el-checkbox-group v-model="selectRolesList">
+              <el-checkbox
+                v-for="entity in rolesList"
+                :label="entity.description "
+                border
+                size="small"
+                :key="entity.id"
+                @change="selection($event,entity)"
+              > </el-checkbox>
+            </el-checkbox-group>
           </el-form-item>
         </el-form>
       </span>
@@ -95,12 +102,12 @@ export default {
         username: [
           { required: true, message: "名称不能为空", trigger: "blur" }
         ],
-        password: [
-          { required: true, message: "密码不能为空", trigger: "blur" }
-        ],
-        role: [{ required: true, message: "角色不能为空", trigger: "blur" }]
+        password: [{ required: true, message: "密码不能为空", trigger: "blur" }]
       },
-      value: ""
+      value: "",
+      rolesList: [], // 所有角色集合
+      selectRolesList: [], // 选中的角色名称集合
+      addrolesIdList:[]
     };
   },
   //监听属性 类似于data概念
@@ -109,6 +116,15 @@ export default {
   watch: {},
   //方法集合
   methods: {
+    // 选中角色
+    selection(event,entity) {
+      if (event) {
+        this.addrolesIdList.push(entity.id);
+      } else {
+        this.addrolesIdList.splice(this.addrolesIdList.indexOf(entity.id), 1);
+      }
+      console.log(this.addrolesIdList)
+    },
     formatter(row, column) {
       return row.address;
     },
@@ -160,6 +176,7 @@ export default {
     },
     // 保存
     save() {
+      this.entity.rolesIdList = this.addrolesIdList;
       if (!this.updatebool) {
         // 新增
         request({
@@ -198,6 +215,12 @@ export default {
       this.updatebool = true;
       this.addDialog = true;
       this.entity = entity;
+      this.addrolesIdList = [];
+      this.selectRolesList = [];
+      this.entity.rolesList.forEach(roles => {
+        this.selectRolesList.push(roles.description)
+        this.addrolesIdList.push(roles.id)
+      });
     },
     // 删除
     del(id) {
@@ -208,11 +231,21 @@ export default {
         Message.success(result.data.data);
         this.findPage();
       });
+    },
+    // 查询全部角色
+    findRolesList() {
+      request({
+        url: "/sysRoles/findAll",
+        method: "get"
+      }).then(result => {
+        this.rolesList = result.data.data;
+      });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.findPage();
+    this.findRolesList();
   }
 };
 </script>
@@ -223,6 +256,12 @@ export default {
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+.el-checkbox {
+  margin-left: 0px;
+}
+.el-checkbox.is-bordered + .el-checkbox.is-bordered {
+  margin-left: 0px;
 }
 </style>
 

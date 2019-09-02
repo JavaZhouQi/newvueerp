@@ -6,10 +6,10 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="客户名称" value="memo"></el-option>
-            <el-option label="订单单据" value="departID"></el-option>
-            <el-option label="单据日期" value="departName"></el-option>
-            <el-option label="是否审核" value="memo"></el-option>
+            <el-option label="客户名称" value="fullName"></el-option>
+            <el-option label="订单单据" value="billNo"></el-option>
+            <el-option label="单据日期"  value="billDate"></el-option>
+            <el-option label="是否审核" value="auditStatus"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
@@ -19,22 +19,30 @@
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="departID"  width="50"  type="index"></el-table-column>
-      <el-table-column prop="departID" label="订单单据" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="departName" label="客户名称" width="180"></el-table-column>
-      <el-table-column prop="engName" label="订单日期" width="280"></el-table-column>
-      <el-table-column prop="memo" label="审核状态" width="280"></el-table-column>
+      <el-table-column   width="50"  type="index"></el-table-column>
+      <el-table-column prop="billNo" label="订单单据" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="comcustomer.fullName" label="客户名称" width="180"></el-table-column>
+      <el-table-column prop="billDate" label="订单日期"  width="280">
+          <template slot-scope="scope">
+          <span>{{timestampToTime(scope.row.billDate)}}</span>
+          </template>
+      </el-table-column>
+      <el-table-column prop="auditStatus" label="审核状态" width="280" >
+        <template slot-scope="scope">
+        <span v-if="scope.row.auditStatus==0">未审核</span><span v-if="scope.row.auditStatus==1">已审核</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.departID)"></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.billNo)"></el-button>
         </template>
       </el-table-column>
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
     <el-dialog title="销售报价单" :visible.sync="addDialog" width="50%" :before-close="handleClose">
-      <router-view :dialogTableVisible.sync="dialogTableVisible" ></router-view>
+      <router-view ></router-view>
     </el-dialog>
     <el-dialog title="历史交易查询" :visible.sync="dialogTableVisible" >
       <!-- <router-view  :to='{path:"/sale/menu2/menu2-1/lishi"}'></router-view> -->
@@ -77,6 +85,7 @@
         <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
       </vxe-table>
     </el-dialog>
+    
   </div>
 </template>
 
@@ -96,6 +105,7 @@ export default {
     //这里存放数据
     return {
       entity: {},   // 新增and修改的对象
+      type:1,       //1是新增    2是修改
       tableData: [],  // 显示数据
       findData: {},  // 查询数据
       select: "",   // 查询条件
@@ -123,6 +133,7 @@ export default {
             },
             hasCheck:0,
             tax:"0",
+            auditStatus:0,
             subList:[
                 {
                     name:"hahha"
@@ -138,15 +149,27 @@ export default {
   },
   //监控data中的数据变化
   watch: {
-    dialogTableVisible:function(){
-      // this.$router.push({path:"/sale/menu2/menu2-1/lishi"});
+    addDialog:function(){
+      this.findPage();
     }
   },
   //方法集合
   methods: {
+    //时间格式化
+      timestampToTime(timestamp) {
+        var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '-';
+       var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate()) + ' ';
+        var h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
+        var s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        return Y+M+D;
+    },
     add(){
         this.addDialog=true;
-        this.$router.push({path:"/sale/menu2/menu2-1/index"});
+        this.type=1;
+        this.$router.push({path:"/sale/menu2/menu2-1/index",query:{type:1}});
     },
     
     formatter(row, column) {
@@ -184,15 +207,18 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/smlordbillmain/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
         method: "post",
         data: this.findData
       }).then(result => {
+        // console.log(result.data);
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
+        this.findData={};
+        // this.selectValue="";
       });
     },
     // 单个查询
@@ -215,17 +241,25 @@ export default {
     },
     // 修改
     update(entity){
-      this.updatebool = true
+      this.type=2;
       this.addDialog = true
-      this.entity = entity
+      this.$router.push({path:"/sale/menu2/menu2-1/index",query:{billNO:entity.billNo,type:2}});
     },
     // 删除
-    del(id){
+    del(billNo){
       request({
-        url: "/comdepartment/del?id="+id,
-        method: "get"
+        url: "/smlordbillmain/remove",
+        method: "post",
+        params:{
+          billNo:billNo,
+          flag:1
+        }
       }).then(result => {
-        Message.success(result.data.data)
+        if(result.data.data=="true"){
+          Message.success("删除成功");
+        }else{
+          Message.error(result.data.data);
+        }
         this.findPage()
       });
     }
@@ -244,7 +278,7 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    // this.findPage();
+    this.findPage();
   }
 };
 </script>
