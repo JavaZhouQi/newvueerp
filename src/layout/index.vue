@@ -871,6 +871,7 @@ export default {
       show2: false,
       show3: false,
       show4: false,
+      show5:false,
       activeName: 'first'
     };
   },

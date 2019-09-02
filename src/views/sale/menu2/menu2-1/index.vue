@@ -299,6 +299,7 @@ export default {
             billDate:new Date(),
             hasCheck:0,
             auditStatus:0,
+            priceOfTax:0,
             tax:"0",
             subList:[
                 {
@@ -327,6 +328,7 @@ export default {
             auditStatus:0,
             hasCheck:0,
             tax:"0",
+            priceOfTax:0,
             subList:[
                 {
                   rowNO:"",
@@ -484,13 +486,13 @@ export default {
           auditStatus:0,
         }
       }).then(result => {
-        if(result.data.data){
+        if(result.data.data=="true"){
           Message.success("取消审核成功");
           this.smlordbillmain.auditStatus =0;
           this.isWriter = false;
           this.savebtn = true;
         }else{
-          Message.success("取消审核失败");
+          Message.success("取消审核失败,"+result.data.data);
           this.smlordbillmain.auditStatus = 1;
         }
       });

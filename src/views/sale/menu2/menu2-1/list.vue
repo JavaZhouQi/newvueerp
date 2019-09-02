@@ -6,9 +6,9 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="客户名称" value="customerID"></el-option>
+            <el-option label="客户名称" value="fullName"></el-option>
             <el-option label="订单单据" value="billNo"></el-option>
-            <el-option label="单据日期" value="billDate"></el-option>
+            <el-option label="单据日期"  value="billDate"></el-option>
             <el-option label="是否审核" value="auditStatus"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
@@ -22,7 +22,11 @@
       <el-table-column   width="50"  type="index"></el-table-column>
       <el-table-column prop="billNo" label="订单单据" sortable width="180" column-key="date"></el-table-column>
       <el-table-column prop="comcustomer.fullName" label="客户名称" width="180"></el-table-column>
-      <el-table-column prop="billDate" label="订单日期" width="280"></el-table-column>
+      <el-table-column prop="billDate" label="订单日期"  width="280">
+          <template slot-scope="scope">
+          <span>{{timestampToTime(scope.row.billDate)}}</span>
+          </template>
+      </el-table-column>
       <el-table-column prop="auditStatus" label="审核状态" width="280" >
         <template slot-scope="scope">
         <span v-if="scope.row.auditStatus==0">未审核</span><span v-if="scope.row.auditStatus==1">已审核</span>
@@ -151,6 +155,17 @@ export default {
   },
   //方法集合
   methods: {
+    //时间格式化
+      timestampToTime(timestamp) {
+        var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '-';
+       var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate()) + ' ';
+        var h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
+        var s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        return Y+M+D;
+    },
     add(){
         this.addDialog=true;
         this.type=1;
@@ -202,6 +217,8 @@ export default {
         // console.log(result.data);
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
+        this.findData={};
+        // this.selectValue="";
       });
     },
     // 单个查询
@@ -224,8 +241,6 @@ export default {
     },
     // 修改
     update(entity){
-      // this.updatebool = true
-      // console.log(entity.billNo);
       this.type=2;
       this.addDialog = true
       this.$router.push({path:"/sale/menu2/menu2-1/index",query:{billNO:entity.billNo,type:2}});
