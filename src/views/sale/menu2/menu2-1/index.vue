@@ -250,22 +250,49 @@
       </el-row>
     </el-form>
 
-    <el-dialog title="单选--客户主文件设定" :visible.sync="dialogcustomer" style="z-index='2004'">
-      <el-row>
-      <el-col :span="10">
-          <el-select v-model="formData.select" slot="prepend" placeholder="请选择">
-            <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="客户编号" value="customerID"></el-option>
-            <el-option label="客户名称" value="fullName"></el-option>
-          </el-select>
-      </el-col>
-      <el-col :span="10"><el-input placeholder="请输入内容" v-model="formData.selectValue" class="input-with-select"></el-input></el-col>
-      <el-col :span="4"><el-button slot="append" icon="el-icon-search" @click="findPage">取回</el-button></el-col>
-    </el-row>
-    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="departID"  width="50" label="客户编号"  type="index"></el-table-column>
-      <el-table-column prop="departID" label="客户名称" sortable width="180" column-key="date"></el-table-column>
-    </el-table>
+    <el-dialog title="单选--客户主文件设定" :visible.sync="dialogcustomer" width="35%">
+      <span>
+          <el-row :gutter="10">
+            <el-col :span="24" style="padding:3px;height:48px;margin-bottom: 5px;">
+              <el-form :inline="true" class="demo-form-inline">
+                <el-form-item>
+                  <el-select v-model="union.coumn">
+                    <el-option
+                      v-for="entity,index in union.coumnList"
+                      :label="entity.name"
+                      :value="entity.value"
+                      :key="index"
+                    ></el-option>
+                  </el-select>
+                  <el-input-number v-model="union.num" :min="1" :max="10" style="width:130px;"></el-input-number>
+                </el-form-item>
+              </el-form>
+            </el-col>
+            <el-col :span="5" style="height:200px;">
+              <div>
+                <ul style="height:200px;">
+                  <li v-for="coumn in union.list" @click="selectCoumn(coumn)">{{ coumn }}</li>
+                </ul>
+              </div>
+            </el-col>
+            <el-col :span="19" style="padding:3px;height:200px;">
+              <el-table
+                ref="singleTable"
+                :data="union.tableData"
+                highlight-current-row
+                @current-change="handleCurrentChange"
+                style="width: 100%"
+                height="200"
+              >
+                <el-table-column v-for="entity in union.coumnList" :property="entity.value" :label="entity.name" width="120" :key="entity.value"></el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="choiceDialog = false">取 消</el-button>
+          <el-button type="primary" @click="choiceDialog = false">确 定</el-button>
+        </span>
     </el-dialog>
   </div>
 </template>
@@ -347,7 +374,31 @@ export default {
           name: [
             { required: true, message: '双击选择客户', trigger: 'blur' }
           ]
-        }
+        },
+        union: {
+        // 列名
+        coumnList: [
+          {
+            name: "编号",
+            value: "id"
+          },
+          {
+            name: "名称",
+            value: "fullName"
+          },
+          {
+            name: "英文名",
+            value: "engFullName"
+          }
+        ],
+        // 查询的条件
+        selectName: {},
+        tableName: "Comcustomer", // 表名
+        num: 1, // 截取数量
+        list: [],
+        coumn: "id", // 查询的列名 写name（名称）就可以了
+        tableData:[]
+      },
     };
   },
   //监听属性 类似于data概念
@@ -368,7 +419,13 @@ export default {
     }else{
       this.isWriter=false;
     }
-  }
+  },
+  "union.coumn": function() {
+      this.findByCoumnAndSize();
+    },
+    "union.num": function() {
+      this.findByCoumnAndSize();
+    }
   },
   //方法集合
   methods: {
@@ -520,7 +577,48 @@ export default {
     },
     changeDate(){
        this.query_num();
-    }
+    },
+    // 联合查询方法
+    findByCoumnAndSize() {
+      request({
+        url:
+          "/currency/find?coumn=" +
+          this.union.coumn +
+          "&size=" +
+          this.union.num +
+          "&table=" +
+          this.union.tableName,
+        method: "get"
+      }).then(result => {
+        this.union.list = result.data.data;
+        this.union.selectName[this.union.coumn] = result.data.data[0];
+        this.findTable();
+      });
+    },
+    // 查询条件
+    selectCoumn(coumn) {
+      this.union.selectName[this.union.coumn] =coumn;
+      this.union.selectName.flag=1;
+      this.findTable();
+    },
+    // 查询数据详情
+    findTable() {
+      request({
+        url:
+          "/"+this.union.tableName+"/findByTable",
+        method: "post",
+        data:this.union.selectName
+      }).then(result => {
+        this.union.tableData = result.data.data;
+        this.union.selectName = {}
+      });
+    },
+    // 获取选中的数据
+    handleCurrentChange(val) {
+      // this.entity.bankClsID = val.wareHouseID;
+      this.$store.state.saleCustomer=val;
+      console.log(val);
+    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
@@ -630,5 +728,16 @@ form {
   top: 90px;
   right: 50px;
   z-index: 100;
+}
+ul {
+  padding: 0px;
+  margin: 0px;
+}
+.el-dialog li {
+  list-style: none;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #d7dae2;
+  text-align: center;
 }
 </style>
