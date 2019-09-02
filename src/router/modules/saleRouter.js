@@ -57,6 +57,12 @@ const saleRouter = {
                 name: 'saleMenu2-1-2',
                 meta: { title: '历史交易弹出层',permissions: 'saleMenu2-1'  }
               }
+              ,{
+                path: '/sale/menu2/menu2-1/customer',
+                component: () => import('@/views/sale/menu2/menu2-1/customer'),
+                name: 'saleMenu2-1-3',
+                meta: { title: '选择客户弹出层',permissions: 'saleMenu2-1'  }
+              }
             ]
           },
           {

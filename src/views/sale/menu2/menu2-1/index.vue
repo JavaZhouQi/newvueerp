@@ -3,7 +3,7 @@
   <div class>
     <el-button class="baocun" type="success" @click="save" size="small">保存</el-button>
     <el-button type="primary" class="shenghe" @click="shenghe" size="small " :disabled="savebtn">审核</el-button>
-    <img src="@/assets/he.png" width="80px" class="img" v-if="smlordbillmain.hasCheck==1" />
+    <img src="@/assets/he.png" width="80px" class="img" v-if="smlordbillmain.auditStatus==1" />
     <el-form
       :model="smlordbillmain"
       size="mini"
@@ -11,12 +11,12 @@
       :label-position="'left'"
       ref="smlordbillmain"
       label-width="100px"
-      class="demo-ruleForm"
+      class="demo-smlordbillmain"
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="正式客户" prop="fullName">
-            <el-input v-model="smlordbillmain.comcustomer.fullName" :disabled="isWriter"></el-input>
+          <el-form-item label="正式客户" prop="name">
+            <el-input v-model="smlordbillmain.customerID" @dblclick.native="storageDetail"  :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -48,8 +48,9 @@
           <el-form-item label="有效日期" prop="validDate">
             <el-date-picker
               v-model="smlordbillmain.validDate"
-              type="datetime"
-              placeholder="选择日期时间"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
               :disabled="isWriter"
             ></el-date-picker>
           </el-form-item>
@@ -64,8 +65,8 @@
         <el-col :span="12">
           <el-form-item label="单价是否含税" prop="priceOfTax">
             <el-select v-model="smlordbillmain.priceOfTax">
-              <el-option label="未税" value="0" :disabled="isWriter"></el-option>
-              <el-option label="含税" value="1" :disabled="isWriter"></el-option>
+              <el-option label="未税" :value="0" :disabled="isWriter"></el-option>
+              <el-option label="含税" :value="1" :disabled="isWriter"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -84,7 +85,7 @@
                   <i class="el-icon-remove"></i>
                 </template>
               </vxe-table-column>
-              <vxe-table-column field="rowNO" title="栏号" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+              <vxe-table-column type="index" field="rowNO" title="栏号" width="100" ></vxe-table-column>
               <vxe-table-column field="prodID" title="物料编号" width="140" :edit-render="{name: 'input'}" ></vxe-table-column>
               <vxe-table-column
                 field="prod.name"
@@ -199,12 +200,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="业务人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="制单人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -216,7 +217,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="复核人员" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.permitterID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -248,6 +249,24 @@
         <el-col :span="18">&nbsp;</el-col>
       </el-row>
     </el-form>
+
+    <el-dialog title="单选--客户主文件设定" :visible.sync="dialogcustomer" style="z-index='2004'">
+      <el-row>
+      <el-col :span="10">
+          <el-select v-model="formData.select" slot="prepend" placeholder="请选择">
+            <el-option label="查询全部" value="-1"></el-option>
+            <el-option label="客户编号" value="customerID"></el-option>
+            <el-option label="客户名称" value="fullName"></el-option>
+          </el-select>
+      </el-col>
+      <el-col :span="10"><el-input placeholder="请输入内容" v-model="formData.selectValue" class="input-with-select"></el-input></el-col>
+      <el-col :span="4"><el-button slot="append" icon="el-icon-search" @click="findPage">取回</el-button></el-col>
+    </el-row>
+    <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
+      <el-table-column prop="departID"  width="50" label="客户编号"  type="index"></el-table-column>
+      <el-table-column prop="departID" label="客户名称" sortable width="180" column-key="date"></el-table-column>
+    </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -265,43 +284,68 @@ export default {
     return {
       isWriter: false,
       savebtn: true, //是否保存
-      smlordbillmain: {
+      tableData:[],
+      formData:{},
+      dialogcustomer:false,
+      test: {
             flag:"1" ,
             billNo:"",
+            customerID:"",
             comcustomer:{
-                name:""
+                id:"",
+                fullName:""
             },
+            currID:"RMB",
             billDate:new Date(),
             hasCheck:0,
+            auditStatus:0,
+            priceOfTax:0,
             tax:"0",
             subList:[
                 {
-                    
+                  rowNO:"",
+                  prodID:"",
+                  Comproduct:{
+                    ProdName:""
+                  },
+                  quantity:"",
+
+
+                }
+               
+            ]
+      },
+      smlordbillmain: {
+            flag:"1" ,
+            billNo:"",
+            customerID:"001",
+            comcustomer:{
+                id:"",
+                fullName:""
+            },
+            currID:"RMB",
+            billDate:new Date(),
+            auditStatus:0,
+            hasCheck:0,
+            tax:"0",
+            priceOfTax:0,
+            subList:[
+                {
+                  rowNO:"",
+                  prodID:"",
+                  Comproduct:{
+                    ProdName:""
+                  },
+                  quantity:"",
+
+
                 }
                
             ]
       }
       ,rules: {
-          fullName: [
-            { required: true, message: '请选择客户', trigger: 'blur' }
-          ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
-          ],
-          date1: [
-            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-          ],
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
-          ],
-          desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
+          name: [
+            { required: true, message: '双击选择客户', trigger: 'blur' }
           ]
         }
     };
@@ -309,25 +353,151 @@ export default {
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    $route(to,from){
+      this.isWriter=false;
+      this.savebtn=true;
+    //   alert("我进来了");
+    // console.log(to.path);
+    this.smlordbillmain=this.test;
+    if(to.query.billNO!=undefined){
+      this.smlordbillmain.billNo=to.query.billNO;
+      this.smlordbillmain.flag=1;
+        this.query_one()
+        
+    }else{
+      this.isWriter=false;
+    }
+  }
+  },
   //方法集合
   methods: {
+    //根据单号和flag查询对象
+    query_one(){
+      console.log(this.smlordbillmain);
+      request({
+        url:"/smlordbillmain/queryOne",
+        method: "post",
+        data:this.smlordbillmain
+      }).then(result => {
+      //  console.log(result.data.data);
+      this.smlordbillmain=result.data.data;
+      // console.log(this.smlordbillmain.priceOfTax);
+      if(this.smlordbillmain.auditStatus==1){
+        this.isWriter=true;
+        this.savebtn = false;
+      }
+      });
+    },
+    //双击弹出客户
+    storageDetail(){
+      this.dialogcustomer=true;
+    },
+     //查询所有的客户
+    findPage(){
+      request({
+        url:
+          "/comcustomer/findPage?current=" +
+          this.currentPage +
+          "&size=" +
+          this.currentSize,
+        method: "post",
+        data: this.findData
+      }).then(result => {
+        this.tableData = result.data.data.rows; //查询的数据
+        this.pagenumber = result.data.data.total; // 总条数
+      });
+    },
+
     // 保存
     save() {
-      this.isWriter = true;
-      this.savebtn = false;
-      console.log(this.smlordbillmain);
+
+      // console.log(this.smlordbillmain);
+      // return;
+      //新增方法
+      if(this.$route.query.type==1){
+           request({
+              url:"/smlordbillmain/add",
+              method:"post",
+              data:this.smlordbillmain
+            }).then(result=>{
+              console.log(result.data.data);
+              if(result.data.data){
+                Message.success("保存成功");
+                this.isWriter = true;
+                this.savebtn = false;
+              }else{
+                Message.success("保存失败");
+              }
+              // Message.success(result.data.data)
+            })
+      }else{
+        //修改方法
+         request({
+              url:"/smlordbillmain/update",
+              method:"post",
+              data:this.smlordbillmain
+            }).then(result=>{
+              // console.log(result.data.data);
+              if(result.data.data){
+                Message.success("保存成功");
+                this.isWriter = true;
+                this.savebtn = false;
+              }else{
+                Message.success("保存失败");
+              }
+              // Message.success(result.data.data)
+            })
+      }
+     
     },
     //保存后新增
     saveAddition() {
       var number = this.entity.departID;
     },
     shenghe() {
-      if (this.smlordbillmain.hasCheck == 0) {
-        this.smlordbillmain.hasCheck = 1;
+      if (this.smlordbillmain.auditStatus == 0) {
+        //审核
+        request({
+        url: "/smlordbillmain/audit",
+        method: "post",
+        params:{
+          billNo:this.smlordbillmain.billNo,
+          flag:1,
+          auditStatus:1,
+        }
+      }).then(result => {
+        if(result.data.data){
+          Message.success("审核成功");
+          this.smlordbillmain.auditStatus = 1;
+        }else{
+          Message.success("审核失败");
+          this.smlordbillmain.auditStatus = 0;
+        }
+      });
       } else {
-        this.smlordbillmain.hasCheck = 0;
+        //取消审核
+          request({
+        url: "/smlordbillmain/audit",
+        method: "post",
+        params:{
+          billNo:this.smlordbillmain.billNo,
+          flag:1,
+          auditStatus:0,
+        }
+      }).then(result => {
+        if(result.data.data=="true"){
+          Message.success("取消审核成功");
+          this.smlordbillmain.auditStatus =0;
+          this.isWriter = false;
+          this.savebtn = true;
+        }else{
+          Message.success("取消审核失败,"+result.data.data);
+          this.smlordbillmain.auditStatus = 1;
+        }
+      });
       }
+      
     }
     ,lishi(){
       // console.log(this.$router);
@@ -354,7 +524,16 @@ export default {
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-      this.query_num();
+    this.smlordbillmain=this.test;
+      this.isWriter=false;
+      this.savebtn=true;
+      if(this.$route.query.billNO!=undefined){
+        this.smlordbillmain.billNo=this.$route.query.billNO;
+        this.smlordbillmain.flag=1;
+          this.query_one()
+      }else{
+          this.query_num();
+      }
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -384,7 +563,7 @@ export default {
 .el-form-item--mini.el-form-item,
 .el-form-item--small.el-form-item {
   margin-top: 5px;
-  margin-bottom: 0px;
+  margin-bottom: 8px;
   margin-right: 20px;
   margin-left: 10px;
 }
