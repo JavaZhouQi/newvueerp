@@ -116,7 +116,7 @@
       role="alert"
       v-show="show"
       class="el-notification right"
-      style="top: 16px; z-index: 2013; width:25%;  height:  300px ;"
+      style="top: 16px; z-index: 2013; width:10%;height:300px ;"
     >
       <div class="el-notification__group">
         <h2 class="el-notification__title">&nbsp;&nbsp;共用资料</h2>
@@ -187,274 +187,9 @@
       </div>
     </div>
 
-    <!-- 弹框 采购管理-->
-    <div
-      role="alert"
-      v-show="show2"
-      class="el-notification right"
-      style="top: 16px; z-index: 2013; width:25%;  height:  300px ;"
-    >
-      <div class="el-notification__group">
-        <h2 class="el-notification__title">&nbsp;&nbsp;采购管理</h2>
-        <div class="el-notification__content"></div>
-        <div class="el-notification__closeBtn el-icon-close" v-on:click="close"></div>
-        <div class="all">
-          <div class="ce1">
-            <img class="leftImg" src="@/static/images/gyzl/ck.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-1">&nbsp;&nbsp;采购请购单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/zwj.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-3">&nbsp;&nbsp;&nbsp;采购订单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/wllb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-2">&nbsp;&nbsp;采购询价单</router-link>
-            </p>
-          </div>
-          <div class="ce2">
-            <img class="leftImg" src="@/static/images/gyzl/khlb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-5">&nbsp;&nbsp;采购退货单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/khzwj.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-4">&nbsp;&nbsp;采购入库单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/gyslb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-6">&nbsp;&nbsp;采购折让单</router-link>
-            </p>
-          </div>
-          <div class="ce3">
-            <img class="leftImg" src="@/static/images/gyzl/qzkh.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-7">&nbsp;&nbsp;&nbsp;采购发票</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/kjkm.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu3/menu3-1">采购分摊作业</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/lsjl.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-8">历史交易记录</router-link>
-            </p>
-          </div>
-          <div class="ce4">
-            <img class="leftImg" src="@/static/images/gyzl/sd1.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-1">请购类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd2.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-2">入库类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd3.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-3">订单类型设定</router-link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 弹框 采购管理-->
-    <div
-      role="alert"
-      v-show="show2"
-      class="el-notification right"
-      style="top: 16px; z-index: 2013; width:25%;  height:  300px ;"
-    >
-      <div class="el-notification__group">
-        <h2 class="el-notification__title">&nbsp;&nbsp;采购管理</h2>
-        <div class="el-notification__content"></div>
-        <div class="el-notification__closeBtn el-icon-close" v-on:click="close"></div>
-        <div class="all">
-          <div class="ce1">
-            <img class="leftImg" src="@/static/images/gyzl/ck.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-1">&nbsp;&nbsp;采购请购单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/zwj.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-3">&nbsp;&nbsp;&nbsp;采购订单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/wllb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-2">&nbsp;&nbsp;采购询价单</router-link>
-            </p>
-          </div>
-          <div class="ce2">
-            <img class="leftImg" src="@/static/images/gyzl/khlb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-5">&nbsp;&nbsp;采购退货单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/khzwj.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-4">&nbsp;&nbsp;采购入库单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/gyslb.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-6">&nbsp;&nbsp;采购折让单</router-link>
-            </p>
-          </div>
-          <div class="ce3">
-            <img class="leftImg" src="@/static/images/gyzl/qzkh.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-7">&nbsp;&nbsp;&nbsp;采购发票</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/kjkm.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu3/menu3-1">采购分摊作业</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/lsjl.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu2/menu2-8">历史交易记录</router-link>
-            </p>
-          </div>
-          <div class="ce4">
-            <img class="leftImg" src="@/static/images/gyzl/sd1.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-1">请购类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd2.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-2">入库类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd3.png" />
-            <p class="pp">
-              <router-link to="/purchase/menu1/menu1-3">订单类型设定</router-link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 弹框 销售-->
-    <div
-      role="alert"
-      v-show="show3"
-      class="el-notification right"
-      style="top: 16px; z-index: 2013; width:25%;  height:  300px ;"
-    >
-      <div class="el-notification__group">
-        <h2 class="el-notification__title">&nbsp;&nbsp;销售管理</h2>
-        <div class="el-notification__content"></div>
-        <div class="el-notification__closeBtn el-icon-close" v-on:click="close"></div>
-        <div class="all">
-          <div class="ce1">
-            <img class="leftImg" src="@/static/images/gyzl/xsbj.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-1">&nbsp;&nbsp;销售报价单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xsdd.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-2">&nbsp;&nbsp;&nbsp;销售订单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xsck.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-3">&nbsp;&nbsp;销售出库单</router-link>
-            </p>
-          </div>
-          <div class="ce2">
-            <img class="leftImg" src="@/static/images/gyzl/xsth.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-4">&nbsp;&nbsp;销售退货单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xszr.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-5">&nbsp;&nbsp;销售折让单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xsfp.png" />
-            <p class="pp">
-              <router-link to="/sale/menu2/menu2-6">&nbsp;&nbsp;&nbsp;销售发票</router-link>
-            </p>
-          </div>
-          <div class="ce3">
-            <img class="leftImg" src="@/static/images/gyzl/xs1.png" />
-            <p class="pp">
-              <router-link to="/sale/menu4/menu4-1">&nbsp;&nbsp;销售日报表</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xs5.png" />
-            <p class="pp">
-              <router-link to="/sale/menu4/menu4-2">&nbsp;&nbsp;销售分析表</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/xs3.png" />
-            <p class="pp">
-              <router-link to="/sale/menu3/menu3-1">销售发票到处</router-link>
-            </p>
-          </div>
-          <div class="ce4">
-            <img class="leftImg" src="@/static/images/gyzl/sd2.png" />
-            <p class="pp">
-              <router-link to="/sale/menu1/menu1-1">订单类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd3.png" />
-            <p class="pp">
-              <router-link to="/sale/menu1/menu1-2">出库类型设定</router-link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 弹框 库存-->
-    <div
-      role="alert"
-      v-show="show4"
-      class="el-notification right"
-      style="top: 16px; z-index: 2013; width:20%;  height:  300px ;"
-    >
-      <div class="el-notification__group">
-        <h2 class="el-notification__title">&nbsp;&nbsp;库存管理</h2>
-        <div class="el-notification__content"></div>
-        <div class="el-notification__closeBtn el-icon-close" v-on:click="close"></div>
-        <div class="all">
-          <div class="ce1">
-            <img class="leftImg" src="@/static/images/gyzl/qtrk.png" />
-            <p class="pp">
-              <router-link to="/stock/menu2/menu2-1">&nbsp;&nbsp;其他入库单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/qtck.png" />
-            <p class="pp">
-              <router-link to="/stock/menu2/menu2-2">&nbsp;&nbsp;&nbsp;其他出库单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/db.png" />
-            <p class="pp">
-              <router-link to="/stock/menu3/menu3-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调拨单</router-link>
-            </p>
-          </div>
-          <div class="ce2">
-            <img class="leftImg" src="@/static/images/gyzl/pd1.png" />
-            <p class="pp">
-              <router-link to="/stock/menu3/menu3-2">&nbsp;&nbsp;打印盘点单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/pd2.png" />
-            <p class="pp">
-              <router-link to="/stock/menu3/menu3-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;盘点单</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/dj.png" />
-            <p class="pp">
-              <router-link to="/stock/menu4/menu4-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调价单</router-link>
-            </p>
-          </div>
-          <div class="ce3">
-            <img class="leftImg" src="@/static/images/gyzl/sd2.png" />
-            <p class="pp">
-              <router-link to="/stock/menu1/menu1-1">&nbsp;入库类型设定</router-link>
-            </p>
-            <img class="leftImg" src="@/static/images/gyzl/sd3.png" />
-            <p class="pp">
-              <router-link to="/stock/menu1/menu1-2">&nbsp;出库类型设定</router-link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
 
      <!-- 弹框 公用资料-->
-        <div role="alert"  v-show="show" class="el-notification right" style="top: 16px; z-index: 2013; width:30%;  height:  300px ;">
+        <div role="alert"  v-show="show" class="el-notification right" style="top: 16px; z-index: 2013; width:25%;  height:  300px ;">
       <div class="el-notification__group">
         <h2 class="el-notification__title">&nbsp;&nbsp;共用资料</h2>
         <div class="el-notification__content">
@@ -463,7 +198,7 @@
           <div class="all" >
              <div class="ce1">
                 <img class="leftImg" src="@/static/images/gyzl/ck.png" > 
-                <p class="pp">  <router-link to="/commonMaterials/menu1/menu1-1">&nbsp;&nbsp;&nbsp;仓库管理</router-link></p>
+                <p class="pp">  <router-link to="/commonMaterials/menu2/menu2-1">&nbsp;&nbsp;&nbsp;仓库管理</router-link></p>
                 <img class="leftImg" src="@/static/images/gyzl/zwj.png" > 
                 <p class="pp">  <router-link to="/commonMaterials/menu2/menu2-2">&nbsp;&nbsp;&nbsp;物料类别</router-link></p>
                 <img class="leftImg" src="@/static/images/gyzl/wllb.png" > 
@@ -487,7 +222,7 @@
              </div>
              <div class="ce4">
                  <img class="leftImg" src="@/static/images/gyzl/bm.png" > 
-                <p class="pp">  <router-link to="/commonMaterials/menu1/menu1-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部门</router-link></p>
+                <p class="pp">  <router-link to="/commonMaterials/menu1/menu1-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部门</router-link></p>
                 <img class="leftImg" src="@/static/images/gyzl/xl.png" > 
                 <p class="pp">  <router-link to="/commonMaterials/menu1/menu1-5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学历</router-link></p>
                 <img class="leftImg" src="@/static/images/gyzl/ryzwj.png" > 
@@ -497,54 +232,8 @@
       </div>
     </div>
 
-  <!-- 弹框 采购管理-->
-     <div role="alert"  v-show="show2" class="el-notification right" style="top: 16px; :z-index 2013; width:30%;  height:  300px ;">
-      <div class="el-notification__group">
-        <h2 class="el-notification__title">&nbsp;&nbsp;采购管理</h2>
-        <div class="el-notification__content">
-        </div>
-        <div class="el-notification__closeBtn el-icon-close" v-on:click="close" ></div>
-          <div class="all" >
-             <div class="ce1">
-                <img class="leftImg" src="@/static/images/gyzl/ck.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-1">&nbsp;&nbsp;采购请购单</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/zwj.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-3">&nbsp;&nbsp;&nbsp;采购订单</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/wllb.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-2">&nbsp;&nbsp;采购询价单</router-link></p> 
-             </div>
-             <div class="ce2">
-                <img class="leftImg" src="@/static/images/gyzl/khlb.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-5">&nbsp;&nbsp;采购退货单</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/khzwj.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-4">&nbsp;&nbsp;采购入库单</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/gyslb.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-6">&nbsp;&nbsp;采购折让单</router-link></p> 
-             </div>
-             <div class="ce3">
-                 <img class="leftImg" src="@/static/images/gyzl/qzkh.png" > 
-                <p class="pp">  <router-link to="/purchase/menu2/menu2-7">&nbsp;&nbsp;&nbsp;采购发票</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/kjkm.png" > 
-                <p class="pp">  <router-link to="/purchase/menu3/menu3-1">采购分摊作业</router-link></p>
-               <img class="leftImg" src="@/static/images/gyzl/lsjl.png" > 
-               <p class="pp">  <router-link to="/purchase/menu2/menu2-8">历史交易记录</router-link></p>  
-             </div>
-              <div class="ce4">
-                 <img class="leftImg" src="@/static/images/gyzl/sd1.png" > 
-                <p class="pp">  <router-link to="/purchase/menu1/menu1-1">请购类型设定</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/sd2.png" > 
-                <p class="pp">  <router-link to="/purchase/menu1/menu1-2">入库类型设定</router-link></p>
-                <img class="leftImg" src="@/static/images/gyzl/sd3.png" > 
-                <p class="pp">  <router-link to="/purchase/menu1/menu1-3">订单类型设定</router-link></p> 
-             </div>  
-          </div>
-      </div>
-    </div>
-
-    
- 
    <!-- 弹框 采购管理-->
-     <div role="alert"  v-show="show2" class="el-notification right" style="top: 16px; z-index: 2013; width:30%;  height:  300px ;">
+     <div role="alert"  v-show="show2" class="el-notification right" style="top: 16px; z-index: 2013; width:25%;  height:  300px ;">
       <div class="el-notification__group">
         <h2 class="el-notification__title">&nbsp;&nbsp;采购管理</h2>
         <div class="el-notification__content">
@@ -589,7 +278,7 @@
  
  
   <!-- 弹框 销售-->
-     <div role="alert"  v-show="show3" class="el-notification right" style="top: 16px; z-index: 2013; width:30%;  height:  300px ;">
+     <div role="alert"  v-show="show3" class="el-notification right" style="top: 16px; z-index: 2013; width:25%; height:300px ;">
       <div class="el-notification__group">
         <h2 class="el-notification__title">&nbsp;&nbsp;销售管理</h2>
         <div class="el-notification__content">
@@ -631,7 +320,7 @@
     </div>
 
  <!-- 弹框 库存-->
-     <div role="alert"  v-show="show4" class="el-notification right" style="top: 16px; z-index: 2013; width:25%;  height:  300px ;">
+     <div role="alert"  v-show="show4" class="el-notification right" style="top: 16px; z-index: 2013; width:20%;  height:  300px ;">
       <div class="el-notification__group">
         <h2 class="el-notification__title">&nbsp;&nbsp;库存管理</h2>
         <div class="el-notification__content">
@@ -666,7 +355,7 @@
     </div>
 
  <!-- 弹框 报表-->
-     <div role="alert"  v-show="show5" class="el-notification right" style="top: 16px; z-index: 2013; width:34%;  height:  300px ;">
+     <div role="alert"  v-show="show5" class="el-notification right" style="top: 16px; z-index: 2013; width:30%;  height:  300px ;">
       <div class="el-notification__group">
           <el-tabs v-model="activeName" type="card" @tab-click="handleClick">  
           <el-tab-pane label="采购报表" name="first"> 
@@ -871,6 +560,7 @@ export default {
       show2: false,
       show3: false,
       show4: false,
+      show5: false,
       activeName: 'first'
     };
   },
