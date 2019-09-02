@@ -15,7 +15,7 @@
       <div style="float: right;margin: 15px 300px 0px 0px;">
         <el-button
           type="primary"
-          @click="addDialog = true;updatebool = false;entity = {};value = []"
+          @click="addDialog = true;updatebool = false;entity = {};value = [];cleanTree()"
         >新增</el-button>
       </div>
     </div>
@@ -25,7 +25,8 @@
       <el-table-column prop="description" label="角色描述" width="310"></el-table-column>
       <el-table-column label="角色权限" width="330">
         <template slot-scope="scope">
-          <span v-for="entity in scope.row.permissionsList">{{entity.description}}</span>
+          <span v-for="entity in scope.row.permissionsList.slice(0, 2)"> {{entity.description}} </span>
+          <samp v-if="scope.row.permissionsList.length > 3">...</samp>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="400">
@@ -37,7 +38,7 @@
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
-    <el-dialog title="编辑角色" :visible.sync="addDialog" width="45%" :before-close="handleClose">
+    <el-dialog title="编辑角色" :visible.sync="addDialog" width="30%" :before-close="handleClose">
       <span>
         <el-form
           :model="entity"
@@ -53,16 +54,17 @@
             <el-input v-model="entity.description"></el-input>
           </el-form-item>
           <el-form-item label="角色权限">
-            <el-transfer
-              v-model="value"
-              filterable
-              :filter-method="filterMethod"
+            <el-tree
+              :data="permissionListTwo"
+              show-checkbox
+              node-key="id"
+              ref="tree"
+              :default-checked-keys="value"
               :props="{
-                key: 'id',
-                label: 'description'
+                children: 'children',
+                label: 'label'
               }"
-              :data="permissionList"
-            ></el-transfer>
+            ></el-tree>
           </el-form-item>
         </el-form>
       </span>
@@ -81,7 +83,7 @@
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
 import { Message } from "element-ui";
-import { constants } from 'fs';
+import { constants } from "fs";
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -106,7 +108,8 @@ export default {
         role: [{ required: true, message: "名称不能为空", trigger: "blur" }]
       },
       value: [],
-      permissionList: []
+      permissionList: [],
+      permissionListTwo: []
     };
   },
   //监听属性 类似于data概念
@@ -115,8 +118,14 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    filterMethod(query, item){
-      return item.description.indexOf(query)> -1;
+    // 清除tree value
+    cleanTree(){
+      this.$nextTick(function() {
+        this.$refs.tree.setCheckedKeys(this.value)
+      })
+    },
+    filterMethod(query, item) {
+      return item.description.indexOf(query) > -1;
     },
     formatter(row, column) {
       return row.address;
@@ -169,6 +178,8 @@ export default {
     },
     // 保存
     save() {
+      // 获取权限id
+      this.entity.permissionsIdList = this.$refs.tree.getCheckedKeys();
       if (!this.updatebool) {
         // 新增
         request({
@@ -211,6 +222,7 @@ export default {
       this.entity.permissionsList.forEach(item => {
         this.value.push(item.id);
       });
+      this.cleanTree();
     },
     // 删除
     del(id) {
@@ -229,46 +241,55 @@ export default {
         method: "get"
       }).then(result => {
         this.permissionList = result.data.data;
+        //  获取路由
+        this.$router.options.routes.forEach(element => {
+          if (element.meta) {
+            // 第一层
+            let children1 = {
+              id: this.addPermissionId(element),
+              label: element.meta.title,
+              children: []
+            };
+            element.children.forEach(children => {
+              if (children.meta) {
+                // 第二层
+                let children2 = {
+                  id: this.addPermissionId(children),
+                  label: children.meta.title,
+                  children: []
+                };
+                children.children.forEach(childrens => {
+                  if (childrens.meta) {
+                    // 第三层
+                    children2.children.push({
+                      id: this.addPermissionId(childrens),
+                      label: childrens.meta.title
+                    });
+                  }
+                });
+                children1.children.push(children2);
+              }
+            });
+            this.permissionListTwo.push(children1);
+          }
+        });
       });
+    },
+    addPermissionId(entity) {
+      let id = "";
+      this.permissionList.forEach(item => {
+        if (entity.meta.permissions === item.permission) {
+          id = item.id;
+          return id;
+        }
+      });
+      return id;
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.findPermissionsList();
     this.findPage();
-  //   //  获取路由
-  //   this.$router.options.routes.forEach(element => {
-  //     if (element.meta) {
-  //       // 第一层
-  //       let children1 = {
-  //         id: element.meta.permissions,
-  //         label: element.meta.title,
-  //         children: []
-  //       };
-  //       element.children.forEach(children => {
-  //         if (children.meta) {
-  //           // 第二层
-  //           let children2 = {
-  //             id: children.meta.permissions,
-  //             label: children.meta.title,
-  //             children: []
-  //           };
-  //           children.children.forEach(childrens => {
-  //             if (childrens.meta) {
-  //               // 第三层
-  //               children2.children.push({
-  //                 id: childrens.meta.permissions,
-  //                 label: childrens.meta.title
-  //               });
-  //             }
-  //           });
-  //           children1.children.push(children2);
-  //         }
-  //       });
-  //       this.permissionList.push(children1);
-  //     }
-  //     console.log(this.permissionList);
-  //   });
   }
 };
 </script>
