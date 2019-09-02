@@ -56,7 +56,7 @@ export default {
       //每页显示数量
       type: Array,
       default() {
-        return [10, 20, 30, 50];
+        return [2, 20, 30, 50];
       }
     },
     totalCount: {
