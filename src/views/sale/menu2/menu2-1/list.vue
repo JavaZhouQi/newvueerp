@@ -85,7 +85,7 @@
         <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
       </vxe-table>
     </el-dialog>
-    
+
   </div>
 </template>
 
