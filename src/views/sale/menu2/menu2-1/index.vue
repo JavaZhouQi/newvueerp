@@ -393,7 +393,7 @@ export default {
         ],
         // 查询的条件
         selectName: {},
-        tableName: "Comcustomer", // 表名
+        tableName: "comcustomer", // 表名
         num: 1, // 截取数量
         list: [],
         coumn: "id", // 查询的列名 写name（名称）就可以了
