@@ -4,7 +4,6 @@ import { Message } from 'element-ui'
 
 router.beforeEach((to, from, next) => {
     if(to.meta.permissions){
-        console.log(to)
         let permissions = sessionStorage.getItem("permissions")
         //没有登录直接跳转到登录路由
         if (!permissions) {
@@ -18,7 +17,6 @@ router.beforeEach((to, from, next) => {
             Message.error("抱歉权限不足");
             next("/");
         }
-        
     }else{
         next();
     }
