@@ -16,12 +16,24 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="正式客户" prop="name">
-            <el-input v-model="smlordbillmain.customerID" @dblclick.native="storageDetail"  :disabled="isWriter"></el-input>
+            <el-input
+              v-model="smlordbillmain.customerID"
+              @dblclick.native="storageDetail"
+              :disabled="isWriter"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="单据日期" prop="billDate">
-            <el-date-picker v-model="smlordbillmain.billDate" value-format="yyyy-MM-dd" @change="changeDate" :disabled="isWriter"  align="right" type="date" placeholder="选择日期"> </el-date-picker>
+            <el-date-picker
+              v-model="smlordbillmain.billDate"
+              value-format="yyyy-MM-dd"
+              @change="changeDate"
+              :disabled="isWriter"
+              align="right"
+              type="date"
+              placeholder="选择日期"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
@@ -79,14 +91,26 @@
       <div class="details">
         <el-tabs type="card">
           <el-tab-pane label="内容">
-            <vxe-table height="160" resizable highlight-hover-row class="vxe-table-element" :data.sync="smlordbillmain.subList" :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}" >
+            <vxe-table
+              height="160"
+              resizable
+              highlight-hover-row
+              class="vxe-table-element"
+              :data.sync="smlordbillmain.subList"
+              :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
+            >
               <vxe-table-column title>
                 <template v-slot="{ row }" style="padding:10px;">
                   <i class="el-icon-remove"></i>
                 </template>
               </vxe-table-column>
-              <vxe-table-column type="index" field="rowNO" title="栏号" width="100" ></vxe-table-column>
-              <vxe-table-column field="prodID" title="物料编号" width="140" :edit-render="{name: 'input'}" ></vxe-table-column>
+              <vxe-table-column type="index" field="rowNO" title="栏号" width="100"></vxe-table-column>
+              <vxe-table-column
+                field="prodID"
+                title="物料编号"
+                width="140"
+                :edit-render="{name: 'input'}"
+              ></vxe-table-column>
               <vxe-table-column
                 field="prod.name"
                 title="物料名称"
@@ -252,47 +276,53 @@
 
     <el-dialog title="单选--客户主文件设定" :visible.sync="dialogcustomer" width="35%">
       <span>
-          <el-row :gutter="10">
-            <el-col :span="24" style="padding:3px;height:48px;margin-bottom: 5px;">
-              <el-form :inline="true" class="demo-form-inline">
-                <el-form-item>
-                  <el-select v-model="union.coumn">
-                    <el-option
-                      v-for="entity,index in union.coumnList"
-                      :label="entity.name"
-                      :value="entity.value"
-                      :key="index"
-                    ></el-option>
-                  </el-select>
-                  <el-input-number v-model="union.num" :min="1" :max="10" style="width:130px;"></el-input-number>
-                </el-form-item>
-              </el-form>
-            </el-col>
-            <el-col :span="5" style="height:200px;">
-              <div>
-                <ul style="height:200px;">
-                  <li v-for="coumn in union.list" @click="selectCoumn(coumn)">{{ coumn }}</li>
-                </ul>
-              </div>
-            </el-col>
-            <el-col :span="19" style="padding:3px;height:200px;">
-              <el-table
-                ref="singleTable"
-                :data="union.tableData"
-                highlight-current-row
-                @current-change="handleCurrentChange"
-                style="width: 100%"
-                height="200"
-              >
-                <el-table-column v-for="entity in union.coumnList" :property="entity.value" :label="entity.name" width="120" :key="entity.value"></el-table-column>
-              </el-table>
-            </el-col>
-          </el-row>
-        </span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="choiceDialog = false">取 消</el-button>
-          <el-button type="primary" @click="choiceDialog = false">确 定</el-button>
-        </span>
+        <el-row :gutter="10">
+          <el-col :span="24" style="padding:3px;height:48px;margin-bottom: 5px;">
+            <el-form :inline="true" class="demo-form-inline">
+              <el-form-item>
+                <el-select v-model="union.coumn">
+                  <el-option
+                    v-for="entity,index in union.coumnList"
+                    :label="entity.name"
+                    :value="entity.value"
+                    :key="index"
+                  ></el-option>
+                </el-select>
+                <el-input-number v-model="union.num" :min="1" :max="10" style="width:130px;"></el-input-number>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="5" style="height:200px;">
+            <div>
+              <ul style="height:200px;">
+                <li v-for="coumn in union.list" @click="selectCoumn(coumn)">{{ coumn }}</li>
+              </ul>
+            </div>
+          </el-col>
+          <el-col :span="19" style="padding:3px;height:200px;">
+            <el-table
+              ref="singleTable"
+              :data="union.tableData"
+              highlight-current-row
+              @current-change="handleCurrentChange"
+              style="width: 100%"
+              height="200"
+            >
+              <el-table-column
+                v-for="entity in union.coumnList"
+                :property="entity.value"
+                :label="entity.name"
+                width="120"
+                :key="entity.value"
+              ></el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="choiceDialog = false">取 消</el-button>
+        <el-button type="primary" @click="choiceDialog = false">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -302,7 +332,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
-import { Message } from 'element-ui';
+import { Message } from "element-ui";
 export default {
   //import引入的组件需要注入到对象中才能使用
   components: {},
@@ -311,71 +341,63 @@ export default {
     return {
       isWriter: false,
       savebtn: true, //是否保存
-      tableData:[],
-      formData:{},
-      dialogcustomer:false,
+      tableData: [],
+      formData: {},
+      dialogcustomer: false,
       test: {
-            flag:"1" ,
-            billNo:"",
-            customerID:"",
-            comcustomer:{
-                id:"",
-                fullName:""
+        flag: "1",
+        billNo: "",
+        customerID: "",
+        comcustomer: {
+          id: "",
+          fullName: ""
+        },
+        currID: "RMB",
+        billDate: new Date(),
+        hasCheck: 0,
+        auditStatus: 0,
+        priceOfTax: 0,
+        tax: "0",
+        subList: [
+          {
+            rowNO: "",
+            prodID: "",
+            Comproduct: {
+              ProdName: ""
             },
-            currID:"RMB",
-            billDate:new Date(),
-            hasCheck:0,
-            auditStatus:0,
-            priceOfTax:0,
-            tax:"0",
-            subList:[
-                {
-                  rowNO:"",
-                  prodID:"",
-                  Comproduct:{
-                    ProdName:""
-                  },
-                  quantity:"",
-
-
-                }
-               
-            ]
+            quantity: ""
+          }
+        ]
       },
       smlordbillmain: {
-            flag:"1" ,
-            billNo:"",
-            customerID:"001",
-            comcustomer:{
-                id:"",
-                fullName:""
-            },
-            currID:"RMB",
-            billDate:new Date(),
-            auditStatus:0,
-            hasCheck:0,
-            tax:"0",
-            priceOfTax:0,
-            subList:[
-                {
-                  rowNO:"",
-                  prodID:"",
-                  Comproduct:{
-                    ProdName:""
-                  },
-                  quantity:"",
-
-
-                }
-               
-            ]
-      }
-      ,rules: {
-          name: [
-            { required: true, message: '双击选择客户', trigger: 'blur' }
-          ]
+        flag: "1",
+        billNo: "",
+        customerID: "001",
+        comcustomer: {
+          id: "",
+          fullName: ""
         },
-        union: {
+        currID: "RMB",
+        billDate: new Date(),
+        auditStatus: 0,
+        hasCheck: 0,
+        tax: "0",
+        priceOfTax: 0,
+        subList: [
+          {
+            rowNO: "",
+            prodID: "",
+            Comproduct: {
+              ProdName: ""
+            },
+            quantity: ""
+          }
+        ]
+      },
+      rules: {
+        name: [{ required: true, message: "双击选择客户", trigger: "blur" }]
+      },
+      union: {
         // 列名
         coumnList: [
           {
@@ -397,30 +419,29 @@ export default {
         num: 1, // 截取数量
         list: [],
         coumn: "id", // 查询的列名 写name（名称）就可以了
-        tableData:[]
-      },
+        tableData: []
+      }
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
   watch: {
-    $route(to,from){
-      this.isWriter=false;
-      this.savebtn=true;
-    //   alert("我进来了");
-    // console.log(to.path);
-    this.smlordbillmain=this.test;
-    if(to.query.billNO!=undefined){
-      this.smlordbillmain.billNo=to.query.billNO;
-      this.smlordbillmain.flag=1;
-        this.query_one()
-        
-    }else{
-      this.isWriter=false;
-    }
-  },
-  "union.coumn": function() {
+    $route(to, from) {
+      this.isWriter = false;
+      this.savebtn = true;
+      //   alert("我进来了");
+      // console.log(to.path);
+      this.smlordbillmain = this.test;
+      if (to.query.billNO != undefined) {
+        this.smlordbillmain.billNo = to.query.billNO;
+        this.smlordbillmain.flag = 1;
+        this.query_one();
+      } else {
+        this.isWriter = false;
+      }
+    },
+    "union.coumn": function() {
       this.findByCoumnAndSize();
     },
     "union.num": function() {
@@ -430,28 +451,29 @@ export default {
   //方法集合
   methods: {
     //根据单号和flag查询对象
-    query_one(){
+    query_one() {
       console.log(this.smlordbillmain);
       request({
-        url:"/smlordbillmain/queryOne",
+        url: "/smlordbillmain/queryOne",
         method: "post",
-        data:this.smlordbillmain
+        data: this.smlordbillmain
       }).then(result => {
-      //  console.log(result.data.data);
-      this.smlordbillmain=result.data.data;
-      // console.log(this.smlordbillmain.priceOfTax);
-      if(this.smlordbillmain.auditStatus==1){
-        this.isWriter=true;
-        this.savebtn = false;
-      }
+        //  console.log(result.data.data);
+        this.smlordbillmain = result.data.data;
+        // console.log(this.smlordbillmain.priceOfTax);
+        if (this.smlordbillmain.auditStatus == 1) {
+          this.isWriter = true;
+          this.savebtn = false;
+        }
       });
     },
     //双击弹出客户
-    storageDetail(){
-      this.dialogcustomer=true;
+    storageDetail() {
+      this.dialogcustomer = true;
+      this.findByCoumnAndSize();
     },
-     //查询所有的客户
-    findPage(){
+    //查询所有的客户
+    findPage() {
       request({
         url:
           "/comcustomer/findPage?current=" +
@@ -468,45 +490,43 @@ export default {
 
     // 保存
     save() {
-
       // console.log(this.smlordbillmain);
       // return;
       //新增方法
-      if(this.$route.query.type==1){
-           request({
-              url:"/smlordbillmain/add",
-              method:"post",
-              data:this.smlordbillmain
-            }).then(result=>{
-              console.log(result.data.data);
-              if(result.data.data){
-                Message.success("保存成功");
-                this.isWriter = true;
-                this.savebtn = false;
-              }else{
-                Message.success("保存失败");
-              }
-              // Message.success(result.data.data)
-            })
-      }else{
+      if (this.$route.query.type == 1) {
+        request({
+          url: "/smlordbillmain/add",
+          method: "post",
+          data: this.smlordbillmain
+        }).then(result => {
+          console.log(result.data.data);
+          if (result.data.data) {
+            Message.success("保存成功");
+            this.isWriter = true;
+            this.savebtn = false;
+          } else {
+            Message.success("保存失败");
+          }
+          // Message.success(result.data.data)
+        });
+      } else {
         //修改方法
-         request({
-              url:"/smlordbillmain/update",
-              method:"post",
-              data:this.smlordbillmain
-            }).then(result=>{
-              // console.log(result.data.data);
-              if(result.data.data){
-                Message.success("保存成功");
-                this.isWriter = true;
-                this.savebtn = false;
-              }else{
-                Message.success("保存失败");
-              }
-              // Message.success(result.data.data)
-            })
+        request({
+          url: "/smlordbillmain/update",
+          method: "post",
+          data: this.smlordbillmain
+        }).then(result => {
+          // console.log(result.data.data);
+          if (result.data.data) {
+            Message.success("保存成功");
+            this.isWriter = true;
+            this.savebtn = false;
+          } else {
+            Message.success("保存失败");
+          }
+          // Message.success(result.data.data)
+        });
       }
-     
     },
     //保存后新增
     saveAddition() {
@@ -516,67 +536,65 @@ export default {
       if (this.smlordbillmain.auditStatus == 0) {
         //审核
         request({
-        url: "/smlordbillmain/audit",
-        method: "post",
-        params:{
-          billNo:this.smlordbillmain.billNo,
-          flag:1,
-          auditStatus:1,
-        }
-      }).then(result => {
-        if(result.data.data){
-          Message.success("审核成功");
-          this.smlordbillmain.auditStatus = 1;
-        }else{
-          Message.success("审核失败");
-          this.smlordbillmain.auditStatus = 0;
-        }
-      });
+          url: "/smlordbillmain/audit",
+          method: "post",
+          params: {
+            billNo: this.smlordbillmain.billNo,
+            flag: 1,
+            auditStatus: 1
+          }
+        }).then(result => {
+          if (result.data.data) {
+            Message.success("审核成功");
+            this.smlordbillmain.auditStatus = 1;
+          } else {
+            Message.success("审核失败");
+            this.smlordbillmain.auditStatus = 0;
+          }
+        });
       } else {
         //取消审核
-          request({
-        url: "/smlordbillmain/audit",
-        method: "post",
-        params:{
-          billNo:this.smlordbillmain.billNo,
-          flag:1,
-          auditStatus:0,
-        }
-      }).then(result => {
-        if(result.data.data=="true"){
-          Message.success("取消审核成功");
-          this.smlordbillmain.auditStatus =0;
-          this.isWriter = false;
-          this.savebtn = true;
-        }else{
-          Message.success("取消审核失败,"+result.data.data);
-          this.smlordbillmain.auditStatus = 1;
-        }
-      });
+        request({
+          url: "/smlordbillmain/audit",
+          method: "post",
+          params: {
+            billNo: this.smlordbillmain.billNo,
+            flag: 1,
+            auditStatus: 0
+          }
+        }).then(result => {
+          if (result.data.data == "true") {
+            Message.success("取消审核成功");
+            this.smlordbillmain.auditStatus = 0;
+            this.isWriter = false;
+            this.savebtn = true;
+          } else {
+            Message.success("取消审核失败," + result.data.data);
+            this.smlordbillmain.auditStatus = 1;
+          }
+        });
       }
-      
-    }
-    ,lishi(){
+    },
+    lishi() {
       // console.log(this.$router);
-      this.$emit("update:dialogTableVisible",true);
+      this.$emit("update:dialogTableVisible", true);
       // this.dialogTableVisible=true;
       // this.$router.push({page:"/sale/menu2/menu2-1/lishi"});
-      
     },
-    
-    query_num(){
+
+    query_num() {
       // var smlordbillmain_ =this.smlordbillmain;
       request({
-        url:"/smlordbillmain/querynum",
-        method:"post",
-        data:this.smlordbillmain
-      }).then(result=>{
-          this.smlordbillmain.billNo=result.data.data;
-          // alert(this.smlordbillmain.billNo);
-      })
+        url: "/smlordbillmain/querynum",
+        method: "post",
+        data: this.smlordbillmain
+      }).then(result => {
+        this.smlordbillmain.billNo = result.data.data;
+        // alert(this.smlordbillmain.billNo);
+      });
     },
-    changeDate(){
-       this.query_num();
+    changeDate() {
+      this.query_num();
     },
     // 联合查询方法
     findByCoumnAndSize() {
@@ -587,7 +605,7 @@ export default {
           "&size=" +
           this.union.num +
           "&table=" +
-          this.union.tableName,
+          this.union.tableName+" where flag = 1",
         method: "get"
       }).then(result => {
         this.union.list = result.data.data;
@@ -597,41 +615,40 @@ export default {
     },
     // 查询条件
     selectCoumn(coumn) {
-      this.union.selectName[this.union.coumn] =coumn;
-      this.union.selectName.flag=1;
+      this.union.selectName[this.union.coumn] = coumn;
       this.findTable();
     },
     // 查询数据详情
     findTable() {
+      this.union.selectName.flag = 1;
       request({
-        url:
-          "/"+this.union.tableName+"/findByTable",
+        url: "/" + this.union.tableName + "/findByTable",
         method: "post",
-        data:this.union.selectName
+        data: this.union.selectName
       }).then(result => {
         this.union.tableData = result.data.data;
-        this.union.selectName = {}
+        this.union.selectName = {};
       });
     },
     // 获取选中的数据
     handleCurrentChange(val) {
       // this.entity.bankClsID = val.wareHouseID;
-      this.$store.state.saleCustomer=val;
+      this.$store.state.saleCustomer = val;
       console.log(val);
-    },
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.smlordbillmain=this.test;
-      this.isWriter=false;
-      this.savebtn=true;
-      if(this.$route.query.billNO!=undefined){
-        this.smlordbillmain.billNo=this.$route.query.billNO;
-        this.smlordbillmain.flag=1;
-          this.query_one()
-      }else{
-          this.query_num();
-      }
+    this.smlordbillmain = this.test;
+    this.isWriter = false;
+    this.savebtn = true;
+    if (this.$route.query.billNO != undefined) {
+      this.smlordbillmain.billNo = this.$route.query.billNO;
+      this.smlordbillmain.flag = 1;
+      this.query_one();
+    } else {
+      this.query_num();
+    }
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},

@@ -49,8 +49,8 @@
             </el-form-item>
             <el-form-item label="性别">
               <el-select v-model="entity.sexDistinction" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
-                <el-option  label="男" value="1"></el-option>
-                <el-option  label="女" value="2"></el-option>
+                <el-option  label="男" :value="1"></el-option>
+                <el-option  label="女" :value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="英文姓名">
@@ -76,8 +76,8 @@
                 </el-form-item>
                 <el-form-item label="婚姻状况">
                   <el-select v-model="entity.maritalStatus" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
-                    <el-option label="未婚" value="1"></el-option>
-                    <el-option label="已婚" value="2"></el-option>
+                    <el-option label="未婚" :value="1"></el-option>
+                    <el-option label="已婚" :value="2"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="入职日期">
@@ -133,8 +133,8 @@
             <el-tab-pane label="其他资料">
               <el-form label-position="left" label-width="100px" :inline="true" size="mini">
                 <el-form-item label="最高学历">
-                  <el-select v-model="entity.humschoolId" placeholder="请选择" style="width:185px;"  value-format="yyyy-MM-dd">
-                    <el-option v-for="entity in humschoolingList" :label="entity.schoolingName" :value="entity.schoolingID" :key="entity.schoolingID"></el-option>
+                  <el-select v-model="entity.humschoolId" placeholder="请选择" style="width:185px;">
+                    <el-option v-for="entity,index in humschoolingList" :label="entity.schoolingName" :value="entity.schoolingID" :key="index"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="到期日期">
