@@ -17,7 +17,7 @@
         <el-col :span="12">
           <el-form-item label="正式客户" prop="name">
             <el-input
-              v-model="smlordbillmain.customerID"
+              v-model="smlordbillmain.customerName"
               @dblclick.native="storageDetail"
               :disabled="isWriter"
             ></el-input>
@@ -105,54 +105,59 @@
                 </template>
               </vxe-table-column>
               <vxe-table-column type="index" field="rowNO" title="栏号" width="100"></vxe-table-column>
-              <vxe-table-column
+              <vxe-table-column  
                 field="prodID"
                 title="物料编号"
                 width="140"
-                :edit-render="{name: 'input'}"
-              ></vxe-table-column>
+                
+              >
+                <template slot-scope="scope">
+                  <el-input class="sml-input" v-model="scope.row.prodID" @dblclick.native="storageprodID" :disabled="true" placeholder=""></el-input>
+                </template>
+              </vxe-table-column>
               <vxe-table-column
-                field="prod.name"
+                field="prodName"
                 title="物料名称"
                 width="140"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
-                field="prod.prodSize"
+                field="prodSize"
                 title="规格型号"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="unit"
                 title="单位名称"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="quantity"
                 title="数量"
                 width="140"
-                :edit-render="{name: 'input'}"
-              ></vxe-table-column>
+              >
+                  <template slot-scope="scope">
+                    <el-input class="sml-input" v-model="scope.row.quantity" @blur="calculate(scope.row)" :disabled="isWriter" ></el-input>
+                  </template>
+              </vxe-table-column>
               <vxe-table-column
                 field="oldPrice"
                 title="折扣前单价"
                 width="110"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="discount"
                 title="折数(%)"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
-              <vxe-table-column field="price" title="单价" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+              <vxe-table-column field="price" title="单价" width="100"  >
+                  <template slot-scope="scope">
+                    <el-input class="sml-input" v-model="scope.row.price" @blur="calculate(scope.row)" :disabled="isWriter"></el-input>
+                  </template>
+              </vxe-table-column>
               <vxe-table-column
                 field="amount"
                 title="金额"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="taxRate"
@@ -164,20 +169,21 @@
                 field="taxAmt"
                 title="税额"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="telephone"
                 title="含税金额"
                 width="100"
-                :edit-render="{name: 'input'}"
               ></vxe-table-column>
               <vxe-table-column
                 field="isGift"
                 title="赠品"
                 width="140"
-                :edit-render="{name: 'input'}"
-              ></vxe-table-column>
+              >
+                  <template slot-scope="scope">
+                      <el-checkbox v-model="scope.row.isGift" @change="changeIsGift(scope.row)"></el-checkbox>
+                  </template>
+              </vxe-table-column>
               <vxe-table-column
                 field="itemRemark"
                 title="分录备注"
@@ -223,7 +229,15 @@
       </div>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="业务人员" prop="name">
+          <el-form-item label="业务人员" prop="salesMan">
+            <el-select v-model="smlordbillmain.salesMan" filterable placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
             <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
@@ -320,8 +334,63 @@
         </el-row>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="choiceDialog = false">取 消</el-button>
-        <el-button type="primary" @click="choiceDialog = false">确 定</el-button>
+        <el-button @click="dialogcustomer = false">取 消</el-button>
+        <el-button type="primary" @click="dialogcustomer = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="多选--物料主文件设定" :visible.sync="dialogMaterials" width="35%">
+      <span>
+        <el-row :gutter="10">
+          <el-col :span="24" style="padding:3px;height:48px;margin-bottom: 5px;">
+            <el-form :inline="true" class="demo-form-inline">
+              <el-form-item>
+                <el-select v-model="union2.coumn">
+                  <el-option
+                    v-for="entity,index in union2.coumnList"
+                    :label="entity.name"
+                    :value="entity.value"
+                    :key="index"
+                  ></el-option>
+                </el-select>
+                <el-input-number v-model="union2.num" :min="1" :max="10" style="width:130px;"></el-input-number>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="5" style="height:200px;">
+            <div>
+              <ul style="height:200px;">
+                <li v-for="coumn in union2.list" @click="selectCoumn2(coumn)">{{ coumn }}</li>
+              </ul>
+            </div>
+          </el-col>
+          <el-col :span="19" style="padding:3px;height:200px;">
+            <el-table
+              ref="singleTable"
+              :data="union2.tableData"
+              highlight-current-row
+              @selection-change="handleSelectionChange"
+              style="width: 100%"
+              height="200"
+            >
+              <el-table-column
+                type="selection"
+                width="55">
+              </el-table-column>
+              <el-table-column
+                v-for="entity in union2.coumnList"
+                :property="entity.value"
+                :label="entity.name"
+                width="120"
+                :key="entity.value"
+              ></el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogMaterials = false">取 消</el-button>
+        <el-button type="primary" @click="dialogMaterials = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -344,35 +413,40 @@ export default {
       tableData: [],
       formData: {},
       dialogcustomer: false,
+      dialogMaterials:false,
       test: {
         flag: "1",
         billNo: "",
         customerID: "",
+        customerName:"",
         comcustomer: {
           id: "",
           fullName: ""
         },
         currID: "RMB",
         billDate: new Date(),
-        hasCheck: 0,
         auditStatus: 0,
-        priceOfTax: 0,
+        hasCheck: 0,
         tax: "0",
+        priceOfTax: 0,
         subList: [
           {
             rowNO: "",
             prodID: "",
             Comproduct: {
-              ProdName: ""
+              prodName: ""
             },
-            quantity: ""
+            quantity: "",
+            isGift:0,
+            isGift2:false,
           }
         ]
       },
       smlordbillmain: {
         flag: "1",
         billNo: "",
-        customerID: "001",
+        customerID: "",
+        customerName:"",
         comcustomer: {
           id: "",
           fullName: ""
@@ -388,9 +462,12 @@ export default {
             rowNO: "",
             prodID: "",
             Comproduct: {
-              ProdName: ""
+              prodName: ""
             },
-            quantity: ""
+            test:{
+            },
+            quantity: "",
+            isGift:0,
           }
         ]
       },
@@ -420,7 +497,32 @@ export default {
         list: [],
         coumn: "id", // 查询的列名 写name（名称）就可以了
         tableData: []
-      }
+      },
+      union2: {
+        // 列名
+        coumnList: [
+          {
+            name: "编号",
+            value: "prodID"
+          },
+          {
+            name: "名称",
+            value: "prodName"
+          },
+          {
+            name: "英文名",
+            value: "engName"
+          }
+        ],
+        // 查询的条件
+        selectName: {},
+        tableName: "comproduct", // 表名
+        num: 1, // 截取数量
+        list: [],
+        coumn: "ProdID", // 查询的列名 写name（名称）就可以了
+        tableData: []
+      },
+      testnum:{},
     };
   },
   //监听属性 类似于data概念
@@ -441,18 +543,45 @@ export default {
         this.isWriter = false;
       }
     },
+    //客户选择
     "union.coumn": function() {
       this.findByCoumnAndSize();
     },
     "union.num": function() {
       this.findByCoumnAndSize();
-    }
+    },
+    
+    dialogcustomer(){
+      this.smlordbillmain.customerID=this.$store.state.saleCustomer.id;
+       this.smlordbillmain.customerName=this.$store.state.saleCustomer.id+"         "+this.$store.state.saleCustomer.fullName;
+      //  alert(this.smlordbillmain.customerName);
+      // console.log(this.smlordbillmain.customerID);
+    },
+       //物料选择
+    "union2.coumn": function() {
+      this.findByCoumnAndSize2();
+    },
+    "union2.num": function() {
+      this.findByCoumnAndSize2();
+    },
+    dialogMaterials(){
+      // this.smlordbillmain.customerID=this.$store.state.saleComproduct.id;
+      //  this.smlordbillmain.subList.prodID=this.$store.state.saleComproduct.id;
+      //  alert(this.smlordbillmain.customerName);
+      // console.log(this.smlordbillmain.customerID);
+    },
   },
   //方法集合
   methods: {
+    storageprodID(){
+      this.dialogMaterials=true;
+      this.findByCoumnAndSize2();
+    },
+    choiceDialog(){
+      this.dialogcustomer=false;
+    },
     //根据单号和flag查询对象
     query_one() {
-      console.log(this.smlordbillmain);
       request({
         url: "/smlordbillmain/queryOne",
         method: "post",
@@ -460,7 +589,8 @@ export default {
       }).then(result => {
         //  console.log(result.data.data);
         this.smlordbillmain = result.data.data;
-        // console.log(this.smlordbillmain.priceOfTax);
+       this.smlordbillmain.customerName=this.smlordbillmain.comcustomer.id+"         "+this.smlordbillmain.comcustomer.fullName;
+      console.log(this.smlordbillmain);
         if (this.smlordbillmain.auditStatus == 1) {
           this.isWriter = true;
           this.savebtn = false;
@@ -499,7 +629,7 @@ export default {
           method: "post",
           data: this.smlordbillmain
         }).then(result => {
-          console.log(result.data.data);
+          // console.log(result.data.data);
           if (result.data.data) {
             Message.success("保存成功");
             this.isWriter = true;
@@ -618,6 +748,28 @@ export default {
       this.union.selectName[this.union.coumn] = coumn;
       this.findTable();
     },
+    // 联合查询方法
+    findByCoumnAndSize2() {
+      request({
+        url:
+          "/currency/find?coumn=" +
+          this.union2.coumn +
+          "&size=" +
+          this.union2.num +
+          "&table=" +
+          this.union2.tableName,
+        method: "get"
+      }).then(result => {
+        this.union2.list = result.data.data;
+        this.union2.selectName[this.union2.coumn] = result.data.data[0];
+        this.findTable2();
+      });
+    },
+    // 查询条件
+    selectCoumn2(coumn) {
+      this.union2.selectName[this.union2.coumn] = coumn;
+      this.findTable2();
+    },
     // 查询数据详情
     findTable() {
       this.union.selectName.flag = 1;
@@ -635,7 +787,52 @@ export default {
       // this.entity.bankClsID = val.wareHouseID;
       this.$store.state.saleCustomer = val;
       console.log(val);
+    },
+    // 查询数据详情
+    findTable2() {
+      request({
+        url: "/" + this.union2.tableName + "/findByTable",
+        method: "post",
+        data: this.union2.selectName
+      }).then(result => {
+        this.union2.tableData = result.data.data;
+        console.log(this.union2.tableData);
+        this.union2.selectName = {};
+      });
+    },
+    // 获取选中的数据
+    handleSelectionChange(val) {
+      // this.entity.bankClsID = val.wareHouseID;
+      // this.$store.state.saleCustomer = val;
+      console.log(val);
+      this.smlordbillmain.subList=val;
+      for (let index = 0; index < this.smlordbillmain.subList.length; index++) {
+        this.smlordbillmain.subList[index].oldPrice=this.smlordbillmain.subList[index].salesPriceA;
+        this.smlordbillmain.subList[index].price=this.smlordbillmain.subList[index].salesPriceA;
+      }
     }
+    ,calculate(obj){
+      // alert("进来了");
+        obj.amount=parseInt(obj.quantity)*parseFloat(obj.price);
+        obj.discount=(parseFloat(obj.price)/parseFloat(obj.oldPrice)*100).toPrecision(4);
+    },
+    changeIsGift(obj){
+      if(obj.isGift){
+              obj.amount2=obj.amount;
+              obj.discount2=obj.discount;
+              obj.price2=obj.price;
+              obj.oldPrice2=obj.oldPrice;
+              obj.amount=0;
+              obj.discount=0;
+              obj.price=0;
+              obj.oldPrice=0;
+      }else{
+              obj.amount=obj.amount2;
+              obj.discount=obj.discount2;
+              obj.price=obj.price2;
+              obj.oldPrice=obj.oldPrice2;
+      }
+    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
@@ -757,4 +954,7 @@ ul {
   border: 1px solid #d7dae2;
   text-align: center;
 }
+// .sml-input{
+//   border: 0px;
+// }
 </style>
