@@ -68,6 +68,8 @@ export default {
           sessionStorage.setItem("token",result.data.data.sessionId)
           // 获取permissions对象
           sessionStorage.setItem("permissions",JSON.stringify(result.data.data.permissions))
+          sessionStorage.setItem("userId",this.user.username)
+          sessionStorage.setItem("session",JSON.stringify(result.data.data.session))
         }else{
           Message.error(result.data.data)
         }
