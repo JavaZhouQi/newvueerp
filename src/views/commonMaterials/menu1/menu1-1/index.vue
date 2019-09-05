@@ -15,7 +15,7 @@
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}" v-if="hasPerm('commonMaterialsMenu1-1')">新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
