@@ -24,8 +24,8 @@
       <el-table-column prop="validDate" label="有效日期" width="180"></el-table-column>
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button size="mini" @click="update(scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="del(scope.row.departID)">删除</el-button>
+          <el-button size="mini" @click="update(scope.row.billNO)">修改</el-button>
+          <el-button size="mini" type="danger" @click="del(scope.row.billNO)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,14 +110,14 @@ export default {
       this.innerVisible = false;
       if(scope){
         //console.log(scope)
-        this.$router.push({path:url,query:{id:scope.row.id}});
+        this.$router.push({path:url,query:{id:scope}});
       }else{
         this.$router.push(url);
       }
     },
     //新增模态框事件
     add:function(){
-      this.openDialog('采购询价','/operateXj',"");
+      this.openDialog('采购询价','/operateXj'," ");
     },
     //关闭模态框
     handleClose(done) {
@@ -194,16 +194,19 @@ export default {
       var number = this.entity.departID
     },
     // 修改
-    update(entity){
-      this.updatebool = true
-      this.addDialog = true
-      this.entity = entity
+    update(id){
+      console.log(id)
+      this.openDialog('采购询价','/operateXj',id);
     },
     // 删除
     del(id){
+      console.log(id)
       request({
-        url: "/comdepartment/del?id="+id,
-        method: "get"
+        url: "/yxpurchaseenquiry/deleteRDs",
+        method: "get",
+        params:{
+          billNO:id
+        }
       }).then(result => {
         Message.success(result.data.data)
         this.findPage()
