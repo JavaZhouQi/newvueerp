@@ -1,6 +1,7 @@
 <!--  -->
 <template>
     <div class="goOut">
+     
       <div style="height:60px;">
       <div style="margin-top: 15px;width:380px;float: left;">
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
@@ -19,21 +20,49 @@
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="ProdID" label="物料编号" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="ProdName" label="物料名称" width="180"></el-table-column>
-      <el-table-column prop="ProdSize" label="规格型号" width="280"></el-table-column>
-      <el-table-column prop="SQuantity" label="数量" width="200"></el-table-column>
-       <el-table-column prop="Sprice" label="单价" width="200"></el-table-column>
-        <el-table-column prop="Amount" label="金额" width="200"></el-table-column>
+      <el-table-column prop="prodID" label="物料编号" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="prodName" label="物料名称" width="180"></el-table-column>
+      <el-table-column prop="prodSize" label="规格型号" width="280"></el-table-column>
+      <el-table-column prop="squantity" label="数量" width="200"></el-table-column>
+       <el-table-column prop="sprice" label="单价" width="200"></el-table-column>
+        <el-table-column prop="amount" label="金额" width="200"></el-table-column>
       <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button size="mini" @click="update(scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="del(scope.row.ProdID)">删除</el-button>
+          <el-button size="mini" type="danger" @click="del(scope.row.prodID)">删除</el-button>
         </template>
       </el-table-column>
+      
     </el-table>
+
+
+
+
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
-    
+
+
+
+   
+   <el-dialog title="编辑部门" :visible.sync="addDialog" width="30%" :before-close="handleClose">
+      <span>
+        <el-form :model="entity" label-position="left" label-width="80px" status-icon :rules="rules">
+          <el-form-item label="部门编号" prop="prodID">
+            <el-input v-model="entity.prodID" :disabled="updatebool"></el-input>
+          </el-form-item>
+          <el-form-item label="物料名称" prop="prodName">
+            <el-input v-model="entity.prodName"></el-input>
+          </el-form-item>
+          <el-form-item label="规格型号">
+            <el-input v-model="entity.prodSize"></el-input>
+          </el-form-item>
+        </el-form>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialog = false">取 消</el-button>
+        <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
+      </span>
+    </el-dialog>
 
     
     <el-dialog title="采购入库":visible.sync="dialogVisible" width="70%" :before-close="handleClose">
@@ -121,40 +150,40 @@
                               :index="indexMethod">
                             </el-table-column>
                             <el-table-column
-                            prop="name"
+                            prop="prodID"
                             label="物料编号"
                             width="180">
                           </el-table-column>
                           <el-table-column
-                            prop="NameofMaterial"
+                            prop="prodName"
                             label="(物料名称)">
                           </el-table-column>
                           <el-table-column
-                          prop="Specifications"
+                          prop="prodSize"
                           label="(规格型号)">
                         </el-table-column>
                         <el-table-column
-                        prop="unit"
+                        prop="unitName"
                         label="(单位)">
                       </el-table-column>
                       <el-table-column
-                      prop="quantity"
+                      prop="squantity"
                       label="数量">
                     </el-table-column>
                     <el-table-column
-                    prop="price"
+                    prop="sprice"
                     label="单价">
                   </el-table-column>
                   <el-table-column
-                  prop="totalmoney"
+                  prop="amount"
                   label="金额">
                 </el-table-column>
                     <el-table-column
-                    prop="BatchNo"
+                    prop="haveBatch"
                     label="(批号)">
                   </el-table-column>
                   <el-table-column
-                  prop="address"
+                  prop="itwmRemark"
                   label="分录备注">
                 </el-table-column>
     
@@ -270,25 +299,29 @@
 </el-dialog>
 </div>
 </template>
-
 <script>
+    import request from '@/api/request'
+    import PageHelper from "@/components/PageHelper"
+    import { Message } from 'element-ui'
     //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
     //例如：import 《组件名称》 from '《组件路径》';
-
     export default {
         //import引入的组件需要注入到对象中才能使用
-        components: {},
+        components: {
+         PageHelper
+        },
         name: "goOut",
         data() {
             //这里存放数据
             return {
+                tableData:[],
                 entity: {},   // 新增and修改的对象
                 findData: {},  // 查询数据
                 select: "",   // 查询条件
                 selectValue: "",
-               // addDialog: false, // 新增模态框
+                addDialog: false, // 新增模态框
                 currentPage: 1,   // 当前页
-                currentSize: 10,  // 每页条数
+                currentSize: 2,  // 每页条数
                 pagenumber: 0,     // 总条数
                 updatebool:false,
                 dialogVisible:false,
@@ -357,7 +390,8 @@
                         message: '请选择仓库',
                         trigger: 'blur'
                     }]
-                }
+                },
+              
             }
 
         },
@@ -366,18 +400,18 @@
         //监控data中的数据变化
         watch: {},
        methods: {
+          jumpPage(data) {
+      this.currentPage = data.currentPage;  //当前页
+      this.currentSize = data.currentSize;  //每页显示条数
+      this.findPage();
+    },
     formatter(row, column) {
       return row.address;
     },
     filterTag(value, row) {
       return row.tag === value;
     },
-    // 分页组件触发的事件
-    jumpPage(data) {
-      this.currentPage = data.currentPage;  //当前页
-      this.currentSize = data.currentSize;  //每页显示条数
-      this.findPage();
-    },
+    
     //关闭模态框
     handleClose(done) {
       this.$confirm("确认关闭？")
@@ -388,17 +422,18 @@
     },
     //分页带条件查询
     findPage() {
-      if(this.select != -1){
-        this.findData[this.select] = this.selectValue
-      }else{
-        this.findData = {}
-      }
+      
       request({
-        url:"/zwjwarehousingdetail/warehousingdetailquery",
-        method: "post",
-        data: this.findData
+        url:"/zwjwarehousingdetail/warehousingdetailquery?current="+
+          this.currentPage +
+          "&size=" +
+          this.currentSize,
+        method: "post", 
+        data: this.findData,
       }).then(result => {
-       this.tableData=result;
+           console.log(result);
+           this.tableData=result.data.data.rows;
+          this.pagenumber = result.data.data.total; // 总条数
       });
     },
     // 单个查询
@@ -422,20 +457,18 @@
             Message.success(result.data.data)
             //关闭模态框
             this.addDialog = false
-            this.findPage()
             this.entity = {}
         });
       }else{
         // 修改
         request({
-          url: "/comdepartment/update",
+          url: "/zwjwarehousingdetail/update",
           method: "post",
           data: this.entity
         }).then(result => {
             Message.success(result.data.data)
             //关闭模态框
             this.addDialog = false
-            this.findPage()
             this.updatebool = false
             this.entity = {}
         });
@@ -455,7 +488,7 @@
     // 删除
     del(id){
       request({
-        url: "/comdepartment/del?id="+id,
+        url: "/zwjwarehousingdetail/del?id="+id,
         method: "get"
       }).then(result => {
         Message.success(result.data.data)
@@ -502,6 +535,7 @@
             }
   },
         created() {
+            this.findPage();
             this.primary(true);
         },
         //生命周期 - 挂载完成（可以访问DOM元素）
