@@ -1,7 +1,6 @@
 <!--  -->
 <template>
 <div class='haha'>
-  
     <el-form :model="sale_quotation" size="mini" :label-position="'left'"   ref="sale_quotation" label-width="100px" class="demo-ruleForm">
         <el-row>
             <el-col :span="12">
