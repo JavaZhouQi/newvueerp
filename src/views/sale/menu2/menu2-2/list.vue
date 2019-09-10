@@ -19,17 +19,17 @@
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-      <el-table-column prop="departID"  width="50"  type="index"></el-table-column>
-      <el-table-column prop="departID" label="订单单据" sortable width="180" column-key="date"></el-table-column>
-      <el-table-column prop="departName" label="客户名称" width="180"></el-table-column>
-      <el-table-column prop="engName" label="订单日期" width="280"></el-table-column>
-      <el-table-column prop="memo" label="审核状态" width="280"></el-table-column>
-      <el-table-column label="操作" width="280">
-        <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.departID)"></el-button>
-        </template>
-      </el-table-column>
+        <el-table-column prop="departID"  width="50"  type="index"></el-table-column>
+        <el-table-column prop="departID" label="订单单据" sortable width="180" column-key="date"></el-table-column>
+        <el-table-column prop="departName" label="客户名称" width="180"></el-table-column>
+        <el-table-column prop="engName" label="订单日期" width="280"></el-table-column>
+        <el-table-column prop="memo" label="审核状态" width="280"></el-table-column>
+        <el-table-column label="操作" width="280">
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.departID)"></el-button>
+          </template>
+        </el-table-column>
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 

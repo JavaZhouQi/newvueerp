@@ -79,37 +79,41 @@
             <el-form :inline="true" class="demo-form-inline">
               <el-form-item>
                 <el-select v-model="union.coumn">
-                  <el-option v-for="entity,index in union.coumnList" :label="entity.name" :value="entity.value" :key="index"></el-option>
+                  <el-option
+                    v-for="entity,index in union.coumnList"
+                    :label="entity.name"
+                    :value="entity.value"
+                    :key="index"
+                  ></el-option>
                 </el-select>
                 <el-input-number v-model="union.num" :min="1" :max="10" style="width:130px;"></el-input-number>
               </el-form-item>
             </el-form>
           </el-col>
-          <el-col :span="5" style="padding:3px;height:260px;"> 
+          <el-col :span="5" style="height:260px;">
             <div>
-              <ul class="infinite-list" style="overflow:auto;height:210px;">
-                <li v-for="coumn in union.list" class="infinite-list-item">{{ coumn }}</li>
+              <ul style="height:260px;">
+                <li v-for="coumn in union.list" @click="selectCoumn(coumn)">{{ coumn }}</li>
               </ul>
             </div>
           </el-col>
           <el-col :span="19" style="padding:3px;height:260px;">
             <el-table
               ref="singleTable"
-              :data="tableData"
+              :data="union.tableData"
               highlight-current-row
               @current-change="handleCurrentChange"
               style="width: 100%"
+              height="250"
             >
-              <el-table-column property="bankID" label="日期" width="120"></el-table-column>
-              <el-table-column property="bankClsID" label="姓名" width="120"></el-table-column>
-              <el-table-column property="bankName" label="地址"></el-table-column>
+              <el-table-column v-for="entity in union.coumnList" :property="entity.value" :label="entity.name" width="120" :key="entity.value"></el-table-column>
             </el-table>
           </el-col>
         </el-row>
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="choiceDialog = false">取 消</el-button>
-        <el-button type="primary" @click="save">取 回</el-button>
+        <el-button type="primary" @click="choiceDialog = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -121,6 +125,7 @@
 import request from "@/api/request";
 import PageHelper from "@/components/PageHelper";
 import { Message } from "element-ui";
+import { constants } from 'fs';
 
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -150,26 +155,29 @@ export default {
           { required: true, message: "类型不能为空", trigger: "blur" }
         ]
       },
-      union:{
+      union: {
         // 列名
-        coumnList:[
+        coumnList: [
           {
-            name:"编号",
-            value:"wareHouseID"
+            name: "编号",
+            value: "wareHouseID"
           },
           {
-            name:"名称",
-            value:"wareHouseName"
+            name: "名称",
+            value: "wareHouseName"
           },
           {
-            name:"英文名",
-            value:"EngName"
+            name: "英文名",
+            value: "engName"
           }
         ],
-        tableName:"comwarehouse", // 表名
+        // 查询的条件
+        selectName: {},
+        tableName: "comwarehouse", // 表名
         num: 1, // 截取数量
         list: [],
-        coumn: "wareHouseName"  // 查询的列名 写name（名称）就可以了
+        coumn: "wareHouseName", // 查询的列名 写name（名称）就可以了
+        tableData:[]
       }
     };
   },
@@ -177,20 +185,53 @@ export default {
   computed: {},
   //监控data中的数据变化
   watch: {
-    'union.coumn' : function() {
+    "union.coumn": function() {
       this.findByCoumnAndSize();
     },
-    'union.num' : function() {
+    "union.num": function() {
       this.findByCoumnAndSize();
     }
   },
   //方法集合
   methods: {
-    formatter(row, column) {
-      return row.address;
+    // 联合查询方法
+    findByCoumnAndSize() {
+      request({
+        url:
+          "/currency/find?coumn=" +
+          this.union.coumn +
+          "&size=" +
+          this.union.num +
+          "&table=" +
+          this.union.tableName,
+        method: "get"
+      }).then(result => {
+        this.union.list = result.data.data;
+        this.union.selectName[this.union.coumn] = result.data.data[0];
+        this.findTable();
+      });
     },
-    filterTag(value, row) {
-      return row.tag === value;
+    // 查询条件
+    selectCoumn(coumn) {
+      this.union.selectName[this.union.coumn] =coumn;
+      this.findTable();
+    },
+    // 查询数据详情
+    findTable() {
+      request({
+        url:
+          "/"+this.union.tableName+"/findByTable",
+        method: "post",
+        data:this.union.selectName
+      }).then(result => {
+        this.union.tableData = result.data.data;
+        this.union.selectName = {}
+      });
+    },
+    // 获取选中的数据
+    handleCurrentChange(val) {
+      this.entity.bankClsID = val.wareHouseID;
+      console.log(val);
     },
     // 分页组件触发的事件
     jumpPage(data) {
@@ -231,6 +272,7 @@ export default {
       }).then(result => {
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
+        this.findData = {};
       });
     },
     // 单个查询
@@ -292,24 +334,6 @@ export default {
         Message.success(result.data.data);
         this.findPage();
       });
-    },
-    handleCurrentChange(val) {
-      console.log(val);
-    },
-    // 联合查询方法
-    findByCoumnAndSize() {
-      request({
-        url:
-          "/currency/find?coumn=" +
-          this.union.coumn +
-          "&size=" +
-          this.union.num +
-          "&table="+this.union.tableName,
-        method: "get"
-      }).then(result => {
-        console.log(result.data.data);
-        this.union.list = result.data.data;
-      });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -322,7 +346,6 @@ export default {
 .el-select .el-input,
 .el-select {
   width: 120px;
- 
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
@@ -330,6 +353,17 @@ export default {
 .el-col {
   border-radius: 4px;
   border: 1px solid #d7dae2;
+}
+ul {
+  padding: 0px;
+  margin: 0px;
+}
+li {
+  list-style: none;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #d7dae2;
+  text-align: center;
 }
 </style>
 
