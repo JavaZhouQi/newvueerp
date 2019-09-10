@@ -49,93 +49,123 @@
 
   <el-tabs type="border-card" style="width: 95%;margin-top: 20px;box-shadow: 0 0px 0px rgba(0,0,0,0);">
     <el-tab-pane label="内容">
-      <div style="height:180px; width: 105%;">
+      <div style="height:180px; width: 105%;" @dblclick="addTable">
         <template>
-          <el-table
-            :data="tableData"
-            :height="tableHeight"
-            border
+          <vxe-table
+            :data="tableData.yxpurchaseenquirydetails"
             height="200"
-            :summary-method="getSummaries"
-            show-summary
-            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable">
-
-            <el-table-column
-              prop="id"
-              label="（栏号）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="物料编号"
+            border
+            show-footer
+            show-overflow
+            ref="xTable"
+            :footer-method="footerMethod"
+            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable"
+            :edit-config="{trigger: 'click', mode: 'cell'}"
+            @edit-actived="editActivedEvent"
+            @edit-closed="editClosedEvent">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（栏号）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodName"
+              title="物料编号"
               width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount1"
-              label="（物料名称）"
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（物料名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（规格型号）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（单位名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="数量"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="折扣前单价"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="折数（%）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="单价"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="金额"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="税率（%）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="税额"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（含税金额）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="赠品"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="分录备注"
               width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount2"
-              label="（规格型号）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（单位名称）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="数量"
-              width="50">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="折扣前单价"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="折数（%）"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="单价"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="金额"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="税率（%）"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（税额）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（含税金额）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="赠品"
-              width="50">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="分录备注"
-              width="150">
-            </el-table-column>
-          </el-table>
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（来源单别）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（来源单号）"
+              width="115">
+            </vxe-table-column>
+          </vxe-table>
         </template>
       </div>
     </el-tab-pane>
@@ -262,37 +292,7 @@ components: {},
 data() {
 //这里存放数据
 return {
-  tableData: [{
-          id: '1',
-          name: '王小虎',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10
-        }, {
-          id: '2',
-          name: '王小虎',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        }, {
-          id: '3',
-          name: '王小虎',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        }, {
-          id: '4',
-          name: '王小虎',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17
-        }, {
-          id: '5',
-          name: '王小虎',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15
-        }]
+  entity: {yxpurchaseenquirydetails:[{}]}
 };
 },
 //监听属性 类似于data概念
@@ -325,6 +325,9 @@ methods: {
           }
         });
         return sums;
+  },
+  addTable(){
+    this.entity.yxpurchaseenquirydetails.push({});
   },
   lsjy:function(){
     this.$emit("update:innerVisible",true);
@@ -376,6 +379,12 @@ el-table .el-table thead {
 }
 el-table{
   height: 10px;
+}
+.vxe-table.fixed--left .vxe-body--column, .vxe-table.fixed--right .vxe-body--column, .vxe-table.vxe-editable .vxe-body--column {
+    height: 35px;
+}
+.vxe-table .vxe-default-input{
+    height: 30px;
 }
 .elTable th{
   padding: 3px 0!important;

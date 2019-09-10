@@ -12,7 +12,6 @@
         <template>
           <el-table
             :data="tableData"
-            :height="tableHeight"
             border
             height="200"
             :summary-method="getSummaries"
