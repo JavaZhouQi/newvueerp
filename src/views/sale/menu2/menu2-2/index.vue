@@ -150,56 +150,53 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="业务人员"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="所属部门"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    查询<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >历史交易查询</el-dropdown-item>
-                                    <el-dropdown-item >利润预估查询</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    功能<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >批次变更单价</el-dropdown-item>
-                                    <el-dropdown-item >发送Email</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="18">
-                            &nbsp;
-                        </el-col>
-                    </el-row>
-
-        
-        
+        <el-row>
+            <el-col :span="12">
+            <el-form-item label="业务人员"   prop="name"> 
+                <el-input v-model="sale_quotation.name"></el-input>
+            </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+            <el-form-item label="所属部门"   prop="name"> 
+                <el-input v-model="sale_quotation.name"></el-input>
+            </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="3">
+                <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                        查询<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item >历史交易查询</el-dropdown-item>
+                        <el-dropdown-item >利润预估查询</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-col>
+            <el-col :span="3">
+                <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                        功能<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item >批次变更单价</el-dropdown-item>
+                        <el-dropdown-item >发送Email</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-col>
+            <el-col :span="18">
+                &nbsp;
+            </el-col>
+        </el-row>   
 </el-form>
 </div>
 </template>

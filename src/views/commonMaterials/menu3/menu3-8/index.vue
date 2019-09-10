@@ -41,7 +41,7 @@
           <div style="width:45%;float:left;">
             <el-form label-position="left" label-width="100px" size="mini">
               <el-form-item label="供应商编号">
-                <el-input v-model="entity.id"></el-input>
+                <el-input v-model="entity.id" :disabled="updatebool"></el-input>
               </el-form-item>
               <el-form-item label="供应商全称">
                 <el-input v-model="entity.fullName"></el-input>
@@ -63,24 +63,29 @@
                 <el-input v-model="entity.fundsAttribution"></el-input>
               </el-form-item>
               <el-form-item label="类别">
-                 <el-select v-model="entity.classID" clearable placeholder="请选择" style="width:205px;">
-                    <el-option
-                      v-for="item in comcustclassList"
-                      :key="item.classID"
-                      :label="item.className"
-                      :value="item.classID"
-                    ></el-option>
-                  </el-select>
+                <el-select
+                  v-model="entity.classID"
+                  clearable
+                  placeholder="请选择"
+                  style="width:206px;"
+                >
+                  <el-option
+                    v-for="item in comcustclassList"
+                    :key="item.classID"
+                    :label="item.className"
+                    :value="item.classID"
+                  ></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="地区">
-                 <el-select v-model="entity.areaID" clearable placeholder="请选择" style="width:205px;">
-                    <el-option
-                      v-for="item in addressList"
-                      :key="item.areaID"
-                      :label="item.areaName"
-                      :value="item.areaID"
-                    ></el-option>
-                  </el-select>
+                <el-select v-model="entity.areaID" clearable placeholder="请选择" style="width:206px;">
+                  <el-option
+                    v-for="item in addressList"
+                    :key="item.areaID"
+                    :label="item.areaName"
+                    :value="item.areaID"
+                  ></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="币别">
                 <el-input v-model="entity.currencyID"></el-input>
@@ -95,7 +100,7 @@
                 <el-form-item label="负责人">
                   <el-input v-model="entity.chiefName"></el-input>
                 </el-form-item>
-                <el-form-item label="业务人员">
+                <el-form-item label="采购人员">
                   <el-input v-model="entity.personID"></el-input>
                 </el-form-item>
                 <el-form-item label="联系人">
@@ -136,62 +141,49 @@
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="销售信息">
+            <el-tab-pane label="采购信息">
               <el-form label-position="left" label-width="120px" :inline="true" size="mini">
-                <el-form-item label="最初销售出库日">
-                  <el-date-picker v-model="entity.earliestTradeDate" type="date" placeholder="选择日期"></el-date-picker>
+                <el-form-item label="最初采购入库日">
+                  <el-date-picker v-model="entity.earliestTradeDate" type="date" placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="折数(%)">
-                  <el-input v-model="entity.rateOfDiscount"></el-input>
+                <el-form-item label="最初采购退货日">
+                  <el-date-picker v-model="entity.firstTradeDate" type="date" placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="最初销售退货日">
-                  <el-date-picker v-model="entity.firstTradeDate" type="date" placeholder="选择日期"></el-date-picker>
+                <el-form-item label="最近采购入库日">
+                  <el-date-picker v-model="entity.latelyTradeDate" type="date" placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="售价等级">
-                  <el-input v-model="entity.priceRank"></el-input>
-                </el-form-item>
-                <el-form-item label="最近销售出库日">
-                  <el-date-picker v-model="entity.latelyTradeDate" type="date" placeholder="选择日期"></el-date-picker>
+                <el-form-item label="最近采购退货日">
+                  <el-date-picker v-model="entity.latelyReturnDate" type="date" placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="单价是否含税">
                   <el-input v-model="entity.invoTax"></el-input>
                 </el-form-item>
-                <el-form-item label="最近销售退货日">
-                  <el-date-picker v-model="entity.latelyReturnDate" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="潜在供应商编号">
-                  <el-input v-model="entity.custIntro"></el-input>
-                </el-form-item>
-                <el-form-item label="最近拜访日">
-                  <el-date-picker v-model="entity.lastVisitDate" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="供应商建立日期">
-                  <el-date-picker v-model="entity.buildUpDate" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="预约拜访日">
-                  <el-date-picker v-model="entity.bookVisitDate" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
                 <el-form-item label="终止交易日">
-                  <el-date-picker v-model="entity.finalTradeDate" type="date" placeholder="选择日期"></el-date-picker>
+                  <el-date-picker v-model="entity.finalTradeDate" type="date" placeholder="选择日期" style="width:185px;"  value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="收款信息">
+            <el-tab-pane label="付款信息">
               <el-form label-position="left" label-width="100px" :inline="true" size="mini">
                 <el-form-item label="账款额度">
                   <el-input v-model="entity.amountQuota"></el-input>
                 </el-form-item>
-                <el-form-item label="期初预收款">
+                <el-form-item label="期初预付款">
                   <el-input v-model="entity.billQuota"></el-input>
                 </el-form-item>
                 <el-form-item label="剩余额度">
                   <el-input v-model="entity.unEnCashQuota"></el-input>
                 </el-form-item>
-                <el-form-item label="期末应收款">
+                <el-form-item label="期初应付款">
                   <el-input v-model="entity.noChkUnEnCashQuota"></el-input>
                 </el-form-item>
                 <el-form-item label="收款条件">
-                  <el-select v-model="entity.dayOfClose" clearable placeholder="请选择" style="width:82px;">
+                  <el-select
+                    v-model="entity.dayOfClose"
+                    clearable
+                    placeholder="请选择"
+                    style="width:82px;"
+                  >
                     <el-option value="1" label="货到"></el-option>
                     <el-option value="2" label="次月"></el-option>
                     <el-option value="3" label="月结"></el-option>
@@ -199,17 +191,22 @@
                   </el-select>
                   <el-input v-model="entity.dayOfRecv" style="width:100px;"></el-input>
                 </el-form-item>
-                <el-form-item label="期末预收款">
+                <el-form-item label="期末预付款">
                   <el-input v-model="entity.endreceivables"></el-input>
                 </el-form-item>
                 <el-form-item label="每月结账日">
                   <el-input v-model="entity.distDays"></el-input>
                 </el-form-item>
-                <el-form-item label="期初应收款">
+                <el-form-item label="期初应付款">
                   <el-input v-model="entity.initialreceivables"></el-input>
                 </el-form-item>
                 <el-form-item label="信用等级">
-                  <el-select v-model="entity.creditLevel" clearable placeholder="请选择" style="width:185px;">
+                  <el-select
+                    v-model="entity.creditLevel"
+                    clearable
+                    placeholder="请选择"
+                    style="width:185px;"  value-format="yyyy-MM-dd"
+                  >
                     <el-option value="A" label="A"></el-option>
                     <el-option value="B" label="B"></el-option>
                     <el-option value="C" label="C"></el-option>
@@ -218,8 +215,8 @@
                     <el-option value="F" label="F"></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="预收账款科目">
-                  <el-input v-model="entity.accBillRecv"></el-input>
+                <el-form-item label="未开票金额">
+                  <el-input v-model="entity.bargainAmt"></el-input>
                 </el-form-item>
                 <el-form-item label="发票类型">
                   <el-input v-model="entity.invoiceType"></el-input>
@@ -248,15 +245,60 @@
                     <i class="el-icon-remove" @click="comcustaddressRemove(row)"></i>
                   </template>
                 </vxe-table-column>
-                <vxe-table-column field="id" title="地址编号" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="address" title="地址"  width="160" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="zipCode" title="邮政编码" width="160" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="linkMan" title="联系人" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="linkManProf" title="联系人职称" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="telephone" title="联系电话" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="faxNo" title="传真号码" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="walkAddr" title="行走路线" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
-                <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
+                <vxe-table-column
+                  field="id"
+                  title="地址编号"
+                  width="100"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="address"
+                  title="地址"
+                  width="160"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="zipCode"
+                  title="邮政编码"
+                  width="160"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="linkMan"
+                  title="联系人"
+                  width="100"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="linkManProf"
+                  title="联系人职称"
+                  width="100"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="telephone"
+                  title="联系电话"
+                  width="140"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="faxNo"
+                  title="传真号码"
+                  width="100"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="walkAddr"
+                  title="行走路线"
+                  width="180"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
+                <vxe-table-column
+                  field="memo"
+                  title="备注"
+                  width="180"
+                  :edit-render="{name: 'input'}"
+                ></vxe-table-column>
               </vxe-table>
             </el-tab-pane>
           </el-tabs>
@@ -286,7 +328,7 @@ export default {
   data() {
     //这里存放数据
     return {
-      entity: {comcusttrade:{},comcustdesc:{}}, // 新增and修改的对象
+      entity: { comcusttrade: {}, comcustdesc: {} }, // 新增and修改的对象
       tableData: [], // 显示数据
       findData: {}, // 查询数据
       select: "", // 查询条件
@@ -300,8 +342,8 @@ export default {
         id: [{ required: true, message: "编号不能为空", trigger: "blur" }],
         fullName: [{ required: true, message: "名称不能为空", trigger: "blur" }]
       },
-      addressList:[], // 地区
-      comcustclassList:[] // 供应商类别
+      addressList: [], // 地区
+      comcustclassList: [] // 供应商类别
     };
   },
   //监听属性 类似于data概念
@@ -417,7 +459,7 @@ export default {
       this.entity.comcustaddressList.push({});
     },
     // 获取所有地区
-    findAddress(){
+    findAddress() {
       request({
         url: "/comarea/findAll",
         method: "get"
@@ -426,7 +468,7 @@ export default {
       });
     },
     // 获取所有类别
-    findByFlagComcustclassList(){
+    findByFlagComcustclassList() {
       request({
         url: "/comcustclass/findByFlag?flag=2",
         method: "get"
@@ -435,8 +477,11 @@ export default {
       });
     },
     // 删除当前地址
-    comcustaddressRemove(row){
-      this.entity.comcustaddressList.splice(this.entity.comcustaddressList.indexOf(row),1)
+    comcustaddressRemove(row) {
+      this.entity.comcustaddressList.splice(
+        this.entity.comcustaddressList.indexOf(row),
+        1
+      );
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
