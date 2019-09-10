@@ -646,10 +646,28 @@ export default {
 
     // 保存
     save() {
-      console.log(this.smlordbillmain.comcustomer);
-      // if(this.smlordbillmain.customerName){
-
-      // }
+      if(this.smlordbillmain.customerID==""||this.smlordbillmain.customerID==undefined){
+        Message.error("请先选择客户");
+        return;
+      }
+      if(this.smlordbillmain.subList[0].prodID==""){
+        Message.error("请先至少选择一种物料");
+        return;
+      }
+      if(this.smlordbillmain.salesMan==""||this.smlordbillmain.salesMan==undefined){
+        Message.error("请选择业务人员");
+        return;
+      }
+      for (let index = 0; index < this.smlordbillmain.subList.length; index++) {
+        if(this.smlordbillmain.subList[index].quantity==""||this.smlordbillmain.subList[index].quantity==undefined){
+          Message.error("请输入物料的数量");
+          return;
+        } 
+        if(isNaN(parseInt(this.smlordbillmain.subList[index].quantity))){
+          Message.error("请输入正确的数量");
+          return;
+        }
+      }
       return;
       //新增方法
       if (this.$route.query.type == 1) {
@@ -937,6 +955,10 @@ export default {
 }
 .el-table {
   margin: 0px auto;
+}
+.vxe-table {
+  margin: 0px 20px 0px 10px;
+
 }
 .el-dropdown {
   display: inline-block;

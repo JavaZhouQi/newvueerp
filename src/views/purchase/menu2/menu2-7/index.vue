@@ -370,7 +370,7 @@ export default {
         this.entity=result.data.data;
          this.updatebool = true;
         this.addDialog = true;
-        // console.log(this.entity);
+        console.log(this.entity);
       });
     },
     // 保存
@@ -391,13 +391,14 @@ export default {
         });
       } else {
         // 修改
-         console.log("---------------------修改")
+         console.log(this.entity);
         request({
           url: "/lypurchaseinvoice/update",
           method: "post",
           data: this.entity
         }).then(result => {
           Message.success(result.data.data);
+          // console.log(result.data.data);
           //关闭模态框
           this.addDialog = false;
           this.findPage();
@@ -432,6 +433,7 @@ export default {
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     this.findPage();
+          this.entity={};
   }
 };
 </script>
