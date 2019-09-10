@@ -1,42 +1,33 @@
 <template>
 <div class='div'>
-  <div id="fht" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
+  <div id="fht" v-if="he" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>供应商：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.custShortName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>单据日期：</span></el-col>
-    <el-col :span="8"><el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;"></el-date-picker></el-col>
+    <el-col :span="8"><el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;" v-model="entity1.billDate"  @change="bNo"></el-date-picker></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="4"><span>供应商地址：</span></el-col>
-    <el-col :span="8" style="margin-left: -32px">
-      <el-select v-model="value" placeholder="请选择" size="mini"  style="width: 100%;">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-      </el-select>
-    </el-col>
+    <el-col :span="8" style="margin-left: -32px"><el-input  size="mini" v-model="entity1.custAddress"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>单据号码：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.billNO" disabled></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="4"><span>采购订单类型：</span></el-col>
-    <el-col :span="8" style="margin-left: -32px"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8" style="margin-left: -32px"><el-input size="mini" v-model="entity1.billStyleName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>币别：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.curr"></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="4"><span>单价是否含税：</span></el-col>
     <el-col :span="8" style="margin-left: -32px">
-      <el-select v-model="value" placeholder="请选择" size="mini"  style="width: 100%;">
+      <el-select v-model="entity1.priceOfTax" placeholder="请选择" size="mini"  style="width: 100%;">
               <el-option
-                v-for="item in options"
+                v-for="item in priceOfTax"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -44,15 +35,15 @@
       </el-select>
     </el-col>
     <el-col :span="3" :offset="1"><span>汇率：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.exchRate"></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>单况：</span></el-col>
     <el-col :span="8">
-      <el-select v-model="value" placeholder="请选择" size="mini"  style="width: 100%;">
+      <el-select v-model="entity1.billStatus" placeholder="请选择" size="mini"  style="width: 100%;">
               <el-option
-                v-for="item in options"
+                v-for="item in billStatus"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -60,128 +51,138 @@
       </el-select>
     </el-col>
     <el-col :span="3" :offset="1"><span>送货地址：</span></el-col>
-    <el-col :span="8">
-      <el-select v-model="value" placeholder="请选择" size="mini"  style="width: 100%;">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-      </el-select>
-    </el-col>
+    <el-col :span="8"><el-input v-model="entity1.OutAddress"  size="mini"></el-input></el-col>
   </el-row>
 
 
   <el-tabs type="border-card" style="width: 95%;margin-top: 20px;box-shadow: 0 0px 0px rgba(0,0,0,0);">
     <el-tab-pane label="内容">
-      <div style="height:180px; width: 105%;">
+      <div style="height:180px; width: 105%;" @dblclick="addTable">
         <template>
-          <el-table
-            :data="tableData"
-            :height="tableHeight"
-            border
+          <vxe-table
+            :data.sync="entity1.yxpurchasedetails"
             height="200"
-            :summary-method="getSummaries"
-            show-summary
-            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable">
-
-            <el-table-column
-              prop="id"
-              label="（栏号）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="物料编号"
+            border
+            show-footer
+            show-overflow
+            ref="xTable"
+            style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable"
+            :edit-config="{trigger: 'click', mode: 'cell'}">
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="serNO"
+              title="（栏号）"
+              width="85">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodID"
+              title="物料编号"
               width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount1"
-              label="（物料名称）"
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodName"
+              title="（物料名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="prodSize"
+              title="（规格型号）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="SUnit"
+              title="（单位名称）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="sQuantity"
+              title="数量"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="oldPrice"
+              title="折扣前单价"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="discount"
+              title="折数（%）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="sPrice"
+              title="单价"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="amount"
+              title="金额"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="taxRate"
+              title="税率（%）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="taxAmt"
+              title="税额"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="vFTotal"
+              title="（含税金额）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="preInDate"
+              title="预入库日"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="qtyRemein"
+              title="（未入库量）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="isGift"
+              title="赠品"
+              width="65">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="itemRemark"
+              title="分录备注"
               width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount2"
-              label="（规格型号）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（单位名称）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="数量"
-              width="50">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="折扣前单价"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="折数（%）"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="单价"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="金额"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="税率（%）"
-              width="80">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（税额）"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（含税金额）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="预入库日"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（未入库量）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="赠品"
-              width="50">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="分录备注"
-              width="150">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（来源单别）"
-              width="100">
-            </el-table-column>
-            <el-table-column
-              prop="amount3"
-              label="（来源单号）"
-              width="100">
-            </el-table-column>
-          </el-table>
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="tranType"
+              title="（来源单别）"
+              width="110">
+            </vxe-table-column>
+            <vxe-table-column
+            :edit-render="{name: 'input'}"
+              field="fromNO"
+              title="（来源单号）"
+              width="115">
+            </vxe-table-column>
+          </vxe-table>
         </template>
       </div>
     </el-tab-pane>
@@ -189,18 +190,18 @@
       <div style="height:150px;">
         <el-row :gutter="20" class="bj">
           <el-col :span="4"><span>账款归属：</span></el-col>
-          <el-col :span="7"><el-input size="mini"></el-input></el-col>
+          <el-col :span="7"><el-input size="mini" v-model="entity1.factFundsAttribution"></el-input></el-col>
           <el-col :span="4" :offset="2"><span>付款日期：</span></el-col>
           <el-col :span="7">
-            <el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择日期" size="mini" style="width: 100%;" v-model="entity1.prepayDay"></el-date-picker>
           </el-col>
         </el-row>
         <el-row :gutter="20" class="bj">
           <el-col :span="4"><span>账款条件：</span></el-col>
-          <el-col :span="7"><el-input size="mini"></el-input></el-col>
+          <el-col :span="7"><el-input size="mini" v-model="entity1.gatherStyle"></el-input></el-col>
           <el-col :span="4" :offset="2"><span>账款月份：</span></el-col>
           <el-col :span="7">
-            <el-date-picker v-model="value2" type="month" placeholder="选择月" size="mini" style="width: 100%;"></el-date-picker>
+            <el-date-picker type="month" placeholder="选择月" size="mini" style="width: 100%;" v-model="entity1.accMonth"></el-date-picker>
           </el-col>
         </el-row>
       </div>
@@ -220,7 +221,7 @@
               type="textarea"
               :rows="5"
               placeholder="请输入内容"
-              v-model="textarea2">
+              v-model="entity1.remark">
             </el-input>
           </el-col>
         </el-row>
@@ -230,21 +231,21 @@
 
   <el-row :gutter="20" class="bj" style="margin-top: 30px;">
     <el-col :span="3"><span>采购人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.salesName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>制单人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.maker"></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>所属部门：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.departName"></el-input></el-col>
     <el-col :span="3" :offset="1"><span>复核人员：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.permitter"></el-input></el-col>
   </el-row>
 
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>所属项目：</span></el-col>
-    <el-col :span="8"><el-input size="mini"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity1.projectName"></el-input></el-col>
   </el-row>
 
 
@@ -284,6 +285,8 @@
     </el-dropdown-menu>
   </el-dropdown>
         
+  <el-link :underline="false" style="margin-left:355px;" type="primary" @click="shenghe">审核</el-link>
+  <el-button style="margin-left:30px;" size="mini" @click="addRD">保存</el-button>   
 </div>
 </template>
 
@@ -299,43 +302,25 @@ components: {},
 data() {
 //这里存放数据
 return {
-tableData: [{
-          id: '1',
-          name: '王小虎',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10
-        }, {
-          id: '2',
-          name: '王小虎',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        }, {
-          id: '3',
-          name: '王小虎',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        }, {
-          id: '4',
-          name: '王小虎',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17
-        }, {
-          id: '5',
-          name: '王小虎',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15
-        }]
+  he:false,
+  entity1: {billNO:"",priceOfTax:"2",billStatus:"1",yxpurchasedetails:[]},
+  priceOfTax:[{"value":"1","label":"是"},{"value":"2","label":"否"}],
+  billStatus:[{"value":"1","label":"未结案"},{"value":"2","label":"已结案"},{"value":"3","label":"无效"}],
 };
 },
 //监听属性 类似于data概念
 computed: {},
 //监控data中的数据变化
-watch: {},
+watch: {
+  '$route':function(){
+    if(this.$route.query.id==" "){
+        this.entity1={billNO:"",priceOfTax:"2",billStatus:"1",yxpurchasedetails:[]};
+        this.he=false;
+    }else{
+      this.getRequisitions();
+    }
+  }
+},
 //方法集合
 methods: {
   getSummaries(param) {
@@ -362,11 +347,145 @@ methods: {
           }
         });
         return sums;
+  },
+  addTable(){
+    this.entity1.yxpurchasedetails.push({});
+  },
+  bNo(){
+    //if(this.$route.query.id==" "){
+      var time=this.entity1.billDate;
+      time.setHours(-new Date().getTimezoneOffset()/60);
+      request({
+        url: "/yxpurchaseorder/selectLikeBillNO",
+        method: "get",
+        params:{
+          billDate:time
+        }
+      }).then(result => {
+        console.log(result);
+        this.entity1.billNO=result.data.data;
+      });
+    //}
+  },
+  //if（新增）else(修改)
+  addRD(){
+    if(this.$route.query.id==" "){
+      console.log(JSON.stringify(this.entity1)+"............")
+        request({
+          url:"/yxpurchaseorder/insertPDs",
+          method:"post",
+          data:this.entity1
+        }).then(result=>{
+          Message.success("新增成功")
+          console.log(result);
+        });
+    }else{
+      if(this.he==true){
+        this.$message({
+          showClose: true,
+          message: '单据已审核',
+          type: 'warning'
+        });
+      }else{
+        request({
+          url: "/yxpurchaseorder/deleteRDs",
+          method: "get",
+          params:{
+            billNO:this.$route.query.id
+          }
+        }).then(result => {
+            request({
+              url:"/yxpurchaseorder/insertPDs",
+              method:"post",
+              data:this.entity1
+            }).then(result=>{
+              Message.success("修改成功")
+              console.log(result);  
+            });
+        });
+      }
+    }
+  }, 
+  getRequisitions:function(){
+    console.log(this.$route.query.id)
+    request({
+      url:"/yxpurchaseorder/selectBillNO",
+      method:"get",
+      params:{
+        billNO:this.$route.query.id
+      }
+    }).then(result=>{
+      console.log(result.data.data);
+      this.entity1=result.data.data;
+
+      if(this.entity1.permitter==undefined || this.entity1.permitter==""){
+        this.he=false;
+      }else{
+        this.he=true;
+      }
+    })
+  },
+  //审核
+  shenghe(){
+    console.log(this.entity1.permitter);
+    if(this.he==false){
+      //if(this.entity.permitter==undefined || this.entity.permitter==""){
+        this.he=true;
+        request({
+          url: "/yxpurchaseorder/deleteRDs",
+          method: "get",
+          params:{
+            billNO:this.$route.query.id
+          }
+        }).then(result => {
+            request({
+              url:"/yxpurchaseorder/insertPDs",
+              method:"post",
+              data:this.entity1
+            }).then(result=>{
+              console.log(result);
+              this.$message({
+                showClose: true,
+                message: '已审核',
+                type: 'success'
+              });
+            });
+        });
+      //}
+    }else{
+        this.he=false;
+        this.entity1.permitter=""
+            
+        request({
+          url: "/yxpurchaseorder/deleteRDs",
+          method: "get",
+          params:{
+            billNO:this.$route.query.id
+          }
+        }).then(result => {
+            request({
+              url:"/yxpurchaseorder/insertPDs",
+              method:"post",
+              data:this.entity1
+            }).then(result=>{
+              console.log(result);
+              this.$message({
+                showClose: true,
+                message: '反审核',
+                type: 'success'
+              });
+            });
+        });
+    }
   }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+  if(this.$route.query.id==" "){
+      this.entity1={billNO:"",priceOfTax:"2",billStatus:"1",yxpurchasedetails:[]}
+  }else{
+      this.getRequisitions();
+  };
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -410,6 +529,12 @@ el-table .el-table thead {
 }
 el-table{
   height: 10px;
+}
+.vxe-table.fixed--left .vxe-body--column, .vxe-table.fixed--right .vxe-body--column, .vxe-table.vxe-editable .vxe-body--column {
+    height: 35px;
+}
+.vxe-table .vxe-default-input{
+    height: 30px;
 }
 .elTable th{
   padding: 3px 0!important;
