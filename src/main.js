@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/styles/erpcss.scss'
 import store from './store'
 
+import 'xe-utils'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/index.css'
 

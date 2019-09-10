@@ -1,6 +1,6 @@
 <template>
 <div class='div'>
-  <div id="fht"  v-if="he" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
+  <div id="fht" v-if="he" style="position: absolute;float: inherit; right: 30px;top: 30px;z-index:100;"><img src="@/static/images/he.png"></div>
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>请购类型：</span></el-col>
     <el-col :span="8"><el-input size="mini" v-model="entity.billStyleName"></el-input></el-col>
@@ -11,7 +11,7 @@
   <el-row :gutter="20" class="bj">
     <el-col :span="3"><span>单况：</span></el-col>
     <el-col :span="8">
-      <el-select placeholder="未结案" size="mini"  style="width: 100%;" v-model="entity.billStatus">
+      <el-select placeholder="请选择" size="mini"  style="width: 100%;" v-model="entity.billStatus">
               <el-option
                 v-for="item in billStatus"
                 :key="item.value"
@@ -21,23 +21,21 @@
       </el-select>
     </el-col>
     <el-col :span="3" :offset="1"><span>单据号码：</span></el-col>
-    <el-col :span="8"><el-input size="mini" v-model="entity.billNO"></el-input></el-col>
+    <el-col :span="8"><el-input size="mini" v-model="entity.billNO" disabled></el-input></el-col>
   </el-row>
 
   <el-tabs type="border-card" style="width: 95%;margin-top: 20px;box-shadow: 0 0px 0px rgba(0,0,0,0);">
     <el-tab-pane label="内容">
-      <div style="height:210px; width: 105%;">
+      <div style="height:210px; width: 105%;" @dblclick="addTable">
         <template>
           <vxe-table
             :data.sync="entity.yxrequisitionsdetails"
-            :height="tableHeight"
+            height="230"
             border
             show-footer
             show-overflow
             ref="xTable"
             :footer-method="footerMethod"
-            :footer-cell-class-name="footerCellClassName"
-            height="230"
             style="margin-top: -15px; margin-left: -15px;font-size: 3px;" class="elTable"
             :edit-config="{trigger: 'click', mode: 'cell'}"
             @edit-actived="editActivedEvent"
@@ -69,13 +67,13 @@
             </vxe-table-column>
             <vxe-table-column
             :edit-render="{name: 'input'}"
-              field="sUnit"
+              field="sunit"
               title="（单位名称）"
               width="110">
             </vxe-table-column>
             <vxe-table-column
             :edit-render="{name: 'input'}"
-              field="sQuantity"
+              field="squantity"
               title="数量"
               width="65">
             </vxe-table-column>
@@ -230,7 +228,7 @@
       <i class="el-icon-arrow-down el-icon--right"></i>
     </span>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item>单况状态切换</el-dropdown-item>
+      <el-dropdown-item><a @click="qgStatus">单况状态切换</a></el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 
@@ -252,15 +250,24 @@ data() {
 //这里存放数据
 return {
     he:false,
-    
+    id:this.$route.query.id,
     billStatus:[{"value":"1","label":"未结案"},{"value":"2","label":"已结案"},{"value":"3","label":"无效"}],
-    entity:{yxrequisitionsdetails :[{}]}
+    entity:{billNO:"",permitter:"",billStatus:"1",yxrequisitionsdetails :[]}
 };
 },
 //监听属性 类似于data概念
 computed: {},
 //监控data中的数据变化
-watch: {},
+watch: {
+  '$route':function(){
+    if(this.$route.query.id==" "){
+        this.entity={billNO:"",billStatus:"1",yxrequisitionsdetails :[]}
+        this.he=false;
+    }else{
+      this.getRequisitions();
+    }
+  }
+},
 //方法集合
 methods: {
       footerMethod ({ columns, data }) {
@@ -292,45 +299,170 @@ methods: {
       editClosedEvent ({ row, column }, event) {
         console.log(`关闭 ${column.title} 列编辑`)
       },
+      addTable(){
+        this.entity.yxrequisitionsdetails.push({});
+      },
       shenghe(){
+        console.log(this.entity.permitter);
         if(this.he==false){
+          //if(this.entity.permitter==undefined || this.entity.permitter==""){
             this.he=true;
+            request({
+              url: "/yxrequisitions/deleteRDs",
+              method: "get",
+              params:{
+                billNO:this.$route.query.id
+              }
+            }).then(result => {
+                request({
+                  url:"/yxrequisitions/insertRDs",
+                  method:"post",
+                  data:this.entity
+                }).then(result=>{
+                  console.log(result);
+                  this.$message({
+                    showClose: true,
+                    message: '已审核',
+                    type: 'success'
+                  });
+                });
+            });
+          //}
         }else{
             this.he=false;
+            this.entity.permitter=""
+            
+            request({
+              url: "/yxrequisitions/deleteRDs",
+              method: "get",
+              params:{
+                billNO:this.$route.query.id
+              }
+            }).then(result => {
+                request({
+                  url:"/yxrequisitions/insertRDs",
+                  method:"post",
+                  data:this.entity
+                }).then(result=>{
+                  console.log(result);
+                  this.$message({
+                    showClose: true,
+                    message: '反审核',
+                    type: 'success'
+                  });
+                });
+            });
+            
+        }
+      },
+      qgStatus(){
+        if(this.entity.billStatus=="1"){
+          this.$message({
+            showClose: true,
+            message: '已结案',
+            type: 'success'
+          });
+          this.entity.billStatus="2"
+        }else if(this.entity.billStatus=="2"){
+          this.$message({
+            showClose: true,
+            message: '已失效',
+            type: 'success'
+          });
+          this.entity.billStatus="3"
         }
       },
       bNo(){
-        function checkTime(i){ if(i<10){ i='0'+i } return i }
-        var time=this.entity.billDate;
-        var date;
-        date= new Date(time);
-        var dateTime = date.getFullYear()+'-'+checkTime(date.getMonth()+1)+'-'+checkTime(date.getDate());
-        console.log(dateTime);
-        request({
-          url: "/yxrequisitions/selectLikeBillNO",
-          method: "get",
-          params:{
-            billDate:time
-          }
-        }).then(result => {
-          console.log(result);
-          this.entity.billNO=result.data.data;
-        });
+        if(this.$route.query.id==" "){
+          var time=this.entity.billDate;
+          time.setHours(-new Date().getTimezoneOffset()/60);
+          request({
+            url: "/yxrequisitions/selectLikeBillNO",
+            method: "get",
+            params:{
+              billDate:time
+            }
+          }).then(result => {
+            console.log(result);
+            this.entity.billNO=result.data.data;
+          });
+        }
       },
       addRD(){
-        console.log(this.entity);
+        if(this.$route.query.id==" "){
+            request({
+              url:"/yxrequisitions/insertRDs",
+              method:"post",
+              data:this.entity
+            }).then(result=>{
+              Message.success("新增成功")
+              console.log(result);
+            });
+        }else{
+          if(this.he==true){
+            this.$message({
+              showClose: true,
+              message: '单据已审核',
+              type: 'warning'
+            });
+          }else{
+            request({
+              url: "/yxrequisitions/deleteRDs",
+              method: "get",
+              params:{
+                billNO:this.$route.query.id
+              }
+            }).then(result => {
+                request({
+                  url:"/yxrequisitions/insertRDs",
+                  method:"post",
+                  data:this.entity
+                }).then(result=>{
+                  Message.success("修改成功")
+                  console.log(result);
+                  
+                });
+            });
+          }
+        }
+        //this.$emit("a");
+                  //this.$parent.a();
+      },
+      getRequisitions:function(){
+        console.log(this.$route.query.id)
         request({
-          url:"/yxrequisitions/insertRDs",
-          method:"post",
-          data:this.entity
+          url:"/yxrequisitions/selectBillNO",
+          method:"get",
+          params:{
+            billNO:this.$route.query.id
+          }
         }).then(result=>{
-          console.log(result);
-        });
+          console.log(result.data.data);
+          this.entity=result.data.data;
+          
+          if(result.data.data.billStatus=="1"){
+            this.entity.billStatus="1"
+          }else if(result.data.data.billStatus=="2"){
+            this.entity.billStatus="2"
+          }else if(result.data.data.billStatus=="3"){
+            this.entity.billStatus="3"
+          }
+
+          if(this.entity.permitter==undefined || this.entity.permitter==""){
+            this.he=false;
+          }else{
+            this.he=true;
+          }
+        })
       }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-  this.tableData = window.MOCK_DATA_LIST.slice(0, 6)
+    if(this.$route.query.id==" "){
+        this.entity={billNO:"",billStatus:"1",yxrequisitionsdetails :[]}
+    }else{
+        this.getRequisitions();
+    };
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
