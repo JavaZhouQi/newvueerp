@@ -230,27 +230,26 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="业务人员" prop="salesMan">
-            <el-select v-model="smlordbillmain.salesMan" filterable placeholder="请选择">
+            <el-select v-model="smlordbillmain.salesMan" @change="changeSalesMan" filterable placeholder="请选择">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.personID"
+                :label="item.personName"
+                :value="item.personID">
               </el-option>
             </el-select>
-            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="制单人员" prop="name">
-            <el-input v-model="smlordbillmain.makerID" :disabled="isWriter"></el-input>
+          <el-form-item label="制单人员" >
+            <el-input v-model="smlordbillmain.makerID" :disabled="true"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="所属部门" prop="name">
-            <el-input v-model="smlordbillmain.name" :disabled="isWriter"></el-input>
+            <el-input v-model="smlordbillmain.departName" :disabled="true"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -436,9 +435,10 @@ export default {
             Comproduct: {
               prodName: ""
             },
+            test:{
+            },
             quantity: "",
             isGift:0,
-            isGift2:false,
           }
         ]
       },
@@ -472,7 +472,7 @@ export default {
         ]
       },
       rules: {
-        name: [{ required: true, message: "双击选择客户", trigger: "blur" }]
+        2: [{ required: true, message: "双击选择客户", trigger: "blur" }]
       },
       union: {
         // 列名
@@ -523,6 +523,7 @@ export default {
         tableData: []
       },
       testnum:{},
+      options:[],
     };
   },
   //监听属性 类似于data概念
@@ -552,9 +553,9 @@ export default {
     },
     
     dialogcustomer(){
-      this.smlordbillmain.customerID=this.$store.state.saleCustomer.id;
-       this.smlordbillmain.customerName=this.$store.state.saleCustomer.id+"         "+this.$store.state.saleCustomer.fullName;
-      //  alert(this.smlordbillmain.customerName);
+      // this.smlordbillmain.customerID=this.$store.state.saleCustomer.id;
+      //  this.smlordbillmain.customerName=this.$store.state.saleCustomer.id+"         "+this.$store.state.saleCustomer.fullName;
+      // //  alert(this.smlordbillmain.customerName);
       // console.log(this.smlordbillmain.customerID);
     },
        //物料选择
@@ -573,6 +574,25 @@ export default {
   },
   //方法集合
   methods: {
+      changeSalesMan(obj){
+        for (let index = 0; index < this.options.length; index++) {
+          if(obj==this.options[index].personID){
+            this.smlordbillmain.departID=this.options[index].comdepartment.departID;
+            this.smlordbillmain.departName=this.options[index].comdepartment.departName;
+          }
+          
+        }
+      },
+      getComperson(){
+        request({
+          url: "/comperson/findAll",
+          method: "post",
+        }).then(result => {
+           console.log(result.data.data);
+          this.options=result.data.data;
+        });
+      },
+    //双击选物料
     storageprodID(){
       this.dialogMaterials=true;
       this.findByCoumnAndSize2();
@@ -590,7 +610,13 @@ export default {
         //  console.log(result.data.data);
         this.smlordbillmain = result.data.data;
        this.smlordbillmain.customerName=this.smlordbillmain.comcustomer.id+"         "+this.smlordbillmain.comcustomer.fullName;
-      console.log(this.smlordbillmain);
+      for (let index = 0; index < this.options.length; index++) {
+          // alert(this.smlordbillmain.departID+"                    "+this.options[index].comdepartment.departID);
+          if(this.smlordbillmain.departID==this.options[index].comdepartment.departID){
+            this.smlordbillmain.departName=this.options[index].comdepartment.departName;
+          }
+        }
+        console.log(this.smlordbillmain);
         if (this.smlordbillmain.auditStatus == 1) {
           this.isWriter = true;
           this.savebtn = false;
@@ -620,8 +646,11 @@ export default {
 
     // 保存
     save() {
-      // console.log(this.smlordbillmain);
-      // return;
+      console.log(this.smlordbillmain.comcustomer);
+      // if(this.smlordbillmain.customerName){
+
+      // }
+      return;
       //新增方法
       if (this.$route.query.type == 1) {
         request({
@@ -664,6 +693,7 @@ export default {
     },
     shenghe() {
       if (this.smlordbillmain.auditStatus == 0) {
+
         //审核
         request({
           url: "/smlordbillmain/audit",
@@ -671,12 +701,14 @@ export default {
           params: {
             billNo: this.smlordbillmain.billNo,
             flag: 1,
-            auditStatus: 1
+            auditStatus: 1,
+            maker:sessionStorage.getItem("userId"),
           }
         }).then(result => {
           if (result.data.data) {
             Message.success("审核成功");
             this.smlordbillmain.auditStatus = 1;
+            this.smlordbillmain.makerID=sessionStorage.getItem("userId");
           } else {
             Message.success("审核失败");
             this.smlordbillmain.auditStatus = 0;
@@ -785,8 +817,11 @@ export default {
     // 获取选中的数据
     handleCurrentChange(val) {
       // this.entity.bankClsID = val.wareHouseID;
-      this.$store.state.saleCustomer = val;
-      console.log(val);
+      // this.$store.state.saleCustomer = val;
+      // console.log(val);
+       this.smlordbillmain.customerID=val.id;
+       this.smlordbillmain.customerName=val.id+"         "+val.fullName;
+      
     },
     // 查询数据详情
     findTable2() {
@@ -839,13 +874,21 @@ export default {
     this.smlordbillmain = this.test;
     this.isWriter = false;
     this.savebtn = true;
+    this.smlordbillmain.makerID=sessionStorage.getItem("userId");
     if (this.$route.query.billNO != undefined) {
       this.smlordbillmain.billNo = this.$route.query.billNO;
       this.smlordbillmain.flag = 1;
+      for (let index = 0; index < this.options.length; index++) {
+          alert(this.smlordbillmain.salesMan+"      "+this.options[index].personID);
+          if(this.smlordbillmain.salesMan==this.options[index].personID){
+            this.smlordbillmain.departName=this.options[index].comdepartment.departName;
+          }
+      }
       this.query_one();
     } else {
       this.query_num();
     }
+    this.getComperson();
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
