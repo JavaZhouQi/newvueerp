@@ -16,7 +16,7 @@ import 'vxe-table/lib/index.css'
 import {hasPermission} from "@/api/hasPermission"
 
 Vue.use(VXETable)
-import { from } from '_array-flatten@2.1.2@array-flatten';
+// import { from } from '_array-flatten@2.1.2@array-flatten';
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.hasPerm = hasPermission
