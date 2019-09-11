@@ -17,7 +17,7 @@
           @click="addDialog = true;updatebool = false;entity = {comcustaddressList:[],comcusttrade:{},comcustdesc:{}}"
         >新增</el-button>
       </div>
-    </div>
+    </div>-
 
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
       <el-table-column prop="id" label="客户编号" sortable width="180" column-key="date"></el-table-column>
@@ -88,6 +88,7 @@
             </el-form>
           </div>
         </div>
+        
         <div style="padding: 0px 10px;">
           <el-tabs type="card">
             <el-tab-pane label="基本资料">

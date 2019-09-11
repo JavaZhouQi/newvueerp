@@ -69,6 +69,7 @@
           </el-form-item>
         </el-form>
       </span>
+
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialog = false">取 消</el-button>
         <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
