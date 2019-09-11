@@ -70,6 +70,26 @@ const saleRouter = {
             component: () => import('@/views/sale/menu2/menu2-2/list'),
             name: 'saleMenu2-2',
             meta: { title: '销售订单',permissions: 'saleMenu2-2' }
+            ,children:[
+              {
+                path: '/sale/menu2/menu2-2/index',
+                component: () => import('@/views/sale/menu2/menu2-2/index'),
+                name: 'saleMenu2-2-1',
+                meta: { title: '销售订单弹出层',permissions: 'saleMenu2-2'  }
+              }
+              // ,{
+              //   path: '/sale/menu2/menu2-2/lishi',
+              //   component: () => import('@/views/sale/menu2/menu2-2/lishi'),
+              //   name: 'saleMenu2-2-2',
+              //   meta: { title: '历史交易弹出层',permissions: 'saleMenu2-2'  }
+              // }
+              // ,{
+              //   path: '/sale/menu2/menu2-2/customer',
+              //   component: () => import('@/views/sale/menu2/menu2-2/customer'),
+              //   name: 'saleMenu2-2-3',
+              //   meta: { title: '选择客户弹出层',permissions: 'saleMenu2-2'  }
+              // }
+            ]
           },
           {
             path: '/sale/menu2/menu2-3',

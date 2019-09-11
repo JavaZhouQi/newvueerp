@@ -107,7 +107,9 @@ export default {
       entity: {},   // 新增and修改的对象
       type:1,       //1是新增    2是修改
       tableData: [],  // 显示数据
-      findData: {},  // 查询数据
+      findData: {
+        flag:"1"
+      },  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
       dialogTableVisible: false, //历史交易查询

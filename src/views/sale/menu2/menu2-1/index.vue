@@ -668,7 +668,6 @@ export default {
           return;
         }
       }
-      return;
       //新增方法
       if (this.$route.query.type == 1) {
         request({

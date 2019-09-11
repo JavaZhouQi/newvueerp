@@ -6,242 +6,86 @@
         <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="查询全部" value="-1"></el-option>
-            <el-option label="客户名称" value="memo"></el-option>
-            <el-option label="订单单据" value="departID"></el-option>
-            <el-option label="单据日期" value="departName"></el-option>
-            <el-option label="是否审核" value="memo"></el-option>
+            <el-option label="客户名称" value="fullName"></el-option>
+            <el-option label="订单单据" value="billNo"></el-option>
+            <el-option label="单据日期"  value="billDate"></el-option>
+            <el-option label="是否审核" value="auditStatus"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
         </el-input>
       </div>
       <div style="float: right;margin: 15px 300px 0px 0px;">
-        <el-button type="primary" @click="addDialog = true;updatebool = false;entity = {}">新增</el-button>
+        <el-button type="primary" @click="add">新增</el-button>
       </div>
     </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%;margin-top:10px;">
-        <el-table-column prop="departID"  width="50"  type="index"></el-table-column>
-        <el-table-column prop="departID" label="订单单据" sortable width="180" column-key="date"></el-table-column>
-        <el-table-column prop="departName" label="客户名称" width="180"></el-table-column>
-        <el-table-column prop="engName" label="订单日期" width="280"></el-table-column>
-        <el-table-column prop="memo" label="审核状态" width="280"></el-table-column>
-        <el-table-column label="操作" width="280">
+      <el-table-column   width="50"  type="index"></el-table-column>
+      <el-table-column prop="billNo" label="订单单据" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="comcustomer.fullName" label="客户名称" width="180"></el-table-column>
+      <el-table-column prop="billDate" label="订单日期"  width="280">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.departID)"></el-button>
+          <span>{{timestampToTime(scope.row.billDate)}}</span>
           </template>
-        </el-table-column>
+      </el-table-column>
+      <el-table-column prop="auditStatus" label="审核状态" width="280" >
+        <template slot-scope="scope">
+        <span v-if="scope.row.auditStatus==0">未审核</span><span v-if="scope.row.auditStatus==1">已审核</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="280">
+        <template slot-scope="scope">
+          <el-button type="primary" icon="el-icon-search" @click="update(scope.row)" circle></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="del(scope.row.billNo)"></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
     <el-dialog title="销售订单" :visible.sync="addDialog" width="50%" :before-close="handleClose">
-        <el-button class="shenghe" @click="shenghe">审核</el-button>
-        <img src="@/assets/he.png" class="img" v-if="sale_quotation.audit">
-      <el-form :model="sale_quotation" size="mini" :label-position="'left'"   ref="sale_quotation" label-width="100px" class="demo-ruleForm">
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="客户" class="blue"  prop="name"> <el-input v-model="sale_quotation.consumer.name"></el-input> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="单据日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间"> </el-date-picker> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="送货地址"  prop="name"> 
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name"> </el-input></el-col>
-                   <el-col class="line" :span="2">&nbsp;&nbsp;</el-col>
-                   <el-col :span="11"> <el-input v-model="sale_quotation.name"> </el-input></el-col>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="单据号码"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="销售订单类型"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="客户订单"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="单价是否含税"   prop="name"> 
-                   <el-select v-model="sale_quotation.tax">
-                    <el-option label="未税" value="0" ></el-option>
-                    <el-option label="含税" value="1"></el-option>
-                   </el-select>
-               </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="币别"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="12">
-               <el-form-item label="单况"   prop="name"> 
-                   <el-select v-model="sale_quotation.tax">
-                    <el-option label="未结案" value="0" ></el-option>
-                    <el-option label="已结案" value="1"></el-option>
-                    <el-option label="无效" value="2"></el-option>
-                   </el-select>
-               </el-form-item>
-            </el-col>
-            <el-col :span="12">
-                <el-form-item label="汇率"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-            </el-col>
-        </el-row>
-        <div class="details">
-            <el-tabs  type="card">
-                <el-tab-pane label="内容" >
-                    <el-table :data="sale_quotation.details" height="150" size="mini" max-height="250" border style="width: 97%">
-                            <el-table-column fixed prop="date"  width="20">
-                            </el-table-column>
-                            <el-table-column  prop="date" label="栏号" width="100">
-                            </el-table-column>
-                            <el-table-column prop="name" label="物料编号" width="150">
-                            </el-table-column>
-                            <el-table-column prop="province" label="物料名称" width="150">
-                            </el-table-column>
-                            <el-table-column prop="city" label="规格型号" width="100">
-                            </el-table-column>
-                            <el-table-column prop="address" label="单位名称" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="数量" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="折扣前单价" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="折数(%)" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="单价" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="金额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="税率(%)" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="税额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="含税金额" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="赠品" width="100">
-                            </el-table-column>
-                            <el-table-column prop="zip" label="分录备注" width="200">
-                            </el-table-column>
-                    </el-table>
-                </el-tab-pane>
-                <el-tab-pane label="账款" >
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="账款归属"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="收款日期"  prop="name"> <el-date-picker  type="datetime" placeholder="选择日期时间"> </el-date-picker> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="收款条件"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="账款月份"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    
-                </el-tab-pane>
-                <el-tab-pane label="备注" >
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="表头条文"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="自定义栏一"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="表尾条文"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="自定义栏二"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="24">
-                        <el-form-item label="备注"   prop="name"> 
-                          <el-input type="textarea" :rows="4" :autosize="{ minRows: 4, maxRows: 4}" > </el-input>
-                        </el-form-item>
-                        </el-col>
-                        
-                    </el-row>
-                </el-tab-pane>
-            </el-tabs>
-        </div>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="业务人员"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="制单人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="12">
-                        <el-form-item label="所属部门"   prop="name"> 
-                            <el-input v-model="sale_quotation.name"></el-input>
-                        </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="复核人员"  prop="name"> <el-input v-model="sale_quotation.name"></el-input> </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    查询<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >历史交易查询</el-dropdown-item>
-                                    <el-dropdown-item >利润预估查询</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="3">
-                            <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    功能<i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item >批次变更单价</el-dropdown-item>
-                                    <el-dropdown-item >发送Email</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-                        </el-col>
-                        <el-col :span="18">
-                            &nbsp;
-                        </el-col>
-                    </el-row>
-
-        
-        
-</el-form>
-      <!-- <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialog = false">取 消</el-button>
-        <el-button type="primary" @click="saveAddition" v-if="!updatebool">保存后新增</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
-      </span> -->
+      <router-view ></router-view>
     </el-dialog>
+    <el-dialog title="历史交易查询" :visible.sync="dialogTableVisible" >
+      <!-- <router-view  :to='{path:"/sale/menu2/menu2-2/lishi"}'></router-view> -->
+      <el-row >
+        <el-form size="mini" label-width="40px">
+          <el-col :span="8">
+              <el-form-item label="客户"><el-input size="mini"></el-input></el-form-item>
+          </el-col>
+          <el-col :span="10">
+             &nbsp;
+          </el-col>
+          <el-col :span="6">
+              <el-button type="primary"  size="mini" plain>资料输出</el-button>
+              <el-button type="success" size="mini" plain>取回</el-button>
+          </el-col>
+        </el-form>
+      </el-row>
+       <vxe-table size="mini" style="margin-top: 10px;"  :data="listData"  border resizable highlight-hover-row class="vxe-table-element" height="180"  >
+        <vxe-table-column title="删除">
+          <template v-slot="{ row }" style="padding:10px;">
+            <i class="el-icon-remove"
+            ></i>
+          </template>
+        </vxe-table-column>
+        <vxe-table-column field="id" title="单别" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="address" title="日期"  width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="zipCode" title="单号" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkMan" title="币别" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkManProf" title="汇率" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="telephone" title="物料编号" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="faxNo" title="物料名称" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="walkAddr" title="规格型号" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="memo" title="单位" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="zipCode" title="数量" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkMan" title="折扣前单价" width="130" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="linkManProf" title="折数(%)" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="telephone" title="单价" width="100" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="faxNo" title="单价是否含税" width="140" :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="walkAddr" title="金额" width="100"  :edit-render="{name: 'input'}"></vxe-table-column>
+        <vxe-table-column field="memo" title="备注" width="180"  :edit-render="{name: 'input'}"></vxe-table-column>
+      </vxe-table>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -261,44 +105,75 @@ export default {
     //这里存放数据
     return {
       entity: {},   // 新增and修改的对象
+      type:1,       //1是新增    2是修改
       tableData: [],  // 显示数据
-      findData: {},  // 查询数据
+      findData: {
+        flag:"2"
+      },  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
-      addDialog: false, // 新增模态框
+      dialogTableVisible: false, //历史交易查询
+      addDialog: false, // 新增模态
       currentPage: 1,   // 当前页
       currentSize: 10,  // 每页条数
       pagenumber: 0,     // 总条数
       updatebool:false,
+      savebtn:true,         //是否保存
+      isWriter:false,
       rules: {
-        departID: [
+        smlordbillmain: [
            { required: true, message: '编号不能为空', trigger: 'blur' },
         ],
         departName: [
            { required: true, message: '名称不能为空', trigger: 'blur' },
         ]
       }
-      ,sale_quotation:{
-            consumer:{
+      ,smlordbillmain:{
+            flag:"2" ,
+            comcustomer:{
                 name:""
             },
-            audit:false,
+            hasCheck:0,
             tax:"0",
-            details:[
+            auditStatus:0,
+            subList:[
                 {
                     name:"hahha"
                 }
                
             ]
         }
+        ,listData:[]
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+  },
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    addDialog:function(){
+      this.findPage();
+    }
+  },
   //方法集合
   methods: {
+    //时间格式化
+      timestampToTime(timestamp) {
+        var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '-';
+       var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate()) + ' ';
+        var h = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':';
+        var m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
+        var s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
+        return Y+M+D;
+    },
+    add(){
+        this.addDialog=true;
+        this.type=1;
+        this.$router.push({path:"/sale/menu2/menu2-2/index",query:{type:1}});
+    },
+    
     formatter(row, column) {
       return row.address;
     },
@@ -319,6 +194,12 @@ export default {
         })
         .catch(_ => {});
     },
+    //关闭模态框
+    handleClose2(done) {
+     
+          done();
+        
+    },
     //分页带条件查询
     findPage() {
       if(this.select != -1){
@@ -328,15 +209,18 @@ export default {
       }
       request({
         url:
-          "/comdepartment/findPage?current=" +
+          "/smlordbillmain/findPage?current=" +
           this.currentPage +
           "&size=" +
           this.currentSize,
         method: "post",
         data: this.findData
       }).then(result => {
+        // console.log(result.data);
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
+        this.findData={};
+        // this.selectValue="";
       });
     },
     // 单个查询
@@ -350,35 +234,8 @@ export default {
     },
     // 保存
     save() {
-      if(!this.updatebool){
-        // 新增
-        request({
-          url: "/comdepartment/add",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.entity = {}
-        });
-      }else{
-        // 修改
-        request({
-          url: "/comdepartment/update",
-          method: "post",
-          data: this.entity
-        }).then(result => {
-            Message.success(result.data.data)
-            //关闭模态框
-            this.addDialog = false
-            this.findPage()
-            this.updatebool = false
-            this.entity = {}
-        });
-      }
-      
+        this.isWriter=true;
+        this.savebtn=false;
     },
     //保存后新增
     saveAddition(){
@@ -386,29 +243,40 @@ export default {
     },
     // 修改
     update(entity){
-      this.updatebool = true
+      this.type=2;
       this.addDialog = true
-      this.entity = entity
+      this.$router.push({path:"/sale/menu2/menu2-2/index",query:{billNO:entity.billNo,type:2}});
     },
     // 删除
-    del(id){
+    del(billNo){
       request({
-        url: "/comdepartment/del?id="+id,
-        method: "get"
+        url: "/smlordbillmain/remove",
+        method: "post",
+        params:{
+          billNo:billNo,
+          flag:2
+        }
       }).then(result => {
-        Message.success(result.data.data)
+        if(result.data.data=="true"){
+          Message.success("删除成功");
+        }else{
+          Message.error(result.data.data);
+        }
         this.findPage()
       });
     }
     ,shenghe(){
-        if(this.sale_quotation.audit==false){
-            this.sale_quotation.audit=true;
+        if(this.smlordbillmain.hasCheck==0){
+            this.smlordbillmain.hasCheck=1;
             
         }else{
-            this.sale_quotation.audit=false;
+
+            this.smlordbillmain.hasCheck=0;
             
         }
     }
+    
+    
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
@@ -423,6 +291,9 @@ export default {
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+.el-input__inner {
+  width: 98%;
 }
  .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
         margin-top: 5px;
@@ -460,7 +331,7 @@ export default {
         background-color: #A5C5F4;
     }
     form{
-        border: 1px solid #A5C5F4;
+        // border: 1px solid #A5C5F4;
         background-color: #D7E7FF;
         height: 100%;
         // width: 43%;
@@ -479,8 +350,13 @@ export default {
     }
     .shenghe{
         position: absolute;
-        top:41px;
+        top:37px;
         right: 50px;
+    }
+    .baocun{
+        position: absolute;
+        top:37px;
+        right: 125px;
     }
     .img{
          position: absolute;
