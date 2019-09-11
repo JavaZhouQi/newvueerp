@@ -95,13 +95,20 @@ const saleRouter = {
             path: '/sale/menu2/menu2-3',
             component: () => import('@/views/sale/menu2/menu2-3'),
             name: 'saleMenu2-3',
-            meta: { title: '销售出库单' ,permissions: 'saleMenu2-3' }
+            meta: { title: '销售出库单' ,permissions: 'saleMenu2-3' },
           },
           {
             path: '/sale/menu2/menu2-4',
             component: () => import('@/views/sale/menu2/menu2-4'),
             name: 'saleMenu2-4',
-            meta: { title: '销售退货单' ,permissions: 'saleMenu2-4' }
+            meta: { title: '销售退货单' ,permissions: 'saleMenu2-4' },
+            children:[
+              {
+                path:'/returngoods',
+                name:'returngoods',
+                component:() => import('@/views/sale/menu2/menu2-4/returngoods')
+              }
+            ]
           },
           {
             path: '/sale/menu2/menu2-5',

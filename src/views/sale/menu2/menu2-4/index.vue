@@ -1,546 +1,213 @@
 <!--  -->
 <template>
-<div class='returngoods'>
-
-<!-- 销售退货上部分 -->
-<div>
-<el-row :gutter="10">
-     <el-form :model="formLabelAlign" :label-position="labelPosition" >
-  <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">客户</div></el-col>
-  <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-      <el-form-item label="">
-          <el-input v-model="formLabelAlign.customer"></el-input>
-      </el-form-item>
-   </div></el-col>
-  <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">单据日期</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.date" type="date"></el-input>
-      </el-form-item>
-      </div></el-col>
-
-
-      <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">送货地址</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.address"></el-input>
-      </el-form-item>
-      </div></el-col>
-      <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">单据号码</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.number"></el-input>
-      </el-form-item>
-      </div></el-col>
-
-
-<el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">单价是否含税</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-           <el-select v-model="formLabelAlign.due" placeholder="请选择" style="width:560px" >
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>
-      </el-form-item>
-      </div></el-col>
-      <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">币别</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.moneytype"></el-input>
-      </el-form-item>
-      </div></el-col>
-
-
-       <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">仓库</div></el-col>
-    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.warehouse"></el-input>
-      </el-form-item>
-    </div></el-col>
-    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">汇率</div></el-col>
-    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.exchangerate"></el-input>
-      </el-form-item>
-    </div></el-col>
-
-
-
-
-<el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">重新出库</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-           <el-select v-model="formLabelAlign.outhouseagain" placeholder="请选择" style="width:560px" >
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>
-      </el-form-item>
-      </div></el-col>
-    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">国外贸易</div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-           <el-select v-model="formLabelAlign.abroadtrade" placeholder="请选择" style="width:560px" disabled >
-                <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-                </el-option>
-            </el-select>
-      </el-form-item>
-      </div></el-col>
-
-      <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">凭证编号</div></el-col>
-    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-       <el-form-item label="">
-          <el-input v-model="formLabelAlign.documentnumber" disabled></el-input>
-      </el-form-item>
-    </div></el-col>
-    <el-col :xs="8" :sm="6" :md="4" :lg="4" :xl="1"><div class="grid-content bg-purple"></div></el-col>
-   <el-col :xs="4" :sm="6" :md="8" :lg="1" :xl="1"><div class="grid-content bg-purple-light">
-      </div></el-col>
-    </el-form>
-</el-row>
-</div>
-
-<!-- 销售退货的中间部分 -->
-<el-tabs type="border-card">
-  <el-tab-pane label="内容">
-    <el-table
-    :data="tableData"
-    border
-    stripe
-    :summary-method="getSummaries"
-    show-summary
-    style="width: 100%">
-    <el-table-column
-      prop="columnnumber"
-      label="（栏号）"
-      width="150">
-    </el-table-column>
-    <el-table-column
-      prop="materialnumber"
-      label="物料编号"
-      width="300">
-    </el-table-column>
-    <el-table-column
-      prop="materialname"
-      label="(物料名称)"
-      width="300">
-    </el-table-column>
-    <el-table-column
-      prop="specificationtype"
-      label="(规格型号)"
-      width="300">
-    </el-table-column>
-    <el-table-column
-      prop="companyname"
-      label="(单位名称)"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="number"
-      label="数量"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="discountprice"
-      label="折扣前单价"
-      width="120">
-    </el-table-column>
-     <el-table-column
-      prop="foldingnumber"
-      label="折数(%)"
-      width="120">
-    </el-table-column>
-
-    <el-table-column
-      prop="price"
-      label="单价"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="amountofmoney"
-      label="(金额)"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="taxrate"
-      label="税率(%)"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="taxamount"
-      label="税额"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="taxmoney"
-      label="含税金额"
-      width="120">
-    </el-table-column>
-     <el-table-column
-      prop="batchnumber"
-      label="(批号)"
-      width="120">
-    </el-table-column>
-     <el-table-column
-      prop="materialcombination"
-      label="(物料组合)"
-      width="120">
-    </el-table-column>
-     <el-table-column
-      prop="gift"
-      label="赠品"
-      width="120">
-    </el-table-column>
-      <el-table-column
-      prop="invoicedetails"
-      label="(发票明细)"
-      width="120">
-    </el-table-column>
-      <el-table-column
-      prop="noinvoicenumber"
-      label="(未开票数量)"
-      width="120">
-    </el-table-column>
-      <el-table-column
-      prop="remarks"
-      label="分录备注"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="sourcelist"
-      label="(来源单别)"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="sourceno"
-      label="(来源单号)"
-      width="120">
-    </el-table-column>
-    <el-table-column
-      prop="customerorders"
-      label="客户订单"
-      width="120">
-    </el-table-column>
-  </el-table>
-  </el-tab-pane>
-  
-  <el-tab-pane label="账款">
-      <el-row :gutter="10">
-            <el-form :model="credit" >
-
-                <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">账款归属</div></el-col>
-                <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                    <el-form-item label="">
-                        <el-input v-model="credit.creditbelong"></el-input>
-                    </el-form-item>
-                </div></el-col>
-                <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" >收款日期</div></el-col>
-                <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                    <el-form-item label="">
-                        <el-input v-model="credit.creditdate" type="date"></el-input>
-                </el-form-item>
-      </div></el-col>
-
-                <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">收款条件</div></el-col>
-                <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                    <el-form-item label="">
-                        <el-select v-model="credit.creditcondition" placeholder="请选择" style="width:150px" >
-                                <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                        </el-select>
-                        <el-input v-model="credit.creditday" placeholder="天" style="width:120px"></el-input>
-                    </el-form-item>
-                    </div></el-col>
-
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">账款月份</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                    <el-form-item label="">
-                            <el-date-picker
-                            v-model="credit.creditmonth"
-                            type="month"
-                            placeholder="选择月"
-                            style="width:550px"
-                             >
-                            </el-date-picker>
-                    </el-form-item>
-                    </div></el-col>
-
-
-            </el-form>
-      </el-row>
-  </el-tab-pane>
-
-  <el-tab-pane label="备注">
-      <el-row :gutter="10">
-            <el-form :model="checkoutremark">
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">自定栏一</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="checkoutremark.customone"></el-input>
-                        </el-form-item>
-                        </div></el-col>
-                        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">自定栏二</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="checkoutremark.customtwo"></el-input>
-                        </el-form-item>
-                    </div></el-col>
-            </el-form>
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">备注</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="2" :xl="11"><div class="grid-content bg-purple-light">
-                        <textarea rows="20" style="width:1035px">
-                        </textarea>
-                    </div></el-col>
-       </el-row>
-  </el-tab-pane>
-    
-  </el-tabs>
-
-
-<!-- 销售退货的底部部分 -->
-    <div class="returngoodsbottom">
-        <el-row :gutter="10">
-            <el-form :model="formLabelAlign">
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">业务人员</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="formLabelAlign.businesspeople"></el-input>
-                        </el-form-item>
-                        </div></el-col>
-                        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">制单人员</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="formLabelAlign.systempersonnel" placeholder="admin" disabled="true"></el-input>
-                        </el-form-item>
-                    </div></el-col>
-
-                     <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple" style="color:blue">所属部门</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="formLabelAlign.belongparton"></el-input>
-                        </el-form-item>
-                        </div></el-col>
-                        <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">复核人员</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="formLabelAlign.reviewpersonnel"></el-input>
-                        </el-form-item>
-                    </div></el-col>
-
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple">所属项目</div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                        <el-form-item label="">
-                            <el-input v-model="formLabelAlign.belongproject"></el-input>
-                        </el-form-item>
-                        </div></el-col>      
-                    <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"><div class="grid-content bg-purple"></div></el-col>
-                    <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11"><div class="grid-content bg-purple-light">
-                    </div></el-col>        
-            </el-form>
-       </el-row>
-            <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="6"><div class="grid-content bg-purple">
-                <el-dropdown size="medium" split-button type="primary">
-                查询
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>历史交易查询</el-dropdown-item>
-                    <el-dropdown-item>单据状况查询</el-dropdown-item>
-                </el-dropdown-menu>
-                </el-dropdown>
-            </div></el-col>
-            <el-col :span="6"><div class="grid-content bg-purple-light">
-                <el-dropdown size="medium" split-button type="primary">
-                转单
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>销售报价转入</el-dropdown-item>
-                    <el-dropdown-item>销售订单转入</el-dropdown-item>
-                    <el-dropdown-item>商业发票转入</el-dropdown-item>
-                </el-dropdown-menu>
-                </el-dropdown>
-            </div></el-col>
-            <el-col :span="6"><div class="grid-content bg-purple">
-                <el-dropdown size="medium" split-button type="primary">
-                功能
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>物料组合设定</el-dropdown-item>
-                    <el-dropdown-item>批号设定</el-dropdown-item>
-                    <el-dropdown-item>条码打印</el-dropdown-item>
-                    <el-dropdown-item>批次变更单价</el-dropdown-item>
-                </el-dropdown-menu>
-                </el-dropdown>
-            </div></el-col>
-            </el-row>
+  <div class>
+    <div style="height:60px;">
+      <div style="margin-top: 15px;width:380px;float: left;">
+        <el-input placeholder="请输入内容" v-model="selectValue" class="input-with-select">
+          <el-select v-model="select" slot="prepend" placeholder="请选择">
+            <el-option label="查询全部" value="-1"></el-option>
+            <el-option label="单据号码" value="departID"></el-option>
+            <el-option label="销售退货类型" value="engName"></el-option>
+            <el-option label="单况" value="departName"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search" @click="findPage"></el-button>
+        </el-input>
+      </div>
+      <div style="float: right;margin: 15px 300px 0px 0px;">
+        <el-button type="primary" @click="add">新增</el-button>
+      </div>
     </div>
 
+    <el-table ref="filterTable" :data="tableData" style="margin-top:10px;">
+      <el-table-column prop="departID" label="单据号码" sortable width="180" column-key="date"></el-table-column>
+      <el-table-column prop="departName" label="销售退货类型" width="180"></el-table-column>
+      <el-table-column prop="engName" label="单据日期" width="280"></el-table-column>
+      <el-table-column prop="memo" label="单况" width="280"></el-table-column>
+      <el-table-column label="操作" width="280">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="update(scope.row)">修改</el-button>
+          <el-button size="mini" type="danger" @click="del(scope.row.departID)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <page-helper @jumpPage="jumpPage" :page-number="currentPage" :totalCount="pagenumber"></page-helper>
 
-</div>
+    <el-dialog :title="titleDialog" width="60%" :visible.sync="addDialog" :before-close="handleClose">
+      <router-view :add-dialog.sync="addDialog"></router-view>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import request from "@/api/request";
+import PageHelper from "@/components/PageHelper";
+import { Message } from 'element-ui';
 
 export default {
-//import引入的组件需要注入到对象中才能使用
-components: {},
-data() {
-//这里存放数据
-return {
-    labelPosition: 'left',
-        formLabelAlign: {
-          name: '',
-          region: '',
-          type: '',
-          businesspeople:'',
-          systempersonnel:'',
-          belongparton:'',
-          reviewpersonnel:'',
-          belongproject:'',
-          outhouseagain:'否',
-          abroadtrade:'否',
-          due:'未税'
-        },
-        credit:{
-        creditbelong:'',
-        creditdate:'',
-        creditcondition:'',
-        creditmonth:'',
-        creditday:''
-        },
-        checkoutremark:{
-            customone:'',
-            customtwo:''
-        },
-       /* 这是内容部分的数据渲染 */ 
-       tableData: [{
-          columnnumber: '1',
-          materialnumber: 'C01-W-HP-DC7900-307',
-          materialname: '上海',
-          specificationtype: '普陀区',
-          companyname: '普陀区',
-          number: '普陀区',
-          discountprice: '普陀区',
-          foldingnumber: '普陀区',
-          price: '普陀区',
-          amountofmoney: '普陀区',
-          taxrate: '普陀区',
-          taxamount: '上海市普陀区金沙江路 1518 弄',
-          taxmoney: '普陀区',
-          batchnumber: '普陀区',
-          materialcombination : '普陀区',
-          gift: '普陀区',
-          invoicedetails: '普陀区',
-          noinvoicenumber:'普陀区',
-          tanoinvoicenumberxrate: '普陀区',
-          remarks: '普陀区',
-          sourcelist: '普陀区',
-          sourceno: '普陀区',
-          customerorders: '普陀区'
-        },{
-            columnnumber: '2',
-          materialnumber: 'C01-W-HP-DC7900-307',
-          materialname: '上海',
-          specificationtype: '普陀区',
-          companyname: '普陀区',
-          number: '普陀区',
-          discountprice: '普陀区',
-          foldingnumber: '普陀区',
-          price: '普陀区',
-          amountofmoney: '普陀区',
-          taxrate: '普陀区',
-          taxamount: '上海市普陀区金沙江路 1518 弄',
-          taxmoney: '普陀区',
-          batchnumber: '普陀区',
-          materialcombination : '普陀区',
-          gift: '普陀区',
-          invoicedetails: '普陀区',
-          noinvoicenumber:'普陀区',
-          tanoinvoicenumberxrate: '普陀区',
-          remarks: '普陀区',
-          sourcelist: '普陀区',
-          sourceno: '普陀区',
-          customerorders: '普陀区'
-        }
-        ]   
-};
-},
-//监听属性 类似于data概念
-computed: {},
-//监控data中的数据变化
-watch: {},
-//方法集合
-methods: {
-
-    getSummaries(param) {
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = '合计:';
-            return;
-          }
-         if (index === 5) {
-            sums[index] = '总量:';
-            return;
-          }
-        if (index === 9) {
-            sums[index] = '总金额:';
-            return;
-          }
-        if (index === 11) {
-            sums[index] = '税额数:';
-            return;
-          }
-        if (index === 12) {
-            sums[index] = '含税总金额:';
-            return;
-          }
-        });   
-        return sums;
+  //import引入的组件需要注入到对象中才能使用
+  components: {
+    PageHelper
+  },
+  data() {
+    //这里存放数据
+    return {
+      entity: {},   // 新增and修改的对象
+      tableData: [],  // 显示数据
+      findData: {},  // 查询数据
+      select: "",   // 查询条件
+      selectValue: "",
+      addDialog: false, // 新增模态框
+      currentPage: 1,   // 当前页
+      currentSize: 10,  // 每页条数
+      pagenumber: 0,     // 总条数
+      updatebool:false,
+      rules: {
+        departID: [
+           { required: true, message: '编号不能为空', trigger: 'blur' },
+        ],
+        departName: [
+           { required: true, message: '名称不能为空', trigger: 'blur' },
+        ]
+      }
+    };
+  },
+  //监听属性 类似于data概念
+  computed: {},
+  //监控data中的数据变化
+  watch: {},
+  //方法集合
+  methods: {
+    formatter(row, column) {
+      return row.address;
+    },
+    filterTag(value, row) {
+      return row.tag === value;
+    },
+    // 分页组件触发的事件
+    jumpPage(data) {
+      this.currentPage = data.currentPage;  //当前页
+      this.currentSize = data.currentSize;  //每页显示条数
+      this.findPage();
+    },
+    //公用开启模态框
+    openDialog:function(value,url,scope){
+      this.titleDialog = value;
+      this.addDialog = true;
+      if(scope){
+        //console.log(scope)
+        this.$router.push({path:url,query:{id:scope.row.id}});
+      }else{
+        this.$router.push(url);
+      }
+    },
+    //新增模态框事件
+    add:function(){
+      this.openDialog('销售退货','/returngoods',"");
+    },
+    //关闭模态框
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+    //分页带条件查询
+    findPage() {
+      if(this.select != -1){
+        this.findData[this.select] = this.selectValue
+      }else{
+        this.findData = {}
+      }
+      request({
+        url:
+          "/comdepartment/findPage?current=" +
+          this.currentPage +
+          "&size=" +
+          this.currentSize,
+        method: "post",
+        data: this.findData
+      }).then(result => {
+        this.tableData = result.data.data.rows; //查询的数据
+        this.pagenumber = result.data.data.total; // 总条数
+      });
+    },
+    // 单个查询
+    findOne() {
+      request({
+        url: "/comdepartment/findOne",
+        method: "post"
+      }).then(result => {
+        console.log(result);
+      });
+    },
+    // 保存
+    save() {
+      if(!this.updatebool){
+        // 新增
+        request({
+          url: "/comdepartment/add",
+          method: "post",
+          data: this.entity
+        }).then(result => {
+            Message.success(result.data.data)
+            //关闭模态框
+            this.addDialog = false
+            this.findPage()
+            this.entity = {}
+        });
+      }else{
+        // 修改
+        request({
+          url: "/comdepartment/update",
+          method: "post",
+          data: this.entity
+        }).then(result => {
+            Message.success(result.data.data)
+            //关闭模态框
+            this.addDialog = false
+            this.findPage()
+            this.updatebool = false
+            this.entity = {}
+        });
+      }
+      
+    },
+    //保存后新增
+    saveAddition(){
+      var number = this.entity.departID
+    },
+    // 修改
+    update(entity){
+      this.updatebool = true
+      this.addDialog = true
+      this.entity = entity
+    },
+    // 删除
+    del(id){
+      request({
+        url: "/comdepartment/del?id="+id,
+        method: "get"
+      }).then(result => {
+        Message.success(result.data.data)
+        this.findPage()
+      });
     }
-
-},
-//生命周期 - 创建完成（可以访问当前this实例）
-created() {
-
-},
-//生命周期 - 挂载完成（可以访问DOM元素）
-mounted() {
-
-},
-beforeCreate() {}, //生命周期 - 创建之前
-beforeMount() {}, //生命周期 - 挂载之前
-beforeUpdate() {}, //生命周期 - 更新之前
-updated() {}, //生命周期 - 更新之后
-beforeDestroy() {}, //生命周期 - 销毁之前
-destroyed() {}, //生命周期 - 销毁完成
-activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
-}
+  },
+  //生命周期 - 创建完成（可以访问当前this实例）
+  created() {
+    this.findPage();
+  }
+};
 </script>
 <style>
-     textarea{
-    resize:none;
-    }
-    .returngoodsbottom{
-        margin-top: 20px
-    }
-
-        .bg-purple {
-        margin-top: 5px;
-    }
+.el-select .el-input,
+.el-select {
+  width: 120px;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
 </style>
