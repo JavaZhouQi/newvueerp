@@ -108,7 +108,6 @@ export default {
       type:1,       //1是新增    2是修改
       tableData: [],  // 显示数据
       findData: {
-        flag:"2"
       },  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
@@ -152,6 +151,7 @@ export default {
   //监控data中的数据变化
   watch: {
     addDialog:function(){
+      alert("进来了");
       this.findPage();
     }
   },
@@ -207,16 +207,17 @@ export default {
       }else{
         this.findData = {}
       }
+       this.findData.flag=2;
       request({
         url:
           "/smlordbillmain/findPage?current=" +
           this.currentPage +
           "&size=" +
-          this.currentSize,
+          this.currentSize ,
         method: "post",
         data: this.findData
       }).then(result => {
-        // console.log(result.data);
+        console.log(result.data);
         this.tableData = result.data.data.rows; //查询的数据
         this.pagenumber = result.data.data.total; // 总条数
         this.findData={};

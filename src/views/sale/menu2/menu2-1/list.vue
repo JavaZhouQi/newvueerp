@@ -108,7 +108,6 @@ export default {
       type:1,       //1是新增    2是修改
       tableData: [],  // 显示数据
       findData: {
-        flag:"1"
       },  // 查询数据
       select: "",   // 查询条件
       selectValue: "",
@@ -207,6 +206,7 @@ export default {
       }else{
         this.findData = {}
       }
+      this.findData.flag=1;
       request({
         url:
           "/smlordbillmain/findPage?current=" +
